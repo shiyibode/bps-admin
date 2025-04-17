@@ -51,7 +51,7 @@ Ext.define('MyApp.view.sys.widget.MenuGrid', {
                 dataIndex: 'uri'
             },{
                 text: '类型',
-                dataIndex: 'type'
+                dataIndex: 'typeStr'
             },{
                 text: '权限',
                 dataIndex: 'permission'
