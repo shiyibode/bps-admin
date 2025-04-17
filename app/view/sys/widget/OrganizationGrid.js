@@ -53,7 +53,7 @@ Ext.define('MyApp.view.sys.widget.OrganizationGrid', {
                 dataIndex: 'sort'
             },{
                 text: '类型',
-                dataIndex: 'type'
+                dataIndex: 'typeStr'
             }, {
                 text: '创建时间',
                 dataIndex: 'createTime'
