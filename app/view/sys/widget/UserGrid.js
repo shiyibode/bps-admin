@@ -65,7 +65,11 @@ Ext.define('MyApp.view.sys.widget.UserGrid', {
                 flex: 1
             }, {
                 text: '职务',
-                dataIndex: 'post',
+                dataIndex: 'postStr',
+                flex: 1
+            }, {
+                text: '状态',
+                dataIndex: 'statusStr',
                 flex: 1
             }, {
                 text: '身份证号',
@@ -92,13 +96,7 @@ Ext.define('MyApp.view.sys.widget.UserGrid', {
                 text: '更新时间',
                 dataIndex: 'updateTime',
                 flex: 1
-            }
-            // , {
-            //     text: '拥有的角色',
-            //     dataIndex: 'userRoleNames',
-            //     flex: 1
-            // }
-            ]
+            }]
         }, {
             text: '机构信息',
             flex: 2,
