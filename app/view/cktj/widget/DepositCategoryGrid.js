@@ -9,6 +9,8 @@ Ext.define('MyApp.view.cktj.widget.DepositCategoryGrid', {
 
     reference: 'depositcategorygrid',
 
+    sortableColumns: false,
+
     bind: {
         store: '{depositcategoryStore}'
     },
@@ -23,26 +25,6 @@ Ext.define('MyApp.view.cktj.widget.DepositCategoryGrid', {
             // }, {
             //     type: 'gear'
         }
-        // , {
-        //     type: 'maximize',
-        //     hidden: true,
-        //     tooltip: '隐藏记录明细',
-        //     handler: 'hideDetailBtnClick'
-        // }
-        // , {
-        //     type: 'restore',
-        //     tooltip: '显示记录明细',
-        //     handler: 'showDetailBtnClick'
-            // }, {
-            //     type: 'expand',
-            //     tooltip: '展开全部数据',
-            //     handler : 'expandBtnClick'
-            //
-            // }, {
-            //     type: 'collapse',
-            //     tooltip: '折叠全部数据',
-            //     handler : 'collapseBtnClick'
-        // }
     ],
 
 
@@ -57,7 +39,8 @@ Ext.define('MyApp.view.cktj.widget.DepositCategoryGrid', {
             {
                 xtype: 'treecolumn',
                 text: '名称',
-                dataIndex: 'name'
+                dataIndex: 'name',
+                flex: 2
             }, {
                 text: '存款类型',
                 dataIndex: 'depositTypeStr'

@@ -33,74 +33,6 @@ Ext.define('MyApp.view.cktj.DepositCategoryController', {
         this.lookupReference('depositcategorygrid').getStore('depositcategoryStore').reload();
     },
 
-    showDetailBtnClick: function() {
-        this.getView().down('depositcategorydetail').expand();
-    },
-
-    hideDetailBtnClick: function() {
-        this.getView().down('depositcategorydetail').collapse();
-    },
-
-    onDepositCategoryDetailExpand: function(p, eOpts) {
-        this.getView().down('depositcategorygrid tool[type=maximize]').setHidden(false);
-        this.getView().down('depositcategorygrid tool[type=restore]').setHidden(true);
-    },
-
-    onDepositCategoryDetailCollapse: function(p, eOpts) {
-        this.getView().down('depositcategorygrid tool[type=maximize]').setHidden(true);
-        this.getView().down('depositcategorygrid tool[type=restore]').setHidden(false);
-    },
-
-    prevBtnClick: function() {
-        var me = this;
-        // var depositcategoryTreeGrid = me.getView().down('depositcategorytreegrid');
-        var depositcategoryGrid = me.lookupReference('depositcategorygrid');
-        var selectionModel = depositcategoryGrid.getSelectionModel();
-        var store = depositcategoryGrid.getStore('depositcategoryStore');
-
-        if (selectionModel.getCount() == 0) {
-            if (store.getCount() > 0) {
-                selectionModel.select(store.getAt(0));
-                this.checkedAndSelectSubjectDictGridRecords();
-            } else {
-                Ext.toastWarn('当前列表中没有可显示的记录!');
-            }
-        } else {
-            var index = store.indexOf(selectionModel.getSelection()[0]);
-            if (index == 0) {
-                Ext.toastWarn('已经是当前列表的第一条记录!');
-            }else {
-                selectionModel.select(store.getAt(index - 1));
-                this.checkedAndSelectSubjectDictGridRecords();
-            }
-        }
-
-    },
-
-    nextBtnClick: function() {
-        var me = this;
-        var depositcategoryGrid = me.lookupReference('depositcategorygrid');
-        var selectionModel = depositcategoryGrid.getSelectionModel();
-        var store = depositcategoryGrid.getStore('depositcategoryStore');
-
-        if (selectionModel.getCount() == 0) {
-            if (store.getCount() > 0) {
-                selectionModel.select(store.getAt(0));
-                this.checkedAndSelectSubjectDictGridRecords();
-            } else {
-                Ext.toastWarn('当前列表中没有可显示的记录!');
-            }
-        } else {
-            var index = store.indexOf(selectionModel.getSelection()[0]);
-            if (index == store.getTotalCount() - 1) {
-                Ext.toastWarn('已经是当前列表的最后一条记录!');
-            }else {
-                selectionModel.select(store.getAt(index + 1));
-                this.checkedAndSelectSubjectDictGridRecords();
-            }
-        }
-    },
-
     getGridSelected: function() {
         var me = this,
             depositcategoryGrid = me.lookupReference('depositcategorygrid'),
@@ -316,6 +248,11 @@ Ext.define('MyApp.view.cktj.DepositCategoryController', {
         if (records && records[0]) {
             depositcategorygrid.getSelectionModel().select(records[0]);
         }
+
+        Ext.defer(
+            function(){
+                depositcategorygrid.expandAll();
+            },100)
     },
 
 
@@ -390,11 +327,6 @@ Ext.define('MyApp.view.cktj.DepositCategoryController', {
 
     /**
      * 科目字典在加载完数据后，设置哪些节点应该有复选框
-     * @param store
-     * @param records
-     * @param successful
-     * @param operation
-     * @param eOpts
      */
     onSubjectDictStoreLoad: function(store, records, successful, operation, eOpts) {
         var root = store.getRoot();
@@ -405,7 +337,6 @@ Ext.define('MyApp.view.cktj.DepositCategoryController', {
 
     /**
      * 递归设置节点的 checked 属性
-     * @param node
      */
     depathNode: function(node) {
         if (!node) {

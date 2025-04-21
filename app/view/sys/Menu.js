@@ -6,7 +6,6 @@ Ext.define('MyApp.view.sys.Menu', {
         'Ext.layout.container.Border',
         'MyApp.view.sys.MenuController',
         'MyApp.view.sys.MenuModel',
-        'MyApp.view.sys.widget.MenuDetail',
         'MyApp.view.sys.widget.MenuWindow',
         'MyApp.view.sys.widget.MenuGrid'
     ],

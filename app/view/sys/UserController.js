@@ -22,7 +22,6 @@ Ext.define('MyApp.view.sys.UserController', {
             function(){
                 navigationtree.expandAll();
             },100)
-        console.log('on org store load')
     },
 
     onUserStoreBeforeLoad: function (store, operation, eOpts) {

@@ -15,6 +15,7 @@ Ext.define('MyApp.view.sys.widget.ApiGrid', {
     },
     columnLines: true,
 
+    sortableColumns: false,
 
     bbar: {
         xtype: 'pagingtoolbar',
