@@ -35,7 +35,7 @@ Ext.define('MyApp.view.main.Main', {
                     reference: 'senchaLogo',
                     cls: 'sencha-logo',
                     html: '<div class="main-logo"><img src="resources/images/sys/company-logo.png">存款统计系统</div>',
-                    width: 250
+                    width: CFG.getNavigationTreeWidth()
                 },
                 {
                     margin: '0 0 0 8',
@@ -89,7 +89,7 @@ Ext.define('MyApp.view.main.Main', {
                     store: {
                         type: 'navigationtree'
                     },
-                    width: 250,
+                    width: CFG.getNavigationTreeWidth(),
                     expanderFirst: false,
                     expanderOnly: false,
                     listeners: {

@@ -4,6 +4,7 @@
 
     config: {
         userInfo: null,
+        navigationTreeWidth: 270,
         defaultPageSize: 20,
         // globalPath: 'http://192.168.2.252:18080/api'
         globalPath: 'http://192.168.1.201/api'
