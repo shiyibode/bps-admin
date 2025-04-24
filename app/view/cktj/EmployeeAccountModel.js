@@ -82,7 +82,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
             autoLoad: false,
             proxy: {
                 type: 'format',
-                url: '/sys/organization/get'
+                url: CFG.getGlobalPath() + '/sys/organization/getOrganizationTree'
             },
             remoteFilter: true,
             remoteSort: true,
@@ -103,7 +103,6 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
         userStoreReg: {
             type: 'store',
             model: 'MyApp.model.sys.User',
-            pageSize: 30,
             autoLoad: false,
             remoteFilter: true,
             remoteSort: true,
@@ -116,7 +115,6 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
         userStoreMod: {
             type: 'store',
             model: 'MyApp.model.sys.User',
-            pageSize: 30,
             autoLoad: false,
             remoteFilter: true,
             remoteSort: true,
@@ -136,7 +134,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
             remoteSort: true,
             proxy: {
                 type: 'format',
-                url: '/cktj/employeeaccount/getunregisteraccount'
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/getunregisteraccount'
             },
             listeners: {
                 beforeload: 'onEmployeeAccountStoreBeforeLoad',
@@ -172,7 +170,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
             remoteSort: true,
             proxy: {
                 type: 'format',
-                url: '/cktj/employeeaccount/getregisteruncheckedaccount'
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/getregisteruncheckedaccount'
             },
             listeners: {
                 beforeload: 'onEmployeeAccountStoreBeforeLoad',
@@ -190,7 +188,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
             remoteSort: true,
             proxy: {
                 type: 'format',
-                url: '/cktj/employeeaccount/getmodifiableaccount'
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/getmodifiableaccount'
             },
             listeners: {
                 beforeload: 'onEmployeeAccountStoreBeforeLoad',
@@ -208,7 +206,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
             remoteSort: true,
             proxy: {
                 type: 'format',
-                url: '/cktj/employeeaccount/getmodifieduncheckedaccount'
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/getmodifieduncheckedaccount'
             },
             listeners: {
                 beforeload: 'onEmployeeAccountStoreBeforeLoad',
@@ -226,7 +224,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
             remoteSort: true,
             proxy: {
                 type: 'format',
-                url: '/cktj/employeeaccount/get'
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/get'
             },
             listeners: {
                 beforeload: 'onEmployeeAccountStoreBeforeLoad',
@@ -243,7 +241,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
             remoteSort: true,
             proxy: {
                 type: 'format',
-                url: '/cktj/employeeaccount/depositsort'
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/depositsort'
             }
         }
     }

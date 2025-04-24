@@ -458,9 +458,11 @@ Ext.define('MyApp.view.cktj.widget.EmployeeAccountGrid', {
          
         Ext.Msg.wait(I18N.GetRoleInfo);
         Ext.Ajax.request({
-            url: '/sys/menu/currentUser/currentMenuPermission',
+            url: CFG.getGlobalPath() + '/sys/menu/currentUser/currentMenuPermission',
             method: 'POST',
-            jsonData: dataJson,
+            params: {
+                uri: dataJson.path
+            },
             success: function(response, opts) {
                 Ext.Msg.hide();
                 var obj = Ext.decode(response.responseText, true);
