@@ -103,7 +103,7 @@ Ext.define('MyApp.view.sys.MenuModel', {
             storeId: 'menuStore',
             type: 'store',
             model: 'MyApp.model.sys.Menu',
-            pageSize: 20,
+            pageSize: CFG.getDefaultPageSize(),
             autoLoad: true,
             listeners: {
                 load: {

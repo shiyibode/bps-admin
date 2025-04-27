@@ -55,25 +55,23 @@ Ext.define('MyApp.view.cktj.DepositModel', {
     stores: {
         organizationStore: {
             type: 'tree',
-            model: 'MyApp.model.sys.Organization',
-            pageSize: 0,
-            autoLoad: false,
-            proxy: {
-                type: 'format',
-                url: '/sys/organization/get'
-            },
-            remoteFilter: true,
-            remoteSort: true,
+            autoLoad: true,
             root: {
-                id: 0,
+                id: 'root',
                 text: '最高机构',
-                expanded: true
+                // expanded: true
+            },
+            proxy: {
+                type: 'ajax',
+                url: CFG.getGlobalPath() + '/sys/organization/getOrganizationTree',
+                reader: {
+                    type: 'json',
+                    rootProperty: 'children'
+                }
             },
             listeners: {
                 load: {
-                    fn: 'onOrganizationStoreLoad',
-                    single: true,       //只执行一次
-                    delay:1
+                    fn: 'onOrganizationStoreLoad'
                 }
             }
         },
@@ -99,41 +97,42 @@ Ext.define('MyApp.view.cktj.DepositModel', {
             ]
         },
 
-        organizationDepositStore: {
-            storeId: 'organizationDepositStore',
-            type: 'store',
-            model: 'MyApp.model.cktj.Deposit',
-            proxy: {
-                type: 'format',
-                url: '/cktj/deposit/organization'
-            },
-            autoLoad: false,
-            listeners: {
-                beforeload: 'onDepositStoreBeforeLoad'
-            }
-        },
+        // organizationDepositStore: {
+        //     storeId: 'organizationDepositStore',
+        //     type: 'store',
+        //     model: 'MyApp.model.cktj.Deposit',
+        //     proxy: {
+        //         type: 'format',
+        //         url: '/cktj/deposit/organization'
+        //     },
+        //     autoLoad: false,
+        //     listeners: {
+        //         beforeload: 'onDepositStoreBeforeLoad'
+        //     }
+        // },
 
-        organizationAvgDepositStore: {
-            storeId: 'organizationDepositStore',
-            type: 'store',
-            model: 'MyApp.model.cktj.Deposit',
-            proxy: {
-                type: 'format',
-                url: '/cktj/deposit/orgaverage'
-            },
-            autoLoad: false,
-            listeners: {
-                beforeload: 'onDepositStoreBeforeLoad'
-            }
-        },
+        // organizationAvgDepositStore: {
+        //     storeId: 'organizationDepositStore',
+        //     type: 'store',
+        //     model: 'MyApp.model.cktj.Deposit',
+        //     proxy: {
+        //         type: 'format',
+        //         url: '/cktj/deposit/orgaverage'
+        //     },
+        //     autoLoad: false,
+        //     listeners: {
+        //         beforeload: 'onDepositStoreBeforeLoad'
+        //     }
+        // },
 
-        employeeDepositStore: {
+        employeeDepositTaskStore: {
             storeId: 'employeeDepositStore',
             type: 'store',
             model: 'MyApp.model.cktj.Deposit',
+            pageSize: CFG.getDefaultPageSize(),
             proxy: {
                 type: 'format',
-                url: '/cktj/deposit/employee'
+                url: CFG.getGlobalPath() + '/cktj/deposit/employeetask'
             },
             autoLoad: false,
             listeners: {
@@ -147,7 +146,7 @@ Ext.define('MyApp.view.cktj.DepositModel', {
             model: 'MyApp.model.cktj.Deposit',
             proxy: {
                 type: 'format',
-                url: '/cktj/deposit/empaverage'
+                url: CFG.getGlobalPath() + '/cktj/deposit/empaverage'
             },
             autoLoad: false,
             listeners: {
@@ -155,18 +154,18 @@ Ext.define('MyApp.view.cktj.DepositModel', {
             }
         },
 
-        //存款种类Store(如普通存款、爱行存款)
-        depositSortStore: {
-            type: 'store',
-            model: 'MyApp.model.cktj.DepositSort',
-            autoLoad: false,
-            remoteFilter: true,
-            remoteSort: true,
-            proxy: {
-                type: 'format',
-                url: '/cktj/deposit/depositsort'
-            }
-        }
+        // //存款种类Store(如普通存款、爱行存款)
+        // depositSortStore: {
+        //     type: 'store',
+        //     model: 'MyApp.model.cktj.DepositSort',
+        //     autoLoad: false,
+        //     remoteFilter: true,
+        //     remoteSort: true,
+        //     proxy: {
+        //         type: 'format',
+        //         url: '/cktj/deposit/depositsort'
+        //     }
+        // }
     }
 
 });

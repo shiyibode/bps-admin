@@ -53,6 +53,11 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
         if (records && records[0]) {
             navigationtree.getSelectionModel().select(records[0]);
         }
+        // 展开菜单
+        Ext.defer(
+            function(){
+                navigationtree.expandAll();
+            },100)
     },
 
     onRegisterUserStoreBeforeLoad: function(store, operation, eOpts) {

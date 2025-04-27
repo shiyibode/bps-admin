@@ -134,7 +134,7 @@ Ext.define('MyApp.view.sys.UserModel', {
         userStore: {
             type: 'store',
             model: 'MyApp.model.sys.User',
-            pageSize: 30,
+            pageSize: CFG.getDefaultPageSize(),
             autoLoad: true,
             remoteFilter: true,
             remoteSort: true,

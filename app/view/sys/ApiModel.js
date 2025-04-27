@@ -78,7 +78,7 @@ Ext.define('MyApp.view.sys.ApiModel', {
         apiStore: {
             type: 'store',
             model: 'MyApp.model.sys.Api',
-            pageSize: 20,
+            pageSize: CFG.getDefaultPageSize(),
             autoLoad: true,
             remoteFilter: true,
             remoteSort: true,

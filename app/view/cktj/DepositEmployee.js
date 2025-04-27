@@ -27,7 +27,7 @@ Ext.define('MyApp.view.cktj.DepositEmployee',{
         //表格的数据存储器
         var dataStore = null;
         var myMatrix = null;
-        dataStore = viewModel.getStore('employeeDepositStore');
+        dataStore = viewModel.getStore('employeeDepositTaskStore');
         myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
             textRowLabels: '存款日期/存款人信息/存款机构',
             compactViewColumnWidth: 210,
@@ -96,7 +96,10 @@ Ext.define('MyApp.view.cktj.DepositEmployee',{
             bind: {
                 title: '员工时点' + '{selectionText}'
             },
-            moduleId: 'employee',
+            moduleId: 'employeetask',
+            bind: {
+                store: '{employeeDepositTaskStore}'
+            },
             matrix: myMatrix
         });
 

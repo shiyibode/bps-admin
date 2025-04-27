@@ -159,6 +159,7 @@ Ext.define('MyApp.view.sys.RoleModel', {
         roleStore: {
             type: 'store',
             model: 'MyApp.model.sys.Role',
+            pageSize: CFG.getDefaultPageSize(),
             autoLoad: true,
             remoteFilter: true,
             remoteSort: true,

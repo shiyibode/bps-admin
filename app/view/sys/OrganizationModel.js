@@ -100,7 +100,7 @@ Ext.define('MyApp.view.sys.OrganizationModel', {
         organizationStore: {
             type: 'store',
             storeId: 'organizationStore',
-            pageSize: 20,
+            pageSize: CFG.getDefaultPageSize(),
             autoLoad: true,
             // type: 'tree',
             model: 'MyApp.model.sys.Organization',
