@@ -1,9 +1,9 @@
-Ext.define('MyApp.view.sys.widget.MenuWindow', {
+Ext.define('MyApp.view.sys.widget.MenuEditWindow', {
     extend: 'Ext.window.Window',
 
     width: 400,
     closable: false,
-    alias: 'widget.menuwindow',
+    alias: 'widget.menueditwindow',
 
     requires: [
         'MyApp.ux.form.field.UxTreePicker',
@@ -11,7 +11,7 @@ Ext.define('MyApp.view.sys.widget.MenuWindow', {
         'MyApp.ux.iconcls.Field'
     ],
 
-    itemId: 'menuWindow',
+    itemId: 'menuEditWindow',
 
     bind: {
         title: '{windowOptions.title}'
@@ -42,17 +42,23 @@ Ext.define('MyApp.view.sys.widget.MenuWindow', {
             fieldLabel: '上级菜单名称',
             bind: {
                 readOnly: true,
-                value: '{current.record.name}'
+                value: '{current.record.parentName}'
             }
         },{
             xtype: 'textfield',
             fieldLabel: '名称',
             name: 'name',
-            allowBlank: false
+            allowBlank: false,
+            bind: {
+                value: '{current.record.name}'
+            }
         }, {
             xtype: 'textfield',
             fieldLabel: '说明',
-            name: 'description'
+            name: 'description',
+            bind: {
+                value: '{current.record.description}'
+            }
         }, {
             xtype: 'combo',
             reference: 'menuTypeCombo',
@@ -67,40 +73,72 @@ Ext.define('MyApp.view.sys.widget.MenuWindow', {
                 }
             },
             bind: {
-                store: '{menuTypeStore}'
+                store: '{menuTypeStore}',
+                value: '{current.record.type}'
             },
             name: 'type',
             allowBlank: false
+            // ,
+            // listeners: {
+            //     afterrender: {
+            //         fn: function(){
+            //             var me = this,
+            //                 editWindow = Ext.getCmp('menuEditWindow'),
+            //                 viewModel = editWindow.getViewModel();
+            //             var currentRecord = viewModel.get('current.record')
+            //             console.log(currentRecord);
+            //             me.setValue(currentRecord.get('type'))
+            //         }
+            //     }
+            // }
         }, {
             xtype: 'textfield',
             fieldLabel: '目标',
             name: 'target',
-            allowBlank: false
+            allowBlank: false,
+            bind: {
+                value: '{current.record.target}'
+            }
         }, {
             xtype: 'textfield',
             fieldLabel: 'uri',
-            name : 'uri'
+            name : 'uri',
+            bind: {
+                value: '{current.record.uri}'
+            }
         }, {
             xtype: 'numberfield',
             fieldLabel: '排序',
-            name: 'sort'
+            name: 'sort',
+            bind: {
+                value: '{current.record.sort}'
+            }
         }, {
             xtype: 'textfield',
             fieldLabel: '图标',
             name: 'icon',
-            allowBlank: false
+            allowBlank: false,
+            bind: {
+                value: '{current.record.icon}'
+            }
         }, {
             xtype: 'textareafield',
             grow: true,
             fieldLabel: '备注',
-            name: 'remarks'
+            name: 'remarks',
+            bind: {
+                value: '{current.record.remarks}'
+            }
         }, {
             xtype: 'checkboxfield',
             fieldLabel: '启用',
             inputValue: "1",
             uncheckedValue: "0",
             name: 'isShow',
-            allowBlank: false
+            allowBlank: false,
+            bind: {
+                value: '{current.record.isShow}'
+            }
         }],
 
         buttons: [
@@ -110,7 +148,7 @@ Ext.define('MyApp.view.sys.widget.MenuWindow', {
                 formBind: true,
                 itemId: 'saveBtn',
                 iconCls: 'x-fa fa-floppy-o',
-                handler: 'onSaveBtnClick'
+                handler: 'onEditSaveBtnClick'
             }, {
                 text: '关闭',
                 itemId: 'cancelBtn',

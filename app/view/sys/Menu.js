@@ -7,7 +7,9 @@ Ext.define('MyApp.view.sys.Menu', {
         'MyApp.view.sys.MenuController',
         'MyApp.view.sys.MenuModel',
         'MyApp.view.sys.widget.MenuWindow',
-        'MyApp.view.sys.widget.MenuGrid'
+        'MyApp.view.sys.widget.MenuEditWindow',
+        'MyApp.view.sys.widget.MenuGrid',
+        'MyApp.view.sys.widget.MenuBindToRoleWindow'
     ],
 
     controller: 'sysmenu',
@@ -32,36 +34,15 @@ Ext.define('MyApp.view.sys.Menu', {
     }
     ,{
         xtype: 'menuwindow'
+    },{
+        xtype: 'menubindtorolewindow'
+    },{
+        xtype: 'menueditwindow'
     }
 ],
 
     initComponent: function () {
         var me = this;
-
-        // me.items = [];
-        // me.items.push({
-        //     region: 'center',
-        //     xtype: 'grid',
-        //     bind: {
-        //         title: me.title + '{selectionText}'
-        //     },
-        //     permissiveOpts: me.permissiveOpts
-        // }
-        // , {
-        //     region: 'east',
-        //     xtype: 'menudetail',
-        //     width: 400,
-        //     title: '记录明细',
-        //     split: true,
-        //     collapsible: true,
-        //     collapsed: true,
-        //     collapseMode: 'mini'
-        // }
-        // , {
-        //     //Menu 添加、修改、查看对话框
-        //     xtype: 'menuwindow'
-        // }
-        // );
 
         this.callParent(arguments);
     }
