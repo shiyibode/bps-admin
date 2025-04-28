@@ -1,18 +1,18 @@
 Ext.define('MyApp.view.cktj.DepositController', {
     extend: 'Ext.app.ViewController',
-    alias: 'controller.cktjdeposit',
+    alias: 'controller.cktjdepositemployee',
 
     expandBtnClick : function() {
-        this.lookupReference('depositgrid').expandAll();
+        this.lookupReference('depositemployeegrid').expandAll();
     },
 
     collapseBtnClick : function() {
-        this.lookupReference('depositgrid').collapseAll();
+        this.lookupReference('depositemployeegrid').collapseAll();
     },
 
     autoColumnWidthButtonClick : function() {
         var me = this,
-            depositgrid = me.lookupReference('depositgrid');
+            depositgrid = me.lookupReference('depositemployeegrid');
         
         Ext.suspendLayouts();
         Ext.Array.forEach(depositgrid.columnManager.getColumns(),
@@ -29,7 +29,7 @@ Ext.define('MyApp.view.cktj.DepositController', {
     },
 
     refreshBtnClick : function() {
-        this.lookupReference('depositgrid').getStore().reload();
+        this.lookupReference('depositemployeegrid').getStore().reload();
     },
 
     // store 相关函数
@@ -52,7 +52,7 @@ Ext.define('MyApp.view.cktj.DepositController', {
             },100);
     },
 
-    onDepositStoreBeforeLoad: function(store , operation , eOpts) {
+    onEmployeeDepositTaskStoreBeforeLoad: function(store , operation , eOpts) {
         var me = this,
             searchForm = me.lookupReference('searchForm'),
             selectionOrganization = me.getSelectionOrganization();
@@ -86,30 +86,8 @@ Ext.define('MyApp.view.cktj.DepositController', {
                 filter.startDate = filter.endDate;
             }
 
-            store.getProxy().extraParams = {
-                filter: filter
-            }
+            store.getProxy().extraParams = filter
         }
-    },
-
-    /**
-     * 用户 store load 完成后,选中第一条记录
-     */
-    onDepositStoreLoad: function(store, records, successful, operation, eOpts) {
-        var me = this,
-            depositgrid = me.lookupReference('depositgrid'),
-            selModel = depositgrid.getSelectionModel();
-
-        //先中表格中的第一条记录
-        if (!selModel.hasSelection()) {
-            selModel.select(0);
-        }
-        if (selModel.hasSelection()) {
-            me.autoColumnWidthButtonClick();
-        }
-
-        store.getProxy().extraParams = {};
-
     },
 
     //OrganizationTree 相关函数
@@ -207,7 +185,7 @@ Ext.define('MyApp.view.cktj.DepositController', {
     onDepositCategoryStoreLoad: function(store) {
         var rootNode = store.getNodeById(1);
 
-        var depositgrid = this.lookupReference('depositgrid');
+        var depositgrid = this.lookupReference('depositemployeegrid');
         // var gridColumns = depositgrid.getColumns();
 
         var columns = [];

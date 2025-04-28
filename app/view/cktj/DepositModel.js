@@ -15,7 +15,7 @@ Ext.define('MyApp.view.cktj.DepositModel', {
     formulas: {
         selectionText: {
             bind: {
-                bindTo: '{depositgrid.selection}',
+                bindTo: '{depositemployeegrid.selection}',
                 deep: true
             },
             get: function(records) {
@@ -29,26 +29,7 @@ Ext.define('MyApp.view.cktj.DepositModel', {
                 }
                 return title;
             }
-        },
-
-        detailSource: {
-            bind: {
-                bindTo: '{depositgrid.selection}',
-                deep: true
-            },
-            get: function(records) {
-                var source = {};
-                if (records && records.length >= 1) {
-                    source = {
-                        '名称' : records[0].get('text'),
-                        '图标' : records[0].get('iconCls'),
-                        '顺序' : records[0].get('sort'),
-                        '创建时间' : records[0].get('createTime')
-                    };
-                }
-                return source
-            }
-        },
+        }
 
     },
 
@@ -79,21 +60,21 @@ Ext.define('MyApp.view.cktj.DepositModel', {
         empDepositTypeStore: {
             fields: ['id', 'text', 'tips'],
             data:[
-                [0, '核心系统存款', '本机构员工在本机构存款 + 其他机构员工从本机构调离存款'],
-                [1, '本机构员工汇总存款', '本机构员工在本机构存款 + 本机构员工从其他机构调入存款'],
-                [2, '本机构员工在本机构存款', '本机构员工在本机构的存款'],
-                [3, '调入存款','本机构员工从其他机构调入存款'],
-                [4, '调离存款', '其他机构员工从本机构调离存款']
+                ['DEPOSIT_TYPE_ACCOUNTING_WAY', '核心系统存款', '本机构员工在本机构存款 + 其他机构员工从本机构调离存款'],
+                ['DEPOSIT_TYPE_MANAGE_WAY', '本机构员工汇总存款', '本机构员工在本机构存款 + 本机构员工从其他机构调入存款'],
+                ['DEPOSIT_TYPE_ACCOUNTING_OWN_TERMINAL', '本机构员工在本机构存款', '本机构员工在本机构的存款'],
+                ['DEPOSIT_TYPE_TRANSFER_IN', '调入存款','本机构员工从其他机构调入存款'],
+                ['DEPOSIT_TYPE_TRANSFER_OUT', '调离存款', '其他机构员工从本机构调离存款']
             ]
         },
 
         orgDepositTypeStore: {
             fields: ['id', 'text', 'tips'],
             data:[
-                [0, '核心系统存款', '本机构员工在本机构存款 + 其他机构员工从本机构调离存款'],
-                [1, '本机构汇总存款', '本机构员工在本机构存款 + 本机构员工从其他机构调入存款'],
-                [2, '调入存款','本机构员工从其他机构调入存款'],
-                [3, '调离存款', '其他机构员工从本机构调离存款']
+                ['DEPOSIT_TYPE_ACCOUNTING_WAY', '核心系统存款', '本机构员工在本机构存款 + 其他机构员工从本机构调离存款'],
+                ['DEPOSIT_TYPE_MANAGE_WAY', '本机构汇总存款', '本机构员工在本机构存款 + 本机构员工从其他机构调入存款'],
+                ['DEPOSIT_TYPE_TRANSFER_IN', '调入存款','本机构员工从其他机构调入存款'],
+                ['DEPOSIT_TYPE_TRANSFER_OUT', '调离存款', '其他机构员工从本机构调离存款']
             ]
         },
 
@@ -126,7 +107,7 @@ Ext.define('MyApp.view.cktj.DepositModel', {
         // },
 
         employeeDepositTaskStore: {
-            storeId: 'employeeDepositStore',
+            storeId: 'employeeDepositTaskStore',
             type: 'store',
             model: 'MyApp.model.cktj.Deposit',
             pageSize: CFG.getDefaultPageSize(),
@@ -136,12 +117,12 @@ Ext.define('MyApp.view.cktj.DepositModel', {
             },
             autoLoad: false,
             listeners: {
-                beforeload: 'onDepositStoreBeforeLoad'
+                beforeload: 'onEmployeeDepositTaskStoreBeforeLoad'
             }
         },
 
-        employeeAvgDepositStore: {
-            storeId: 'employeeDepositStore',
+        employeeAvgDepositTaskStore: {
+            storeId: 'employeeAvgDepositTaskStore',
             type: 'store',
             model: 'MyApp.model.cktj.Deposit',
             proxy: {
@@ -150,22 +131,9 @@ Ext.define('MyApp.view.cktj.DepositModel', {
             },
             autoLoad: false,
             listeners: {
-                beforeload: 'onDepositStoreBeforeLoad'
+                beforeload: 'onEmployeeAvgDepositTaskStoreBeforeLoad'
             }
-        },
-
-        // //存款种类Store(如普通存款、爱行存款)
-        // depositSortStore: {
-        //     type: 'store',
-        //     model: 'MyApp.model.cktj.DepositSort',
-        //     autoLoad: false,
-        //     remoteFilter: true,
-        //     remoteSort: true,
-        //     proxy: {
-        //         type: 'format',
-        //         url: '/cktj/deposit/depositsort'
-        //     }
-        // }
+        }
     }
 
 });

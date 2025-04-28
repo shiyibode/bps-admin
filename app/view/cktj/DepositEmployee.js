@@ -7,10 +7,10 @@ Ext.define('MyApp.view.cktj.DepositEmployee',{
         'Ext.layout.container.Border',
         'MyApp.view.cktj.DepositController',
         'MyApp.view.cktj.DepositModel',
-        'MyApp.view.cktj.widget.DepositGrid'
+        'MyApp.view.cktj.widget.DepositEmployeeGrid'
     ],
 
-    controller: 'cktjdeposit',
+    controller: 'cktjdepositemployee',
     viewModel: {
         type: 'cktjdeposit'
     },
@@ -92,7 +92,7 @@ Ext.define('MyApp.view.cktj.DepositEmployee',{
             width: 220
         }, {
             region : 'center',
-            xtype : 'depositgrid',
+            xtype : 'depositemployeegrid',
             bind: {
                 title: '员工时点' + '{selectionText}'
             },
