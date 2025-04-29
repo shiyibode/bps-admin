@@ -7,14 +7,6 @@ Ext.define('MyApp.view.sys.OrganizationController', {
         'MyApp.model.sys.Organization'
     ],
 
-    // expandBtnClick: function () {
-    //     this.lookupReference('organizationgrid').expandAll();
-    // },
-
-    // collapseBtnClick: function () {
-    //     this.lookupReference('organizationgrid').collapseAll();
-    // },
-
     autoColumnWidthButtonClick: function () {
         var me = this,
             organizationgrid = me.lookupReference('organizationgrid');
@@ -54,23 +46,19 @@ Ext.define('MyApp.view.sys.OrganizationController', {
     addOrganization: function () {
         var me = this,
             view = me.getView(),
-            viewModel = me.getViewModel(),
-            organizationgrid = me.lookupReference('organizationgrid'),
-            store = organizationgrid.getStore(),
-            record = Ext.create('MyApp.model.sys.Organization');
-
-        var root = store.getRoot();
-        root.appendChild(record);
+            viewModel = me.getViewModel();
+        
 
         var currentOrganization = viewModel.get('currentOrganization');
-        if (currentOrganization) {
-            var pid = currentOrganization.get('id');
-            var areaId = currentOrganization.get('areaId');
-            record.set('parentId', pid);
-            record.set('areaId', areaId);
+        if (!currentOrganization) {
+            Ext.Msg.alert('提示', '请先选中上级机构！');
+            return;
         }
 
-        viewModel.set('current.record', record);
+        if (currentOrganization) {
+            viewModel.set('parentId', currentOrganization.getId());
+        }
+
         viewModel.set('current.operation', 'add');
         Ext.getBody().mask(); //遮罩
         var window = view.floatingItems.get('organizationWindow');
@@ -93,9 +81,46 @@ Ext.define('MyApp.view.sys.OrganizationController', {
         }
         viewModel.set('current.operation', 'edit');
         Ext.getBody().mask(); //遮罩
-        var window = view.floatingItems.get('organizationWindow');
+        var window = view.floatingItems.get('organizationEditWindow');
         window.center();
         window.show();
+    },
+
+    onEditSaveBtnClick: function(button){
+        var me = this,
+            viewModel = me.getViewModel(),
+            organizationgrid = me.lookupReference('organizationgrid'),
+            organizationStore = organizationgrid.getStore();
+
+        var currentOrganization = viewModel.get('currentOrganization');
+        var changes = currentOrganization.getChanges();
+        
+        if (!Ext.Object.isEmpty(changes)) {
+            changes.id = currentOrganization.getId();
+            Ext.Ajax.request({
+                url: CFG.getGlobalPath() + '/sys/organization/update',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'  // 必须设置 Content-Type
+                },
+                jsonData: JSON.stringify(changes),
+                scope: this,
+                success: function (response, opts) {
+                    var result = Ext.decode(response.responseText, true);
+                    if (result.success) {
+                        organizationStore.reload();
+                        Ext.toast(result.msg);
+                        button.up('window').close();
+                    } else {
+                        Ext.Msg.alert('出错', result.msg);
+                    }
+                },
+                failure: MyApp.ux.data.FailureProcess.Ajax
+            });
+        } else {
+            console.log('记录未被修改');
+        }
+
     },
 
     deleteOrganization: function () {
@@ -119,24 +144,31 @@ Ext.define('MyApp.view.sys.OrganizationController', {
 
         Ext.Msg.show({
             title: '删除确认',
-            message: '删除该菜单将同时删除该菜单下的所有子菜单,您确定要删除吗?',
+            message: '删除该机构将同时删除该机构的下级机构,您确定要删除吗?',
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.QUESTION,
             fn: function (btn) {
                 if (btn === 'yes') {
                     Ext.Msg.wait('数据删除中', '正在删除中，请稍候...');
-                    record.drop();
-                    // var root = store.getRoot();
-                    // root.removeChild(record);
-                    store.sync({
-                        success: function (batch, options) {
-                            var msg = batch.getOperations()[0].getResultSet().getMessage();
-                            Ext.toast(msg);
-                            Ext.Msg.hide(); //隐藏等待对话框
+
+                    Ext.Ajax.request({
+                        url: CFG.getGlobalPath() + '/sys/organization/delete',
+                        method: 'POST',
+                        params: {
+                            organizationId: record.get('id')
                         },
-                        callback: function () {
-                            Ext.Msg.hide(); //隐藏等待对话框
-                        }
+                        scope: this,
+                        success: function (response, opts) {
+                            var result = Ext.decode(response.responseText, true);
+                            if (result.success) {
+                                store.reload();
+                                Ext.toast(result.msg);
+                                Ext.Msg.hide();;
+                            } else {
+                                Ext.Msg.alert('出错', result.msg);
+                            }
+                        },
+                        failure: MyApp.ux.data.FailureProcess.Ajax
                     });
                 } else if (btn === 'no') {
                 }
@@ -144,109 +176,65 @@ Ext.define('MyApp.view.sys.OrganizationController', {
         });
     },
 
-    viewOrganization: function () {
-        var me = this,
-            view = me.getView(),
-            viewModel = me.getViewModel();
-
-        if (!viewModel.get('current.record')) {
-            Ext.Msg.alert('提示', '请选中要查看的记录！');
-            return;
-        }
-        viewModel.set('current.operation', 'view');
-        Ext.getBody().mask(); //遮罩
-        var window = view.floatingItems.get('organizationWindow');
-        window.center();
-        window.show();
-    },
-
 
     onSaveBtnClick: function (button) {
         var me = this,
             viewModel = me.getViewModel(),
             organizationgrid = me.lookupReference('organizationgrid'),
-            organizationGridStore = organizationgrid.getStore('organizationStore'),
-            record = viewModel.get('current.record'),
-            operation = viewModel.get('current.operation');
+            organizationGridStore = organizationgrid.getStore(),
+            organizationForm = me.lookupReference('organizationForm'),
+            form = organizationForm.getForm(),
+            parentId = viewModel.get('parentId');
 
-        var needReloadStore = (operation === 'add') || record.isModified('parentId') || record.isModified('text') || record.isModified('sort');
+        if (form.isValid() && parentId) {
+            var values = form.getValues();
 
-        Ext.Msg.wait('数据保存中', '正在保存中，请稍候...');
-        organizationGridStore.sync({
-            success: function (batch, options) {
-                var msg = batch.getOperations()[0].getResultSet().getMessage();
-                Ext.toast(msg);
-                if (needReloadStore) {
-                    organizationGridStore.reload();
-                }
-                if (operation === 'add') {
-                    viewModel.set('current',null);
-                    button.up('window').close();
-                }
-                Ext.Msg.hide(); //隐藏等待对话框
-            },
-            failure: function () {
-                Ext.Msg.hide(); //隐藏等待对话框
-            },
-            callback: function () {
-            }
-        });
+            var data = {
+                parentId: parentId, 
+                name: values.name,
+                code: values.code,
+                sort: values.sort,
+                type: values.type,
+                grade: values.grade,
+                remarks: values.remarks
+            };
+
+            Ext.Msg.wait('数据保存中', '正在保存中，请稍候...');
+            Ext.Ajax.request({
+                url: CFG.getGlobalPath() + '/sys/organization/create',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'  // 必须设置 Content-Type
+                },
+                jsonData: data,
+                scope: this,
+                success: function (response, opts) {
+                    var result = Ext.decode(response.responseText, true);
+                    if (result.success) {
+                        organizationGridStore.reload();
+                        Ext.toast(result.msg);
+                        button.up('window').close();
+                        Ext.Msg.hide(); //隐藏等待对话框
+                    } else {
+                        Ext.Msg.alert('出错', result.msg);
+                    }
+                },
+                failure: MyApp.ux.data.FailureProcess.Ajax
+            });
+            
+
+        }
     },
 
     onCancelBtnClick: function (button) {
         button.up('window').close();
     },
 
-    onWindowBeforeShow: function () {
-        var me = this;
-
-        var uxTreePickerStore = me.getViewModel().getStore('organizationStore');
-        var uxtreepicker = me.lookupReference('uxtreepicker');
-        uxtreepicker.setStore(uxTreePickerStore);
-    },
-
 
     onWindowClose: function () {
-        var me = this,
-            organizationgrid = me.lookupReference('organizationgrid'),
-            organizationGridStore = organizationgrid.getStore('organizationStore'),
-            viewModel = me.getViewModel(),
-            current = viewModel.get('current');
-
-        if (current && current.operation === 'add') {
-            var root = organizationGridStore.getRoot();
-            root.removeChild(current.record);
-            var currentOrganization = viewModel.get('currentOrganization');
-            viewModel.set('current.record', currentOrganization);
-        }
-        viewModel.set('current.operation', null);
-
-        organizationGridStore.rejectChanges();
-
         Ext.getBody().unmask();
     },
 
-    onUxTreePickerChange: function (treepicker, newValue, oldValue, eOpts) {
-        var me = this;
-
-        if (newValue != oldValue) {
-
-            // // var organizationTypeCombo = me.lookupReference('organizationTypeCombo');
-            // var organizationTypeStore = Ext.StoreManager.get('organizationTypeStore');
-            //
-            // // organizationTypeCombo.clearValue();
-            // organizationTypeStore.clearFilter();
-            // if (newValue == 0) {
-            //     organizationTypeStore.filterBy(function(item) {
-            //         return item.get('id') == 0;
-            //     });
-            // } else {
-            //     organizationTypeStore.filterBy(function(item) {
-            //         return item.get('id') != 0;
-            //     });
-            // }
-        }
-    },
 
     onOrganizationStoreBeforeLoad: function (store, operation, eOpts) {
         var me = this,
@@ -264,17 +252,6 @@ Ext.define('MyApp.view.sys.OrganizationController', {
     },
 
     onOrganizationStoreLoad: function (store, records, successful, operation, eOpts) {
-        // var me = this,
-        //     organizationgrid = me.lookupReference('organizationgrid');
-
-        // var root = store.getRoot();
-        // if (root && root.hasChildNodes()) {
-        //     var node = root.firstChild;
-        //     if (node) {
-        //         organizationgrid.getSelectionModel().select(node);
-        //     }
-        // }
-
         var me = this,
         organizationgrid = me.lookupReference('organizationgrid'),
             selModel = organizationgrid.getSelectionModel();

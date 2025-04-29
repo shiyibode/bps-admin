@@ -64,12 +64,6 @@ Ext.define('MyApp.view.sys.MenuController', {
         var me = this,
             view = me.getView(),
             viewModel = me.getViewModel();
-        //     // menugrid = Ext.getCmp('menugrid'),
-        //     store = menugrid.getStore();
-            // record = Ext.create('MyApp.model.sys.Menu');
-
-        // var root = store.getRoot();
-        // root.appendChild(record);
 
         var currentMenu = viewModel.get('currentMenu');
         if (currentMenu) {
@@ -153,35 +147,10 @@ Ext.define('MyApp.view.sys.MenuController', {
                         },
                         failure: MyApp.ux.data.FailureProcess.Ajax
                     });
-                    // record.drop();
-                    // store.sync({
-                    //     success: function (batch, options) {
-                    //         var msg = batch.getOperations()[0].getResultSet().getMessage();
-                    //         Ext.toast(msg);
-                    //     },
-                    //     callback: function () {
-                    //         Ext.Msg.hide(); //隐藏等待对话框
-                    //     }
-                    // });
-                } else if (btn === 'no') {
-                }
+                } else if (btn === 'no') {}
             }
         });
     },
-    //     var me = this,
-    //         view = me.getView(),
-    //         viewModel = me.getViewModel();
-
-    //     if (!viewModel.get('current.record')) {
-    //         Ext.Msg.alert(I18N.Tips, '请选中要查看的记录！');
-    //         return;
-    //     }
-    //     viewModel.set('current.operation', 'view');
-    //     Ext.getBody().mask(); //遮罩
-    //     var window = view.floatingItems.get('menuWindow');
-    //     window.center();
-    //     window.show();
-    // },
 
 
     onSaveBtnClick: function (button) {
@@ -234,36 +203,6 @@ Ext.define('MyApp.view.sys.MenuController', {
             
 
         }
-            // record = viewModel.get('current.record'),
-        //     operation = viewModel.get('current.operation');
-
-        // var needReloadStore = (operation === 'add') || record.isModified('parentId') || record.isModified('text') || record.isModified('sort');
-
-        // Ext.Msg.wait('数据保存中', '正在保存中，请稍候...');
-
-
-
-
-        // menuGridStore.sync({
-        //     success: function (batch, options) {
-        //         var msg = batch.getOperations()[0].getResultSet().getMessage();
-        //         // Ext.toastInfo(msg);
-        //         Ext.toast(msg);
-        //         if (needReloadStore) {
-        //             menuGridStore.reload();
-        //         }
-        //         if (operation === 'add') {
-        //             viewModel.set('current',null);
-        //             button.up('window').close();
-        //         }
-        //         Ext.Msg.hide(); //隐藏等待对话框
-        //     },
-        //     failure: function () {
-        //         Ext.Msg.hide(); //隐藏等待对话框
-        //     },
-        //     callback: function () {
-        //     }
-        // });
     },
 
     onEditSaveBtnClick: function(button){
@@ -274,8 +213,9 @@ Ext.define('MyApp.view.sys.MenuController', {
 
         var currentMenu = viewModel.get('currentMenu');
         var changes = currentMenu.getChanges();
-        if (!Ext.Object.isEmpty(changes)) {
 
+        if (!Ext.Object.isEmpty(changes)) {
+            changes.id = currentMenu.getId();
             Ext.Ajax.request({
                 url: CFG.getGlobalPath() + '/sys/menu/update',
                 method: 'POST',
@@ -307,13 +247,6 @@ Ext.define('MyApp.view.sys.MenuController', {
     onCancelBtnClick: function (button) {
         button.up('window').close();
     },
-    //     var me = this;
-
-    //     // var store = me.getViewModel().getStore('uxTreePickerStore');
-    //     var store = me.getViewModel().getStore('menuStore');
-    //     // var uxtreepicker = me.lookupReference('uxtreepicker');
-    //     // uxtreepicker.setStore(store);
-    // },
 
     onMenuWindowClose: function () {
         Ext.getBody().unmask();

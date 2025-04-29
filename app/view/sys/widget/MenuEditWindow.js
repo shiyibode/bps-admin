@@ -78,19 +78,6 @@ Ext.define('MyApp.view.sys.widget.MenuEditWindow', {
             },
             name: 'type',
             allowBlank: false
-            // ,
-            // listeners: {
-            //     afterrender: {
-            //         fn: function(){
-            //             var me = this,
-            //                 editWindow = Ext.getCmp('menuEditWindow'),
-            //                 viewModel = editWindow.getViewModel();
-            //             var currentRecord = viewModel.get('current.record')
-            //             console.log(currentRecord);
-            //             me.setValue(currentRecord.get('type'))
-            //         }
-            //     }
-            // }
         }, {
             xtype: 'textfield',
             fieldLabel: '目标',

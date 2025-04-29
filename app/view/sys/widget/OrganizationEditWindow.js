@@ -1,7 +1,7 @@
-Ext.define('MyApp.view.sys.widget.OrganizationWindow', {
+Ext.define('MyApp.view.sys.widget.OrganizationEditWindow', {
     extend: 'Ext.window.Window',
 
-    alias: 'widget.organizationwindow',
+    alias: 'widget.organizationeditwindow',
 
     requires: [
         'MyApp.ux.form.field.UxTreePicker',
@@ -9,7 +9,7 @@ Ext.define('MyApp.view.sys.widget.OrganizationWindow', {
         'MyApp.ux.iconcls.Field'
     ],
 
-    itemId: 'organizationWindow',
+    itemId: 'organizationEditWindow',
 
     bind: {
         title: '{windowOptions.title}'
@@ -54,12 +54,18 @@ Ext.define('MyApp.view.sys.widget.OrganizationWindow', {
                 xtype: 'textfield',
                 fieldLabel: '编码',
                 name: 'code',
-                allowBlank: false
+                allowBlank: false,
+                bind: {
+                    value: '{current.record.code}'
+                }
             }, {
                 xtype: 'textfield',
                 fieldLabel: '名称',
                 name: 'name',
-                allowBlank: false
+                allowBlank: false,
+                bind: {
+                    value: '{current.record.name}'
+                }
             }, {
                 xtype: 'combo',
                 name: 'type',
@@ -77,24 +83,34 @@ Ext.define('MyApp.view.sys.widget.OrganizationWindow', {
                 queryMode: 'remote',  // 使用远程查询模式
                 forceSelection: true,  // 强制选择列表中的项
                 bind: {
-                    store: '{organizationTypeStore}'
+                    store: '{organizationTypeStore}',
+                    value: '{current.record.type}'
                 },
                 allowBlank: false
             }, {
                 xtype: 'numberfield',
                 fieldLabel: '层级',
                 name: 'grade',
-                allowBlank: false
+                allowBlank: false,
+                bind: {
+                    value: '{current.record.grade}'
+                }
             }, {
                 xtype: 'numberfield',
                 fieldLabel: '排序',
                 name: 'sort',
-                allowBlank: false
+                allowBlank: false,
+                bind: {
+                    value: '{current.record.sort}'
+                }
             }, {
                 xtype: 'textareafield',
                 grow: true,
                 fieldLabel: '备注',
-                name: 'remarks'
+                name: 'remarks',
+                bind: {
+                    value: '{current.record.remarks}'
+                }
             }
 
         ],
@@ -106,7 +122,7 @@ Ext.define('MyApp.view.sys.widget.OrganizationWindow', {
                 itemId: 'saveBtn',
                 formBind: true,
                 iconCls: 'x-fa fa-floppy-o',
-                handler: 'onSaveBtnClick'
+                handler: 'onEditSaveBtnClick'
             }, {
                 text: '关闭',
                 itemId: 'cancelBtn',

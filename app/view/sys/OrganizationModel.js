@@ -3,7 +3,6 @@ Ext.define('MyApp.view.sys.OrganizationModel', {
     alias: 'viewmodel.sysorganization',
 
     requires: [
-        // 'Ext.data.TreeStore',
         'Ext.data.Store',
         'MyApp.model.sys.Organization'
     ],
@@ -12,7 +11,8 @@ Ext.define('MyApp.view.sys.OrganizationModel', {
         current: {
             record: null,
             operation: null
-        }
+        },
+        parentId: null
     },
 
     formulas: {
@@ -74,25 +74,6 @@ Ext.define('MyApp.view.sys.OrganizationModel', {
                 this.set('current.record', organization);
                 return organization;
             }
-        },
-
-        detailSource: {
-            bind: {
-                bindTo: '{currentOrganization}',
-                deep: true
-            },
-            get: function (record) {
-                var source = {};
-                if (record) {
-                    source = {
-                        '名称': record.get('name'),
-                        '图标': record.get('iconCls'),
-                        '顺序': record.get('sort'),
-                        '创建时间': record.get('createTime')
-                    };
-                }
-                return source
-            }
         }
     },
 
@@ -102,17 +83,10 @@ Ext.define('MyApp.view.sys.OrganizationModel', {
             storeId: 'organizationStore',
             pageSize: CFG.getDefaultPageSize(),
             autoLoad: true,
-            // type: 'tree',
             model: 'MyApp.model.sys.Organization',
             autoLoad: true,
             remoteFilter: true,
             remoteSort: true,
-            // rootVisible: false,
-            // root: {
-            //     id: 0,
-            //     name: '最高机构',
-            //     expanded: true
-            // },
             listeners: {
                 load: {
                     fn: 'onOrganizationStoreLoad',
@@ -122,38 +96,19 @@ Ext.define('MyApp.view.sys.OrganizationModel', {
             }
         },
 
-        // areaTreePickerStore: {
-        //     storeId: 'areaTreePickerStore',
-        //     type: 'tree',
-        //     model: 'MyApp.model.sys.Area',
-        //     autoLoad: false,
-        //     remoteFilter: true,
-        //     remoteSort: true,
-        //     root: {
-        //         id: 0,
-        //         name: '区域管理',
-        //         expanded: true
-        //     }
-        // },
-
         organizationTypeStore: {
+            type: 'store',
             storeId: 'organizationTypeStore',
-            fields: ['text', 'value'],
-            data: [
-                ['公司/企业', '000'],
-                ['网点分组', '100'],
-                ['部门分组', '200'],
-                ['其它机构分组', '300'],
-                ['本部', '101'],
-                ['汇总', '102'],
-                ['营业部', '103'],
-                ['支行', '104'],
-                ['分理处', '105'],
-                ['信用卡中心', '106'],
-                ['管理部门', '201'],
-                ['下设中心', '202'],
-                ['理财代销机构', '301']
-            ]
+            fields: ['name', 'code'],
+            autoLoad: true,
+            proxy: {
+                type: 'ajax',
+                url: CFG.getGlobalPath() + '/sys/organization/getOrganizationTypeList',
+                reader: {
+                    type: 'json',
+                    rootProperty: 'data'
+                }
+            }
         }
 
     }
