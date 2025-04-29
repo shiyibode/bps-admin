@@ -81,7 +81,7 @@ Ext.define('MyApp.view.sys.PermissionModel', {
         permissionStore: {
             type: 'store',
             model: 'MyApp.model.sys.Permission',
-            pageSize: 30,
+            pageSize: CFG.getDefaultPageSize(),
             autoLoad: true,
             remoteFilter: true,
             remoteSort: true,

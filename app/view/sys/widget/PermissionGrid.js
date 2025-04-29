@@ -38,11 +38,11 @@ Ext.define('MyApp.view.sys.widget.PermissionGrid', {
             flex: 0
         }, {
             text: '角色名称',
-            // searchable: true,
+            searchable: true,
             dataIndex: 'roleName'
         }, {
             text: '接口名称',
-            // searchable: true,
+            searchable: true,
             dataIndex: 'apiName'
         }, {
             text: '接口uri',
@@ -70,7 +70,7 @@ Ext.define('MyApp.view.sys.widget.PermissionGrid', {
         me.dockedItems.push({
             xtype: 'gridtoolbar',
             dock: 'top',
-            // searchBox: true,
+            searchBox: true,
             grid: this,
             collapseExpandButton: false,
             permissiveOpts: []

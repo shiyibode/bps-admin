@@ -61,8 +61,10 @@ Ext.define('MyApp.view.sys.widget.MenuGrid', {
             }, {
                 text: '排序',
                 dataIndex: 'sort'
-            }
-            , {
+            }, {
+                text: '描述',
+                dataIndex: 'description'
+            } , {
                 text: '创建时间',
                 dataIndex: 'createTime'
             }

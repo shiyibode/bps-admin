@@ -17,9 +17,7 @@ Ext.define('MyApp.view.sys.PermissionController', {
         }
 
         if (filter) {
-            store.getProxy().extraParams = {
-                filter: filter
-            }
+            store.getProxy().extraParams = filter
         }
 
     },
@@ -123,7 +121,6 @@ Ext.define('MyApp.view.sys.PermissionController', {
 
     deletePermission: function () {
         var me = this,
-            view = me.getView(),
             viewModel = me.getViewModel(),
             permissiongrid = me.lookupReference('permissiongrid'),
             store = permissiongrid.getStore(),
@@ -145,18 +142,27 @@ Ext.define('MyApp.view.sys.PermissionController', {
             fn: function (btn) {
                 if (btn === 'ok') {
                     Ext.Msg.wait('数据删除中', '正在删除中，请稍候...');
-                    store.remove(record);
-                    store.sync({
-                        success: function (batch, options) {
-                            var msg = batch.getOperations()[0].getResultSet().getMessage();
-                            Ext.toast(msg);
+
+                    Ext.Ajax.request({
+                        url: CFG.getGlobalPath() + '/sys/permission/delete',
+                        method: 'POST',
+                        params: {
+                            id: record.getId()
                         },
-                        callback: function () {
-                            Ext.Msg.hide(); //隐藏等待对话框
-                        }
+                        scope: this,
+                        success: function (response, opts) {
+                            var result = Ext.decode(response.responseText, true);
+                            if (result.success) {
+                                store.reload();
+                                Ext.toast(result.msg);
+                                Ext.Msg.hide();;
+                            } else {
+                                Ext.Msg.alert('出错', result.msg);
+                            }
+                        },
+                        failure: MyApp.ux.data.FailureProcess.Ajax
                     });
-                } else if (btn === 'no') {
-                }
+                } else if (btn === 'no') {}
             }
         });
     },
@@ -221,19 +227,5 @@ Ext.define('MyApp.view.sys.PermissionController', {
 
         Ext.getBody().unmask();
     }
-    // ,
-
-    // getRoleTreeSelection: function () {
-    //     var me = this,
-    //         roleTree = me.lookupReference('roleTree');
-
-    //     var sModelArray = roleTree.getSelection();
-    //     if (sModelArray && sModelArray.length > 0) {
-    //         return sModelArray[0];
-    //     }
-    //     return null;
-    // }
-
-
 
 });
