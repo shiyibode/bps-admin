@@ -43,7 +43,7 @@ Ext.define('MyApp.view.sys.widget.RoleGrid', {
             dataIndex: 'name'
         }, {
             text: '英文名称',
-            dataIndex: 'enname'
+            dataIndex: 'enName'
         }, {
             text: '创建时间',
             dataIndex: 'createTime'

@@ -6,59 +6,19 @@ Ext.define('MyApp.view.sys.RoleController', {
         'MyApp.model.sys.Role'
     ],
 
-    // NavigationTree 相关函数
-    /**
-     * 导航树的 store load 完成后, 选中第一个节点
-     * @param store
-     * @param records
-     * @param successful
-     * @param operation
-     * @param eOpts
-     */
-    // onNavigationStoreLoad: function (store, records, successful, operation, eOpts) {
-    //     var me = this,
-    //         navigationtree = me.lookupReference('navigationtree');
-
-    //     if (records && records[0]) {
-    //         navigationtree.getSelectionModel().select(records[0]);
-    //     }
-    // },
-
-    // getNavigationTreeSelection: function () {
-    //     var me = this,
-    //         navigationTree = me.lookupReference('navigationtree');
-
-    //     var sModelArray = navigationTree.getSelection();
-    //     if (sModelArray && sModelArray.length > 0) {
-    //         return sModelArray[0];
-    //     }
-    //     return null;
-    // },
-
-    // /**
-    //  * 当导航树中选中的节点发生改变时,加载 roleStore
-    //  * @param treepanel
-    //  * @param selected
-    //  * @param eOpts
-    //  */
-    // onNavigationTreeSelectionChange: function (treepanel, selected, eOpts) {
-    //     var me = this,
-    //         roleStore = me.getViewModel().getStore('roleStore');
-
-    //     roleStore.load();
-    // },
-
     onRoleStoreBeforeLoad: function (store, operation, eOpts) {
-        // var me = this,
-        //     navigationTreeSelection = me.getNavigationTreeSelection();
+        var me = this,
+            searchForm = me.lookupReference('searchForm');
 
-        // if (navigationTreeSelection) {
-            // store.getProxy().extraParams = {
-            //     filter: {
-            //         moduleId: navigationTreeSelection.getId()
-            //     }
-            // }
-        // }
+        var filter = null;
+
+        if (searchForm) {
+            filter = searchForm.getForm().getValues();
+        }
+
+        if (filter) {
+            store.getProxy().extraParams = filter
+        }
     },
 
     /**
@@ -84,14 +44,6 @@ Ext.define('MyApp.view.sys.RoleController', {
         me.autoColumnWidthButtonClick();
     },
 
-    expandBtnClick: function () {
-        this.lookupReference('rolegrid').expandAll();
-    },
-
-    collapseBtnClick: function () {
-        this.lookupReference('rolegrid').collapseAll();
-    },
-
     autoColumnWidthButtonClick: function () {
         var me = this,
             rolegrid = me.lookupReference('rolegrid');
@@ -105,10 +57,6 @@ Ext.define('MyApp.view.sys.RoleController', {
             });
         Ext.resumeLayouts(true);
     },
-
-    // navigationTreeRefreshBtnClick: function () {
-    //     this.lookupReference('navigationtree').getStore('navigationStore').reload();
-    // },
 
     refreshBtnClick: function () {
         this.lookupReference('rolegrid').getStore('roleStore').reload();
@@ -136,19 +84,8 @@ Ext.define('MyApp.view.sys.RoleController', {
     addRole: function () {
         var me = this,
             view = me.getView(),
-            viewModel = me.getViewModel(),
-            rolegrid = me.lookupReference('rolegrid'),
-            store = rolegrid.getStore(),
-            record = Ext.create('MyApp.model.sys.Role');
+            viewModel = me.getViewModel();
 
-        // var navigationTreeSelection = me.getNavigationTreeSelection();
-        // if (navigationTreeSelection) {
-        //     record.set('moduleId', navigationTreeSelection.getId())
-        // }
-
-        store.add(record);
-
-        viewModel.set('current.record', record);
         viewModel.set('current.operation', 'add');
         Ext.getBody().mask(); //遮罩
         var window = view.floatingItems.get('roleWindow')
@@ -170,9 +107,46 @@ Ext.define('MyApp.view.sys.RoleController', {
 
         viewModel.set('current.operation', 'edit');
         Ext.getBody().mask(); //遮罩
-        var window = view.floatingItems.get('roleWindow')
+        var window = view.floatingItems.get('roleEditWindow')
         window.center();
         window.show();
+    },
+
+    onEditSaveBtnClick: function(button){
+        var me = this,
+            viewModel = me.getViewModel(),
+            rolegrid = me.lookupReference('rolegrid'),
+            roleStore = rolegrid.getStore();
+
+        var currentRole = viewModel.get('current.record');
+        var changes = currentRole.getChanges();
+        
+        if (!Ext.Object.isEmpty(changes)) {
+            changes.id = currentRole.getId();
+            Ext.Ajax.request({
+                url: CFG.getGlobalPath() + '/sys/role/update',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'  // 必须设置 Content-Type
+                },
+                jsonData: JSON.stringify(changes),
+                scope: this,
+                success: function (response, opts) {
+                    var result = Ext.decode(response.responseText, true);
+                    if (result.success) {
+                        roleStore.reload();
+                        Ext.toast(result.msg);
+                        button.up('window').close();
+                    } else {
+                        Ext.Msg.alert('出错', result.msg);
+                    }
+                },
+                failure: MyApp.ux.data.FailureProcess.Ajax
+            });
+        } else {
+            console.log('记录未被修改');
+        }
+
     },
 
     deleteRole: function () {
@@ -197,102 +171,78 @@ Ext.define('MyApp.view.sys.RoleController', {
             fn: function (btn) {
                 if (btn === 'yes') {
                     Ext.Msg.wait('数据删除中', '正在删除中，请稍候...');
-                    // record.drop();
-                    store.remove(record);
-                    store.sync({
-                        success: function (batch, options) {
-                            var msg = batch.getOperations()[0].getResultSet().getMessage();
-                            Ext.toast(msg);
+                    Ext.Ajax.request({
+                        url: CFG.getGlobalPath() + '/sys/role/delete',
+                        method: 'POST',
+                        params: {
+                            roleId: record.get('id')
                         },
-                        callback: function () {
-                            Ext.Msg.hide(); //隐藏等待对话框
-                        }
+                        scope: this,
+                        success: function (response, opts) {
+                            var result = Ext.decode(response.responseText, true);
+                            if (result.success) {
+                                store.reload();
+                                Ext.toast(result.msg);
+                                Ext.Msg.hide();;
+                            } else {
+                                Ext.Msg.alert('出错', result.msg);
+                            }
+                        },
+                        failure: MyApp.ux.data.FailureProcess.Ajax
                     });
+
                 } else if (btn === 'no') {
                 }
             }
         });
     },
 
-    // roleApi: function(){
-    //     var me = this,
-    //         view = me.getView(),
-    //         viewModel = me.getViewModel();
-
-    //     if (!viewModel.get('current.record')) {
-    //         Ext.Msg.alert('提示', '请选中要编辑的角色！');
-    //         return;
-    //     }
-
-    //     Ext.getBody().mask(); //遮罩
-    //     var window = view.floatingItems.get('roleApiWindow')
-    //     window.center();
-    //     window.show();
-    // },
-
-    viewRole: function () {
-        var me = this,
-            view = me.getView(),
-            viewModel = me.getViewModel();
-
-        if (!viewModel.get('current.record')) {
-            Ext.Msg.alert('提示', '请选中要查看的记录！');
-            return;
-        }
-        viewModel.set('current.operation', 'view');
-        Ext.getBody().mask(); //遮罩
-        var window = view.floatingItems.get('roleWindow')
-        window.center();
-        window.show();
-    },
-
     onSaveBtnClick: function (button) {
         var me = this,
             viewModel = me.getViewModel(),
             rolegrid = me.lookupReference('rolegrid'),
-            roleGridStore = rolegrid.getStore('roleStore'),
-            record = viewModel.get('current.record'),
-            operation = viewModel.get('current.operation');
+            roleStore = rolegrid.getStore(),
+            roleForm = me.lookupReference('roleForm'),
+            form = roleForm.getForm();
 
-        Ext.Msg.wait('数据保存中', '正在保存中，请稍候...');
-        roleGridStore.sync({
-            success: function (batch, options) {
-                var msg = batch.getOperations()[0].getResultSet().getMessage();
-                Ext.toast(msg);
-                roleGridStore.reload();
-                if (operation === 'add') {
-                    button.up('window').close();
-                }
-                Ext.Msg.hide(); //隐藏等待对话框
-            },
-            failure: function () {
-                Ext.Msg.hide(); //隐藏等待对话框
-            },
-            callback: function () {
-            }
-        });
+        if (form.isValid()) {
+            Ext.Msg.wait('数据保存中', '正在保存中，请稍候...');
+            var values = form.getValues();
+            var data = {
+                name: values.name,
+                enName: values.enName,
+                remarks: values.remarks
+            };
+
+            Ext.Ajax.request({
+                url: CFG.getGlobalPath() + '/sys/role/create',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'  // 必须设置 Content-Type
+                },
+                jsonData: data,
+                scope: this,
+                success: function (response, opts) {
+                    var result = Ext.decode(response.responseText, true);
+                    if (result.success) {
+                        roleStore.reload();
+                        Ext.toast(result.msg);
+                        button.up('window').close();
+                        Ext.Msg.hide(); //隐藏等待对话框
+                    } else {
+                        Ext.Msg.alert('出错', result.msg);
+                    }
+                },
+                failure: MyApp.ux.data.FailureProcess.Ajax
+            });
+            
+
+        }
     },
 
 
     onCancelBtnClick: function (button) {
         button.up('window').close();
-    },
-
-    onWindowBeforeShow: function (window, eOpts) {
-        var me = this;
-        if (window.itemId === 'roleWindow') { //用户信息窗口
-            // var navigationStore = me.getViewModel().getStore('navigationStore');
-            // var moduletreepicker = me.lookupReference('moduletreepicker');
-            // moduletreepicker.setStore(navigationStore);
-
-            // var dataScopeOrganizationStore = me.getViewModel().getStore('dataScopeOrganizationStore');
-            // var datascopetreepicker = me.lookupReference('datascopetreepicker');
-            // datascopetreepicker.setStore(dataScopeOrganizationStore);
-
-            var menuStore = me.getViewModel().getStore('menuStore');
-            var menutreepicker = me.lookupReference('menutreepicker');
-            menutreepicker.setStore(menuStore);
-        }
     },
 
     onWindowClose: function () {
@@ -312,10 +262,8 @@ Ext.define('MyApp.view.sys.RoleController', {
         }
 
         Ext.getBody().unmask();
-    },
+    }
 
-    // onRoleApiWindowClose: function(){
-    //     console.log('role api window close');
-    //     Ext.getBody().unmask();
-    // }
+
+
 });

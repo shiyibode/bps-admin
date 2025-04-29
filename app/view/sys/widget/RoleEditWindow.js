@@ -1,13 +1,13 @@
-Ext.define('MyApp.view.sys.widget.RoleWindow', {
+Ext.define('MyApp.view.sys.widget.RoleEditWindow', {
     extend: 'Ext.window.Window',
 
-    alias: 'widget.rolewindow',
+    alias: 'widget.roleeditwindow',
 
     requires: [
         'MyApp.ux.form.trigger.TriggerClear'
     ],
 
-    itemId: 'roleWindow',
+    itemId: 'roleEditWindow',
 
     bind: {
         title: '{windowOptions.title}'
@@ -22,7 +22,7 @@ Ext.define('MyApp.view.sys.widget.RoleWindow', {
     items: [{
         xtype: 'form',
         modelValidation: true,//启用model中的validators
-        reference: 'roleForm',
+        reference: 'roleEditForm',
             layout: 'anchor',
             defaults: {
                 anchor: '100%'
@@ -34,20 +34,29 @@ Ext.define('MyApp.view.sys.widget.RoleWindow', {
                 labelAlign: 'right',
                 labelWidth: 60,
                 name: 'name',
-                allowBlank: false
+                allowBlank: false,
+                bind: {
+                    value: '{current.record.name}'
+                }
             }, {
                 xtype: 'textfield',
                 fieldLabel: '英文名称',
                 labelAlign: 'right',
                 labelWidth: 60,
-                name: 'enName'
+                name: 'enName',
+                bind: {
+                    value: '{current.record.enName}'
+                }
             },{
                 xtype: 'textareafield',
                 grow: true,
                 labelAlign: 'right',
                 labelWidth: 60,
                 fieldLabel: '备注',
-                name: 'remarks'
+                name: 'remarks',
+                bind: {
+                    value: '{current.record.remarks}'
+                }
             }
         ],
         buttons: [ '->',
@@ -56,7 +65,7 @@ Ext.define('MyApp.view.sys.widget.RoleWindow', {
                 itemId: 'saveBtn',
                 iconCls: 'x-fa fa-floppy-o',
                 formBind: true,
-                handler: 'onSaveBtnClick'
+                handler: 'onEditSaveBtnClick'
             }, {
                 text: '关闭',
                 itemId: 'cancelBtn',

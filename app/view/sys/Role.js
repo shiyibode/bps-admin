@@ -4,10 +4,10 @@ Ext.define('MyApp.view.sys.Role', {
 
     requires: [
         'Ext.layout.container.Border',
-        // 'MyApp.view.sys.RoleController',
-        // 'MyApp.view.sys.RoleModel',
+        'MyApp.view.sys.RoleController',
+        'MyApp.view.sys.RoleModel',
         'MyApp.view.sys.widget.RoleWindow',
-        // 'MyApp.ux.NavigationTree',
+        'MyApp.view.sys.widget.RoleEditWindow',
         'MyApp.view.sys.widget.RoleGrid'
     ],
 
@@ -16,36 +16,23 @@ Ext.define('MyApp.view.sys.Role', {
         type: 'sysrole'
     },
 
-    // frame: false,
     border: true,
     layout: {
         type: 'hbox',
         align: 'stretch'
     },
     items:[
-    //     {
-    //     xtype: 'navigationtree',
-    //     title: '系统模块',
-    //     frame: true,
-
-    //     bind: {
-    //         store: '{navigationStore}'
-    //     },
-    //     width: 220
-    // },
       {
         xtype: 'rolegrid',
         bind: {
             title: '角色管理' + '{selectionText}'
         },
         flex: 1
-    }
-    , {
+    }, {
         xtype: 'rolewindow'
+    }, {
+        xtype: 'roleeditwindow'
     }
-    // ,{
-    //     xtype: 'roleapiwindow'
-    // }
 ],
 
     initComponent: function () {
