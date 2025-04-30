@@ -73,25 +73,6 @@ Ext.define('MyApp.view.sys.UserModel', {
             }
         },
 
-        detailSource: {
-            bind: {
-                bindTo: '{currentUser}',
-                deep: true
-            },
-            get: function (record) {
-                var source = {};
-                if (record) {
-                    source = {
-                        '名称': record.get('text'),
-                        '图标': record.get('iconCls'),
-                        '顺序': record.get('sort'),
-                        '创建时间': record.get('createTime')
-                    };
-                }
-                return source
-            }
-        },
-
         userRoleWindowSaveBtnDisabled: {
             bind: {
                 bindTo: '{newRoleIdList}',
@@ -113,8 +94,7 @@ Ext.define('MyApp.view.sys.UserModel', {
             autoLoad: true,
             root: {
                 id: 'root',
-                text: '最高机构',
-                // expanded: true
+                text: '最高机构'
             },
             proxy: {
                 type: 'ajax',
@@ -151,83 +131,48 @@ Ext.define('MyApp.view.sys.UserModel', {
                 ['女', '2']
             ]
         },
-
-        userTypeStore: {
+        
+        userLoginUsableStore: {
             fields: ['text', 'value'],
             data: [
-                ['支行操作员', 1],
-                ['总行管理员', 2],
-                ['普通用户', 3],
-                ['超级用戶', 0]
+                ['是', true],
+                ['否', false]
             ]
         },
 
         userPostStore: {
-            fields: ['text'],
-            data: [
-                ['无职务'],
-                ['柜员'],
-                ['科员'],
-                ['支行会计'],
-                ['支行业务主管'],
-                ['支行副行长'],
-                ['支行行长'],
-                ['董事长'],
-                ['监事长'],
-                ['行长'],
-                ['副行长'],
-                ['行长助理'],
-                ['总经理'],
-                ['副总经理'],
-                ['主任'],
-                ['总经理助理'],
-                ['出纳'],
-                ['保安'],
-                ['协存岗']
-            ]
-        },
-
-        userStatusStore:{
-            fields: ['text', 'value'],
-            data: [
-                ['在职', '1'],
-                ['停职', '2'],
-                ['辞职', '3'],
-                ['辞退', '4'],
-                ['退休', '5'],
-                ['内部协存', '6'],
-                ['休假', '7'],
-                ['内退', '8']
-            ]
-        },
-
-        //机构调动-调入方式
-        intoOrganizationTypeStore: {
-            fields: ['id', 'text'],
-            data: [
-                [1, '调离当前机构调入其他机构']
-            ],
-            listeners: {
-                prefetch: 'onIntoOrganizationTypeStoreLoad'
+            fields: ['name', 'code'],
+            type: 'store',
+            autoLoad: true,
+            proxy: {
+                type: 'ajax',
+                url: CFG.getGlobalPath() + '/sys/user/getUserPostList',
+                reader: {
+                    type: 'json',
+                    rootProperty: 'data'
+                }
             }
         },
 
-        //机构调动-调离方式
-        // leaveOrganizationTypeStore: {
-        //     fields: ['id', 'text'],
-        //     data: [
-        //         [3, '辞职调离'],
-        //         [4, '辞退调离'],
-        //         [5, '退休调离']
-        //     ]
-        // },
+        userStatusStore:{
+            fields: ['name', 'code'],
+            type: 'store',
+            autoLoad: true,
+            proxy: {
+                type: 'ajax',
+                url: CFG.getGlobalPath() + '/sys/user/getUserStatusList',
+                reader: {
+                    type: 'json',
+                    rootProperty: 'data'
+                }
+            }
+        },
 
         //角色store
         roleStore: {
             type: 'store',
             model: 'MyApp.model.sys.Role',
-            pageSize: 0,
-            autoLoad: false,
+            autoLoad: true,
             remoteFilter: true,
             remoteSort: true
         }

@@ -61,14 +61,14 @@ Ext.define('MyApp.view.sys.widget.UserOrganizationWindow', {
                     fieldLabel: '编号/柜员号',
                     readOnly: true,
                     bind: {
-                        value: '{current.record.userCode}'
+                        value: '{current.record.code}'
                     }
                 }, {
                     xtype: 'textfield',
                     fieldLabel: '姓名',
                     readOnly: true,
                     bind: {
-                        value: '{current.record.userName}'
+                        value: '{current.record.name}'
                     }
                 }]
             }, {
@@ -95,7 +95,7 @@ Ext.define('MyApp.view.sys.widget.UserOrganizationWindow', {
                 fieldLabel: '备注',
                 readOnly: true,
                 bind: {
-                    value: '{current.record.remarks}'
+                    value: '{current.record.userOrganizationRemarks}'
                 }
             }]
         },{
@@ -129,23 +129,6 @@ Ext.define('MyApp.view.sys.widget.UserOrganizationWindow', {
                             type: 'clear',
                             weight: -1
                         }
-                    }
-                }, {
-                    xtype: 'combo',
-                    id: 'intoOrganizationTypeCombo',
-                    queryMode: 'local',
-                    fieldLabel: '调入方式',
-                    displayField: 'text',
-                    valueField: 'id',
-                    editable: false,
-                    allowBlank: false,
-                    blankText: '请选择调入方式!',
-                    name: 'status',
-                    bind: {
-                        store: '{intoOrganizationTypeStore}'
-                    },
-                    listeners:{
-                        afterrender: 'onIntoOrganizationTypeRender'
                     }
                 }]
             }, {

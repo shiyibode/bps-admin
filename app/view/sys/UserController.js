@@ -36,9 +36,7 @@ Ext.define('MyApp.view.sys.UserController', {
         }
 
         if (filter) {
-            store.getProxy().extraParams = {
-                filter: filter
-            }
+            store.getProxy().extraParams = filter
         }
 
         if (selectionOrganization) {
@@ -48,7 +46,7 @@ Ext.define('MyApp.view.sys.UserController', {
             } else {
                 filter = {organizationId: selectionOrganization.getId()};
             }
-            store.getProxy().getExtraParams().filter = filter;
+            store.getProxy().extraParams = filter;
         }
     },
 
@@ -149,21 +147,12 @@ Ext.define('MyApp.view.sys.UserController', {
             view = me.getView(),
             viewModel = me.getViewModel(),
             usergrid = me.lookupReference('usergrid'),
-            store = usergrid.getStore(),
-            record = Ext.create('MyApp.model.sys.User');
+            store = usergrid.getStore();
 
-        var selectionOrganization = me.getNavigationTreeSelection();
-        if (selectionOrganization) {
-            record.set('uoOrganizationId', selectionOrganization.getId())
-        }
-
-        store.add(record);
-
-        viewModel.set('current.record', record);
         viewModel.set('current.operation', 'add');
         Ext.getBody().mask(); //遮罩
         var window = view.floatingItems.get('userWindow');
-        // window.center();
+        window.center();
         window.show();
     },
 
@@ -178,17 +167,48 @@ Ext.define('MyApp.view.sys.UserController', {
             return;
         }
 
-        var validFlag = record.get('validFlag');
-        if (validFlag == false) {
-            Ext.Msg.alert('错误提示', '[ ' + record.get('userCode') + ' ' + record.get('userName') + '] 只允许在其 在职 机构进行修改！');
-            return;
-        }
-
         viewModel.set('current.operation', 'edit');
         Ext.getBody().mask(); //遮罩
-        var window = view.floatingItems.get('userWindow');
-        // window.center();
+        var window = view.floatingItems.get('userEditWindow');
+        window.center();
         window.show();
+    },
+
+    onEditSaveBtnClick: function(button){
+        var me = this,
+            viewModel = me.getViewModel(),
+            usergrid = me.lookupReference('usergrid'),
+            userStore = usergrid.getStore();
+
+        var currentUser = viewModel.get('currentUser');
+        var changes = currentUser.getChanges();
+        
+        if (!Ext.Object.isEmpty(changes)) {
+            changes.id = currentUser.getId();
+            Ext.Ajax.request({
+                url: CFG.getGlobalPath() + '/sys/user/update',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'  // 必须设置 Content-Type
+                },
+                jsonData: JSON.stringify(changes),
+                scope: this,
+                success: function (response, opts) {
+                    var result = Ext.decode(response.responseText, true);
+                    if (result.success) {
+                        userStore.reload();
+                        Ext.toast(result.msg);
+                        button.up('window').close();
+                    } else {
+                        Ext.Msg.alert('出错', result.msg);
+                    }
+                },
+                failure: MyApp.ux.data.FailureProcess.Ajax
+            });
+        } else {
+            console.log('记录未被修改');
+        }
+
     },
 
     deleteUser: function () {
@@ -204,12 +224,6 @@ Ext.define('MyApp.view.sys.UserController', {
             return;
         }
 
-        var validFlag = record.get('validFlag');
-        if (validFlag == false) {
-            Ext.Msg.alert('错误提示', '[ ' + record.get('userCode') + ' ' + record.get('userName') + ' ] 只允许在其 在职 机构进行删除！');
-            return;
-        }
-
         viewModel.set('current.operation', 'delete');
 
         Ext.Msg.show({
@@ -221,37 +235,30 @@ Ext.define('MyApp.view.sys.UserController', {
             fn: function (btn) {
                 if (btn === 'ok') {
                     Ext.Msg.wait('数据删除中', '正在删除中，请稍候...');
-                    // record.drop();
-                    store.remove(record);
-                    store.sync({
-                        success: function (batch, options) {
-                            var msg = batch.getOperations()[0].getResultSet().getMessage();
-                            Ext.toast(msg);
+                    Ext.Ajax.request({
+                        url: CFG.getGlobalPath() + '/sys/user/delete',
+                        method: 'POST',
+                        params: {
+                            userId: record.get('id')
                         },
-                        callback: function () {
-                            Ext.Msg.hide(); //隐藏等待对话框
-                        }
+                        scope: this,
+                        success: function (response, opts) {
+                            var result = Ext.decode(response.responseText, true);
+                            if (result.success) {
+                                store.reload();
+                                Ext.toast(result.msg);
+                                Ext.Msg.hide();;
+                            } else {
+                                Ext.Msg.alert('出错', result.msg);
+                            }
+                        },
+                        failure: MyApp.ux.data.FailureProcess.Ajax
                     });
+
                 } else if (btn === 'no') {
                 }
             }
         });
-    },
-
-    viewUser: function () {
-        var me = this,
-            view = me.getView(),
-            viewModel = me.getViewModel();
-
-        if (!viewModel.get('current.record')) {
-            Ext.Msg.alert('提示', '请选中要查看的记录！');
-            return;
-        }
-        viewModel.set('current.operation', 'view');
-        Ext.getBody().mask(); //遮罩
-        var window = view.floatingItems.get('userWindow');
-        // window.center();
-        window.show();
     },
 
     onSaveBtnClick: function (button) {
@@ -259,26 +266,56 @@ Ext.define('MyApp.view.sys.UserController', {
             viewModel = me.getViewModel(),
             usergrid = me.lookupReference('usergrid'),
             userGridStore = usergrid.getStore('userStore'),
+            userForm = me.lookupReference('userForm'),
+            form = userForm.getForm(),
             record = viewModel.get('current.record'),
             operation = viewModel.get('current.operation');
 
-        Ext.Msg.wait('数据保存中', '正在保存中，请稍候...');
-        userGridStore.sync({
-            success: function (batch, options) {
-                var msg = batch.getOperations()[0].getResultSet().getMessage();
-                Ext.toast(msg);
-                userGridStore.reload();
-                if (operation === 'add') {
-                    button.up('window').close();
-                }
-                Ext.Msg.hide(); //隐藏等待对话框
-            },
-            failure: function () {
-                Ext.Msg.hide(); //隐藏等待对话框
-            },
-            callback: function () {
-            }
-        });
+        if (form.isValid()) {
+            var values = form.getValues();
+
+            var data = {
+                organizationId: values.organizationId, 
+                entryDate: values.entryDate,
+                userOrganizationRemarks: values.userOrganizationRemarks,
+                code: values.code,
+                name: values.name,
+                identityNo: values.identityNo,
+                sex: values.sex,
+                loginUsable: values.loginUsable,
+                post: values.post,
+                birthday: values.birthday,
+                mobile: values.mobile,
+                address: values.address,
+                status: values.status,
+                remarks: values.remarks
+            };
+
+            Ext.Msg.wait('数据保存中', '正在保存中，请稍候...');
+            Ext.Ajax.request({
+                url: CFG.getGlobalPath() + '/sys/user/create',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'  // 必须设置 Content-Type
+                },
+                jsonData: data,
+                scope: this,
+                success: function (response, opts) {
+                    var result = Ext.decode(response.responseText, true);
+                    if (result.success) {
+                        userGridStore.reload();
+                        Ext.toast(result.msg);
+                        button.up('window').close();
+                        Ext.Msg.hide(); //隐藏等待对话框
+                    } else {
+                        Ext.Msg.alert('出错', result.msg);
+                    }
+                },
+                failure: MyApp.ux.data.FailureProcess.Ajax
+            });
+            
+
+        }
     },
 
 
@@ -321,7 +358,7 @@ Ext.define('MyApp.view.sys.UserController', {
     },
 
     //重置密码
-    resetUserPassword: function () {
+    resetUserPassword: function (button) {
         var me = this,
             view = me.getView(),
             viewModel = me.getViewModel(),
@@ -342,26 +379,22 @@ Ext.define('MyApp.view.sys.UserController', {
                 if (btn === 'ok') {
                     Ext.Msg.wait('密码重置中', '正在重置密码中，请稍候...');
                     
-                    var data = new Array();
-
-                    data.push({userId: record.get('userId')});
-                    var dataJson = {
-                        data: data
-                    };
-
                     Ext.Ajax.request({
-                        url: '/sys/user/resetPassword',
+                        url: CFG.getGlobalPath() + '/sys/user/resetpassword',
                         method: 'POST',
-                        defaultPostHeader: 'application/json;charset=UTF-8',
-                        params: Ext.JSON.encode(dataJson),
+                        params: {
+                            id: record.get('id')
+                        },
                         scope: this,
                         success: function (response, opts) {
                             var result = Ext.decode(response.responseText, true);
-                            Ext.Msg.hide();
                             if (result.success) {
                                 Ext.toast(result.msg);
+                                button.up('window').close();
+                                Ext.Msg.hide();;
                             } else {
-                                Ext.Msg.alert('重置用户密码出错', result.msg);
+                                Ext.Msg.hide();
+                                Ext.Msg.alert('出错', result.msg);
                             }
                         },
                         failure: MyApp.ux.data.FailureProcess.Ajax
@@ -380,17 +413,6 @@ Ext.define('MyApp.view.sys.UserController', {
 
         if (!record) {
             Ext.Msg.alert('提示', '请选中要修改机构的用户！');
-            return;
-        }
-
-        var validFlag = record.get('validFlag'),
-            userStatus = record.get('userStatus');
-        if (validFlag === false) {
-            Ext.Msg.alert("机构调动错误", '无法执行机构调动操作, [ ' + record.get('userCode') + ' ' + record.get('userName') + ' ] 已被调离该机构!');
-            return;
-        }
-        if(userStatus != '1'){
-            Ext.Msg.alert("机构调动错误", '无法执行机构调动操作, [ ' + record.get('userCode') + ' ' + record.get('userName') + ' ] 履职状态不正常!');
             return;
         }
 
@@ -423,7 +445,7 @@ Ext.define('MyApp.view.sys.UserController', {
 
             var picker = me.lookupReference('intoorganizationtreepicker');
             var promptTitle = '用户调入机构确认';
-            var promptMessage = '您确定要将 [ ' + record.get('userCode') + ' ' + record.get('userName') + ' ] ';
+            var promptMessage = '您确定要将 [ ' + record.get('code') + ' ' + record.get('name') + ' ] ';
             promptMessage = promptMessage + '从 [ ' + record.get('organizationName') + ' ] 调入 [ ' + picker.getRawValue() + ' ] 吗?';
 
             Ext.Msg.show({
@@ -433,31 +455,26 @@ Ext.define('MyApp.view.sys.UserController', {
                 icon: Ext.Msg.QUESTION,
                 fn: function (btn) {
                     if (btn === 'yes') {
-                        var data = new Array();
-                        data.push({
-                            oldId: record.get('id'), //原用户机构信息id t_sys_user_organizaion
-                            userId: record.get('userId'),   //用户id
-                            organizationId: values.organizationId, //新调入机构id
-                            remarks: values.remarks,        //备注
-                        });
-                        var dataJson = {
-                            data: data
-                        };
-
+                        Ext.Msg.wait('数据保存中', '正在保存中，请稍候...');
                         Ext.Ajax.request({
-                            url: '/sys/user/updateOrganization',
+                            url: CFG.getGlobalPath() + '/sys/user/updateOrganization',
                             method: 'POST',
-                            defaultPostHeader: 'application/json;charset=UTF-8',
-                            params: Ext.JSON.encode(dataJson),
+                            params: {
+                                userId: record.get('id'),
+                                organizationId: values.organizationId,
+                                remarks: values.remarks
+                            },
                             scope: this,
                             success: function (response, opts) {
                                 var result = Ext.decode(response.responseText, true);
                                 if (result.success) {
-                                    userStore.reload();
                                     Ext.toast(result.msg);
+                                    userStore.reload();
                                     button.up('window').close();
+                                    Ext.Msg.hide();
                                 } else {
-                                    Ext.Msg.alert('机构调动出错', result.msg);
+                                    Ext.Msg.hide();
+                                    Ext.Msg.alert('出错', result.msg);
                                 }
                             },
                             failure: MyApp.ux.data.FailureProcess.Ajax
@@ -468,7 +485,6 @@ Ext.define('MyApp.view.sys.UserController', {
         }
     },
 
-
     //修改用户角色
     alterUserRole: function () {
         var me = this,
@@ -477,14 +493,14 @@ Ext.define('MyApp.view.sys.UserController', {
             record = viewModel.get('current.record');
 
         if (!record) {
-            Ext.Msg.alert('提示', '请选中要修改机构的用户！');
+            Ext.Msg.alert('提示', '请选中要修改角色的用户！');
             return;
         }
 
         var window = view.floatingItems.get('userRoleWindow');
 
         Ext.getBody().mask(); //遮罩
-        // window.center()
+        window.center()
         window.show();
     },
 
@@ -545,7 +561,7 @@ Ext.define('MyApp.view.sys.UserController', {
             record = viewModel.get('current.record'),
             newRoleIdList = viewModel.get('newRoleIdList');
 
-        var promptMessage = '您确定要修改 [ ' + record.get('userCode') + ' ' + record.get('userName') + ' ] 的角色吗?';
+        var promptMessage = '您确定要修改 [ ' + record.get('code') + ' ' + record.get('name') + ' ] 的角色吗?';
         Ext.Msg.show({
             title: '修改用户角色确认',
             message: promptMessage,
@@ -553,19 +569,14 @@ Ext.define('MyApp.view.sys.UserController', {
             icon: Ext.Msg.QUESTION,
             fn: function (btn) {
                 if (btn === 'yes') {
-                    var data = new Array();
-                    data.push({
-                        userId: record.get('userId'), //原用户机构信息id t_sys_user_organizaion
-                        userRoleIdList: newRoleIdList   //角色列表
-                    });
-                    var dataJson = {
-                        data: data
-                    };
+
                     Ext.Ajax.request({
-                        url: '/sys/user/updateRole',
+                        url: CFG.getGlobalPath() + '/sys/user/updateRole',
                         method: 'POST',
-                        defaultPostHeader: 'application/json;charset=UTF-8',
-                        params: Ext.JSON.encode(dataJson),
+                        params: {
+                            userId: record.get('id'), //原用户机构信息id t_sys_user_organizaion
+                            roleIdList: newRoleIdList   //角色列表
+                        },
                         scope: this,
                         success: function (response, opts) {
                             var result = Ext.decode(response.responseText, true);
@@ -582,22 +593,10 @@ Ext.define('MyApp.view.sys.UserController', {
                 }
             }
         });
-    },
-
-
-    onIntoOrganizationTypeStoreLoad: function(store){
-        var intoOrganizationTypeCombo = Ext.getCmp('intoOrganizationTypeCombo');
-        if(intoOrganizationTypeCombo) intoOrganizationTypeCombo.setValue(store.getAt(0));
-    },
-
-    onIntoOrganizationTypeRender: function(combo){
-        // var intoOrganizationTypeCombo = Ext.getCmp('intoOrganizationTypeCombo');
-        // var viewModel = intoOrganizationTypeCombo.getViewModel();
-        // var store = viewModel.getStore('intoOrganizationTypeStore');
-        // console.log(intoOrganizationTypeCombo);
-        // console.log(viewModel);
-        // console.log(store);
     }
+
+
+    
 
 
 

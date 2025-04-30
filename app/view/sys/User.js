@@ -45,6 +45,9 @@ Ext.define('MyApp.view.sys.User', {
     , {
         //User 添加、修改、查看对话框
         xtype: 'userwindow'
+    }, {
+        //User 添加、修改、查看对话框
+        xtype: 'usereditwindow'
     }
     , {
         //机构调动窗口

@@ -23,7 +23,6 @@ Ext.define('MyApp.view.sys.widget.UserGrid', {
             store: '{userStore}'
         },
         displayInfo: true,
-        // displayMsg: '{0} - {1} of {2}',
         emptyMsg: "没有需要显示的数据",
         plugins: [ 'progressbarpager' ]
     },
@@ -58,10 +57,6 @@ Ext.define('MyApp.view.sys.widget.UserGrid', {
                 text: '入职日期',
                 dataIndex: 'entryDate',
                 formatter: 'date("Y-m-d")',
-                flex: 1
-            }, {
-                text: '性质',
-                dataIndex: 'type',
                 flex: 1
             }, {
                 text: '职务',
@@ -114,20 +109,16 @@ Ext.define('MyApp.view.sys.widget.UserGrid', {
                 flex: 1,
                 renderer: function(value){
                     if(value == false) return '调离';
-                    else return '调入';
+                    else return '在职';
                 }
             }, {
-                text: '履职状态',
-                dataIndex: 'userStatusStr',
-                flex: 1
-            }, {
                 text: '调入日期',
-                dataIndex: 'startDate',
+                dataIndex: 'organizationStartDate',
                 formatter: 'date("Y-m-d")',
                 flex: 1
             }, {
                 text: '调离日期',
-                dataIndex: 'endDate',
+                dataIndex: 'organizationEndDate',
                 formatter: 'date("Y-m-d")',
                 flex: 1
             }, {

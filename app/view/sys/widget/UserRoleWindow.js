@@ -31,10 +31,6 @@ Ext.define('MyApp.view.sys.widget.UserRoleWindow', {
         region: 'north',
         reference: 'userRoleForm',
 
-        // layout: {
-        //     type: 'form',
-        //     align: 'stretch'
-        // },
         scrollable: true,
         border: false,
         modelValidation: true,
@@ -67,14 +63,14 @@ Ext.define('MyApp.view.sys.widget.UserRoleWindow', {
                     fieldLabel: '编号/柜员号',
                     readOnly: true,
                     bind: {
-                        value: '{current.record.userCode}'
+                        value: '{current.record.code}'
                     }
                 }, {
                     xtype: 'textfield',
                     fieldLabel: '姓名',
                     readOnly: true,
                     bind: {
-                        value: '{current.record.userName}'
+                        value: '{current.record.name}'
                     }
                 }]
             }, {
@@ -102,7 +98,7 @@ Ext.define('MyApp.view.sys.widget.UserRoleWindow', {
                 fieldLabel: '备注',
                 readOnly: true,
                 bind: {
-                    value: '{current.record.remarks}'
+                    value: '{current.record.userOrganizationRemarks}'
                 }
             }]
         }]

@@ -1,7 +1,7 @@
-Ext.define('MyApp.view.sys.widget.UserWindow', {
+Ext.define('MyApp.view.sys.widget.UserEditWindow', {
     extend: 'Ext.window.Window',
 
-    alias: 'widget.userwindow',
+    alias: 'widget.usereditwindow',
 
     requires: [
         'MyApp.ux.form.field.UxTreePicker',
@@ -10,7 +10,7 @@ Ext.define('MyApp.view.sys.widget.UserWindow', {
         'Ext.form.FieldSet',
     ],
 
-    itemId: 'userWindow',
+    itemId: 'userEditWindow',
 
     bind: {
         title: '{windowOptions.title}'
@@ -49,60 +49,7 @@ Ext.define('MyApp.view.sys.widget.UserWindow', {
             margin: '0 10 5 0'  //form内各field离fieldset的距离
         },
 
-        items: [{
-            xtype: 'fieldset',
-            title: '机构信息',
-            layout: 'anchor',
-            defaults: {
-                anchor: '100%'
-            },
-            bind: {
-                hidden: '{current.operation === "edit"}'
-            },
-            items: [{
-                xtype: 'container',
-                layout: 'hbox',
-                items: [{
-                    xtype: 'uxtreepicker',
-                    reference: 'organizationtreepicker',
-                    fieldLabel: '入职机构',
-                    displayField: 'name',
-                    valueField: 'id',
-                    scrollable: true,
-                    rootVisible: false,
-                    maxPickerHeight: 200,
-                    triggers: {
-                        clear: {
-                            type: 'clear',
-                            weight: -1
-                        }
-                    },
-                    name: 'organizationId',
-                    allowBlank: false
-                }, {
-                    xtype: 'datefield',
-                    fieldLabel: '入职日期',
-                    format: 'Y-m-d',
-                    formatText: '年-月-日',
-                    maxValue: new Date(),
-                    editable: false,
-                    triggers: {
-                        clear: {
-                            type: 'clear',
-                            weight: -1
-                        }
-                    },
-                    name: 'entryDate',
-                    allowBlank: false
-                }]
-            }, {
-                xtype: 'textareafield',
-                grow: true,
-                fieldLabel: '备注',
-                name: 'userOrganizationRemarks'
-            }]
-
-        }, {
+        items: [ {
             xtype: 'fieldset',
             title: '用户信息',
             layout: 'anchor',
@@ -115,11 +62,18 @@ Ext.define('MyApp.view.sys.widget.UserWindow', {
                 items: [{
                     xtype: 'textfield',
                     fieldLabel: '编号/柜员号',
+                    bind: {
+                        value: '{current.record.code}'
+                    },
                     name: 'code',
+                    readOnly: true,
                     allowBlank: false
                 }, {
                     xtype: 'textfield',
                     fieldLabel: '姓名',
+                    bind: {
+                        value: '{current.record.name}'
+                    },
                     name: 'name',
                     allowBlank: false
                 }]
@@ -140,10 +94,11 @@ Ext.define('MyApp.view.sys.widget.UserWindow', {
                         }
                     },
                     bind: {
-                        store: '{userGenderStore}'
+                        store: '{userGenderStore}',
+                        value: '{current.record.sex}'
                     },
                     name: 'sex'
-                },{
+                }, {
                     xtype: 'combo',
                     reference: 'userLoginUsableCombo',
                     fieldLabel: '允许登录',
@@ -157,7 +112,8 @@ Ext.define('MyApp.view.sys.widget.UserWindow', {
                         }
                     },
                     bind: {
-                        store: '{userLoginUsableStore}'
+                        store: '{userLoginUsableStore}',
+                        value: '{current.record.loginUsable}'
                     },
                     name: 'loginUsable',
                     allowBlank: false
@@ -180,13 +136,17 @@ Ext.define('MyApp.view.sys.widget.UserWindow', {
                         }
                     },
                     bind: {
-                        store: '{userPostStore}'
+                        store: '{userPostStore}',
+                        value: '{current.record.post}'
                     },
                     name: 'post',
                     allowBlank: false
                 }, {
                     xtype: 'textfield',
                     fieldLabel: '身份证号',
+                    bind: {
+                        value: '{current.record.identityNo}'
+                    },
                     name: 'identityNo',
                     allowBlank: false
                 }]
@@ -207,11 +167,17 @@ Ext.define('MyApp.view.sys.widget.UserWindow', {
                             weight: -1
                         }
                     },
+                    bind: {
+                        value: '{current.record.birthday}'
+                    },
                     name: 'birthday',
                     allowBlank: true
                 }, {
                     xtype: 'textfield',
                     fieldLabel: '手机',
+                    bind: {
+                        value: '{current.record.mobile}'
+                    },
                     name: 'mobile',
                     allowBlank: true
                 }]
@@ -221,6 +187,9 @@ Ext.define('MyApp.view.sys.widget.UserWindow', {
                 items: [{
                     xtype: 'textfield',
                     fieldLabel: '住址',
+                    bind: {
+                        value: '{current.record.address}'
+                    },
                     name: 'address',
                     allowBlank: true
                 },{
@@ -230,7 +199,8 @@ Ext.define('MyApp.view.sys.widget.UserWindow', {
                     valueField: 'code',
                     editable: false,
                     bind: {
-                        store: '{userStatusStore}'
+                        store: '{userStatusStore}',
+                        value: '{current.record.status}'
                     },
                     name: 'status',
                     allowBlank: false
@@ -242,6 +212,9 @@ Ext.define('MyApp.view.sys.widget.UserWindow', {
                     xtype: 'textareafield',
                     grow: true,
                     fieldLabel: '备注',
+                    bind: {
+                        value: '{current.record.remarks}'
+                    },
                     name: 'remarks',
                     allowBlank: true
                 }]
@@ -252,10 +225,9 @@ Ext.define('MyApp.view.sys.widget.UserWindow', {
         buttons: [ '->',
             {
                 text: '保存',
-                itemId: 'saveBtn',
-                formBind: true,
                 iconCls: 'x-fa fa-floppy-o',
-                handler: 'onSaveBtnClick'
+                formBind: true,
+                handler: 'onEditSaveBtnClick'
             }, {
                 text: '关闭',
                 itemId: 'cancelBtn',

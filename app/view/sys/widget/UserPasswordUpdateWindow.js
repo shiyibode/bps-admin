@@ -68,9 +68,7 @@ Ext.define('MyApp.view.sys.widget.UserPasswordUpdateWindow', {
                         userLoginPassword: originalPassword,
                         userNewLoginPassword: newPassword
                     });  
-                    var dataJson = {
-                        data: data
-                    }  
+                     
                     if(newPassword !== confirmPassword){
                         Ext.Msg.alert(I18N.Warning,I18N.NewPasswordNotSame);
                     }   
@@ -82,21 +80,24 @@ Ext.define('MyApp.view.sys.widget.UserPasswordUpdateWindow', {
                             Ext.Ajax.request({
                                 url: CFG.getGlobalPath()+'/sys/user/updatePassword',
                                 method: 'POST',
-                                defaultPostHeader: 'application/json;charset=UTF-8',
-                                params: Ext.JSON.encode(dataJson),
+                                params: {
+                                    originalPassword: originalPassword,
+                                    newPassword: newPassword
+                                },
                                 success: function(response){
                                     var text = response.responseText;
                                     var obj = Ext.decode(text, true);
     
                                     if(obj.success === true){
                                         Ext.toast(obj.msg);
-                                        var window = me.up('update-user-password-window'); console.log('window'); console.log(window);
+                                        var window = me.up('update-user-password-window'); 
                                         window.close();
                                     }
                                     else{
                                         Ext.Msg.alert(I18N.Warning, obj.msg);
                                     }
-                                }
+                                },
+                                failure: MyApp.ux.data.FailureProcess.Ajax
                             });
                         }
                         
