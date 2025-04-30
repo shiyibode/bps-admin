@@ -3,35 +3,17 @@ Ext.define('MyApp.view.sys.ApiModel', {
     alias: 'viewmodel.sysapi',
 
     requires: [
-        'Ext.data.Store',
-        'Ext.data.TreeStore'
+        'Ext.data.Store'
     ],
 
     data: {
         current: {
             record: null,
             operation: null
-        },
-        userOrganization: {
-            operationType: null
         }
     },
 
     formulas: {
-        saveOrUpdateStatus: {
-            bind: {
-                bindTo: '{current.record}',
-                deep: true
-            },
-            get: function (record) {
-                var saveOrUpdateStatus = {
-                    dirty: record ? record.dirty : true,
-                    valid: record ? record.isValid() : false
-                };
-                saveOrUpdateStatus.validAndDirty = saveOrUpdateStatus.dirty && saveOrUpdateStatus.valid;
-                return saveOrUpdateStatus;
-            }
-        },
 
         selectionText: {
             bind: {
@@ -41,7 +23,7 @@ Ext.define('MyApp.view.sys.ApiModel', {
             get: function (record) {
                 var title = '';
                 if (record) {
-                    title = '　〖<em> ' + record.get('roleName') + '-' + record.get('apiName') + ' </em>〗';
+                    title = '　〖<em> ' + record.get('name') + ' </em>〗';
                 }
                 return title;
             }
@@ -64,9 +46,7 @@ Ext.define('MyApp.view.sys.ApiModel', {
             get: function (operation) {
                 var options = {
                     title: operation == 'add' ? '添加接口' : (operation == 'edit' ? '修改接口' : (operation == 'view' ? '查看接口' : '')),
-                    readOnly: operation == 'view' ? true : false,
-                    saveButtonHidden: operation == 'view' ? true : false,
-                    prevAndNextButtonHidden: operation == 'add' ? true : false
+                    readOnly: operation == 'view' ? true : false
                 };
                 return options;
             }
@@ -85,6 +65,34 @@ Ext.define('MyApp.view.sys.ApiModel', {
             listeners: {
                 beforeload: 'onApiStoreBeforeLoad',
                 load: 'onApiStoreLoad'
+            }
+        },
+
+        dataScopeStore:{
+            fields: ['name', 'code'],
+            type: 'store',
+            autoLoad: true,
+            proxy: {
+                type: 'ajax',
+                url: CFG.getGlobalPath() + '/sys/role/getDataScopeList',
+                reader: {
+                    type: 'json',
+                    rootProperty: 'data'
+                }
+            }
+        },
+
+        roleStore: {
+            type: 'store',
+            autoLoad: false,
+            fields: ['id', 'name'],
+            proxy: {
+                type: 'ajax',
+                url: CFG.getGlobalPath() + '/sys/role/getTenRoles', // 后端接口地址
+                reader: {
+                    type: 'json',
+                    rootProperty: 'data'
+                }
             }
         }
     }

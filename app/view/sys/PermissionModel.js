@@ -92,35 +92,6 @@ Ext.define('MyApp.view.sys.PermissionModel', {
         },
 
 
-        // roleTreeStore:{
-        //     storeId: 'roleTreeStore',
-        //     type: 'tree',
-            
-        //     proxy: {
-        //         type: 'ajax',
-        //         url: '/sys/permission/rolelist/get',
-        //         reader: {
-        //             type: 'json',
-        //             rootProperty: 'children'
-        //         }
-        //     },
-        
-        //     autoLoad: true,
-
-        //     rootVisible: false,
-        //     root: {
-        //         id: 0,
-        //         text: '根角色',
-        //         expanded: true
-        //     },
-        //     listeners: {
-        //         load: {
-        //             fn: 'onRoleTreeStoreLoad',
-        //             single: true       //只执行一次
-        //         }
-        //     }
-        // },
-
 
         permissionRoleStore:{
             storeId: 'permissionRoleStore',
@@ -138,17 +109,6 @@ Ext.define('MyApp.view.sys.PermissionModel', {
             autoLoad: true
         },
 
-        dataScopeStore: {
-            storeId: 'dataScopeStore',
-            fields: ['id', 'text'],
-            data: [
-                ['1', '所有数据'],
-                ['2', '所在机构及以下数据'],
-                ['3', '所在机构数据'],
-                ['4', '仅本人数据'],
-                ['5', '按明细设置']
-            ]
-        },
 
         dataScopeOrganizationStore: {
             type: 'tree',

@@ -326,6 +326,6 @@ Ext.define('MyApp.view.sys.MenuController', {
     onBindToRoleCancelBtnClick: function (button) {
         button.up('window').close();
         Ext.getBody().unmask();
-    },
+    }
 
 });

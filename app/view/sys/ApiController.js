@@ -17,20 +17,9 @@ Ext.define('MyApp.view.sys.ApiController', {
         }
 
         if (filter) {
-            store.getProxy().extraParams = {
-                filter: filter
-            }
+            store.getProxy().extraParams = filter
         }
 
-        // if (selectionOrganization) {
-        //     filter = store.getProxy().getExtraParams().filter;
-        //     if (filter) {
-        //         filter.organizationId = selectionOrganization.getId();
-        //     } else {
-        //         filter = {organizationId: selectionOrganization.getId()};
-        //     }
-            store.getProxy().getExtraParams().filter = filter;
-        // }
     },
 
     /**
@@ -90,18 +79,12 @@ Ext.define('MyApp.view.sys.ApiController', {
     addApi: function () {
         var me = this,
             view = me.getView(),
-            viewModel = me.getViewModel(),
-            apigrid = me.lookupReference('apigrid'),
-            store = apigrid.getStore(),
-            record = Ext.create('MyApp.model.sys.Api');
+            viewModel = me.getViewModel();
 
-        store.add(record);
-
-        viewModel.set('current.record', record);
         viewModel.set('current.operation', 'add');
         Ext.getBody().mask(); //遮罩
-        var window = view.floatingItems.get('apiwindow');
-        // window.center();
+        var window = view.floatingItems.get('apiWindow');
+        window.center();
         window.show();
     },
 
@@ -118,8 +101,8 @@ Ext.define('MyApp.view.sys.ApiController', {
 
         viewModel.set('current.operation', 'edit');
         Ext.getBody().mask(); //遮罩
-        var window = view.floatingItems.get('apiwindow');
-        // window.center();
+        var window = view.floatingItems.get('apiEditWindow');
+        window.center();
         window.show();
     },
 
@@ -147,15 +130,24 @@ Ext.define('MyApp.view.sys.ApiController', {
             fn: function (btn) {
                 if (btn === 'ok') {
                     Ext.Msg.wait('数据删除中', '正在删除中，请稍候...');
-                    store.remove(record);
-                    store.sync({
-                        success: function (batch, options) {
-                            var msg = batch.getOperations()[0].getResultSet().getMessage();
-                            Ext.toast(msg);
+                    Ext.Ajax.request({
+                        url: CFG.getGlobalPath() + '/sys/api/delete',
+                        method: 'POST',
+                        params: {
+                            apiId: record.get('id')
                         },
-                        callback: function () {
-                            Ext.Msg.hide(); //隐藏等待对话框
-                        }
+                        scope: this,
+                        success: function (response, opts) {
+                            var result = Ext.decode(response.responseText, true);
+                            if (result.success) {
+                                store.reload();
+                                Ext.toast(result.msg);
+                                Ext.Msg.hide();;
+                            } else {
+                                Ext.Msg.alert('出错', result.msg);
+                            }
+                        },
+                        failure: MyApp.ux.data.FailureProcess.Ajax
                     });
                 } else if (btn === 'no') {
                 }
@@ -168,53 +160,155 @@ Ext.define('MyApp.view.sys.ApiController', {
             viewModel = me.getViewModel(),
             apigrid = me.lookupReference('apigrid'),
             apiGridStore = apigrid.getStore('apiStore'),
-            record = viewModel.get('current.record'),
-            operation = viewModel.get('current.operation');
+            apiForm = me.lookupReference('apiForm'),
+            form = apiForm.getForm();
 
-        Ext.Msg.wait('数据保存中', '正在保存中，请稍候...');
-        apiGridStore.sync({
-            success: function (batch, options) {
-                var msg = batch.getOperations()[0].getResultSet().getMessage();
-                Ext.toast(msg);
-                apiGridStore.reload();
-                if (operation === 'add') {
-                    button.up('apiwindow').close();
-                }
-                Ext.Msg.hide(); //隐藏等待对话框
-            },
-            failure: function () {
-                Ext.Msg.hide(); //隐藏等待对话框
-            },
-            callback: function () {
+            if (form.isValid()) {
+                var values = form.getValues();
+    
+                var data = {
+                    name: values.name, 
+                    uri: values.uri,
+                    permission: values.permission,
+                    remarks: values.remarks
+                };
+    
+                Ext.Msg.wait('数据保存中', '正在保存中，请稍候...');
+                Ext.Ajax.request({
+                    url: CFG.getGlobalPath() + '/sys/api/create',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'  // 必须设置 Content-Type
+                    },
+                    jsonData: data,
+                    scope: this,
+                    success: function (response, opts) {
+                        var result = Ext.decode(response.responseText, true);
+                        if (result.success) {
+                            apiGridStore.reload();
+                            Ext.toast(result.msg);
+                            button.up('window').close();
+                            Ext.Msg.hide(); //隐藏等待对话框
+                        } else {
+                            Ext.Msg.alert('出错', result.msg);
+                        }
+                    },
+                    failure: MyApp.ux.data.FailureProcess.Ajax
+                });
+                
+    
             }
-        });
+    },
+
+    onEditSaveBtnClick: function(button){
+        var me = this,
+            viewModel = me.getViewModel(),
+            apigrid = me.lookupReference('apigrid'),
+            apiStore = apigrid.getStore();
+
+        var currentApi = viewModel.get('currentApi');
+        var changes = currentApi.getChanges();
+        
+        if (!Ext.Object.isEmpty(changes)) {
+            changes.id = currentApi.getId();
+            Ext.Ajax.request({
+                url: CFG.getGlobalPath() + '/sys/api/update',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'  // 必须设置 Content-Type
+                },
+                jsonData: JSON.stringify(changes),
+                scope: this,
+                success: function (response, opts) {
+                    var result = Ext.decode(response.responseText, true);
+                    if (result.success) {
+                        apiStore.reload();
+                        Ext.toast(result.msg);
+                        button.up('window').close();
+                    } else {
+                        Ext.Msg.alert('出错', result.msg);
+                    }
+                },
+                failure: MyApp.ux.data.FailureProcess.Ajax
+            });
+        } else {
+            console.log('记录未被修改');
+        }
     },
 
 
     onCancelBtnClick: function (button) {
-        button.up('apiwindow').close();
-    },
-
-    onWindowBeforeShow: function (window, eOpts) {
-    
+        button.up('window').close();
+        Ext.getBody().unmask();
     },
 
     onWindowClose: function () {
-        var me = this,
-            apigrid = me.lookupReference('apigrid'),
-            apiGridStore = apigrid.getStore('apiStore'),
-            viewModel = me.getViewModel(),
-            current = viewModel.get('current');
+        Ext.getBody().unmask();
+    },
 
-        if (current.operation) {
-            if (current.operation === 'add') {
-                var currentApi = viewModel.get('currentApi');
-                viewModel.set('current.record', currentApi);
-            }
-            viewModel.set('current.operation', null);
-            apiGridStore.rejectChanges();
+    // 将菜单绑定至角色
+    addPermission: function(){
+        var me = this,
+            view = me.getView(),
+            viewModel = me.getViewModel();
+
+        var currentMenu = viewModel.get('currentApi');
+
+        if (!currentMenu) {
+            Ext.Msg.alert('提示', '请先选中要绑定的接口！');
+            return;
         }
 
+        Ext.getBody().mask(); //遮罩
+        var window = view.floatingItems.get('apiBindToRoleWindow');
+        window.center();
+        window.show();
+    },
+
+
+    onBindToRoleSaveBtnClick: function (button) {
+        var me = this,
+            viewModel = me.getViewModel(),
+            apiBindToRoleForm = me.lookupReference('apiBindToRoleForm'),
+            form = apiBindToRoleForm.getForm(),
+            currentApi = viewModel.get('currentApi');
+
+        if (form.isValid() ) {
+            var values = form.getValues();
+
+            var data = {
+                apiId: currentApi.getId(), 
+                roleId: values.roleId,
+                dataScope: values.dataScope
+            };
+
+            Ext.Ajax.request({
+                url: CFG.getGlobalPath() + '/sys/permission/create',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'  // 必须设置 Content-Type
+                },
+                jsonData: data,
+                scope: this,
+                success: function (response, opts) {
+                    var result = Ext.decode(response.responseText, true);
+                    if (result.success) {
+                        Ext.toast(result.msg);
+                        button.up('window').close();
+                        Ext.getBody().unmask();
+                    } else {
+                        Ext.Msg.alert('出错', result.msg);
+                    }
+                },
+                failure: MyApp.ux.data.FailureProcess.Ajax
+            });
+            
+
+        }
+    },
+
+    onBindToRoleCancelBtnClick: function (button) {
+        button.up('window').close();
         Ext.getBody().unmask();
     }
 

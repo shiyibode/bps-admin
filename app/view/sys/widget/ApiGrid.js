@@ -43,6 +43,7 @@ Ext.define('MyApp.view.sys.widget.ApiGrid', {
             dataIndex: 'name'
         }, {
             text: 'uri',
+            searchable: true,
             dataIndex: 'uri'
         }, {
             text: '权限',
@@ -70,7 +71,7 @@ Ext.define('MyApp.view.sys.widget.ApiGrid', {
             dock: 'top',
             searchBox: true,
             pageSize: CFG.getDefaultPageSize(),
-            // grid: this,
+            grid: this,
             collapseExpandButton: false,
             permissiveOpts: []
         });

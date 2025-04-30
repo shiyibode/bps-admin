@@ -95,7 +95,7 @@ Ext.define('MyApp.view.sys.widget.PermissionWindow', {
 
             bind: {
                 disabled: '{windowOptions.readOnly}',
-                store: '{dataScopeStore}',
+                // store: '{dataScopeStore}',
                 value: '{current.record.dataScope}'
             }
         },{

@@ -3,9 +3,10 @@ Ext.define('MyApp.view.sys.Api', {
     xtype: 'sysapi',
 
     requires: [
-        // 'MyApp.view.sys.ApiController',
-        // 'MyApp.view.sys.ApiModel',
-        'MyApp.view.sys.widget.ApiGrid'
+        'MyApp.view.sys.widget.ApiGrid',
+        'MyApp.view.sys.widget.ApiWindow',
+        'MyApp.view.sys.widget.ApiEditWindow',
+        'MyApp.view.sys.widget.ApiBindToRoleWindow',
     ],
 
     controller: 'sysapi',
@@ -32,6 +33,11 @@ Ext.define('MyApp.view.sys.Api', {
     , {
         //User 添加、修改、查看对话框
         xtype: 'apiwindow'
+    }, {
+        //User 添加、修改、查看对话框
+        xtype: 'apieditwindow'
+    }, {
+        xtype: 'apibindtorolewindow'
     }
 ],
 

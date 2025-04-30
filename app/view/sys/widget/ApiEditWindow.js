@@ -1,15 +1,15 @@
-Ext.define('MyApp.view.sys.widget.ApiWindow', {
+
+/**
+ * create by syb on 2025-04-30
+ * 新增、修改接口窗口
+ */
+Ext.define('MyApp.view.sys.widget.ApiEditWindow', {
     extend: 'Ext.window.Window',
+    alias: 'widget.apieditwindow',
+    itemId: 'apiEditWindow',
 
     width: 320,
     closable: false,
-    closeAction: 'hide',
-    alias: 'widget.apiwindow',
-
-    requires: [
-    ],
-
-    itemId: 'apiWindow',
 
     bind: {
         title: '{windowOptions.title}'
@@ -19,7 +19,6 @@ Ext.define('MyApp.view.sys.widget.ApiWindow', {
     resizable: true,
     modal: false,   //模态窗口设为false, 在显示时设置是否为模态窗口
     closeAction: 'hide',
-
     items:[{
         xtype: 'form',
         reference: 'apiForm',
@@ -38,22 +37,34 @@ Ext.define('MyApp.view.sys.widget.ApiWindow', {
             xtype: 'textfield',
             allowBlank: false,
             fieldLabel: '名称',
-            name: 'name'
+            name: 'name',
+            bind: {
+                value: '{current.record.name}'
+            }
         }, {
             xtype: 'textfield',
             allowBlank: false,
             fieldLabel: 'uri',
-            name: 'uri'
+            name: 'uri',
+            bind: {
+                value: '{current.record.uri}'
+            }
         }, {
             xtype: 'textfield',
             allowBlank: false,
             fieldLabel: '权限',
-            name: 'permission'
+            name: 'permission',
+            bind: {
+                value: '{current.record.permission}'
+            }
         }, {
             xtype: 'textfield',
             allowBlank: true,
             fieldLabel: '备注',
-            name: 'remarks'
+            name: 'remarks',
+            bind: {
+                value: '{current.record.remarks}'
+            }
         }],
 
         buttons: [
@@ -63,7 +74,7 @@ Ext.define('MyApp.view.sys.widget.ApiWindow', {
                 formBind: true,
                 itemId: 'saveBtn',
                 iconCls: 'x-fa fa-floppy-o',
-                handler: 'onSaveBtnClick'
+                handler: 'onEditSaveBtnClick'
             }, {
                 text: '关闭',
                 itemId: 'cancelBtn',
@@ -71,10 +82,8 @@ Ext.define('MyApp.view.sys.widget.ApiWindow', {
             }]
     }],
 
-    
-
     listeners: {
         close: 'onWindowClose'
     }
-
+ 
 });
