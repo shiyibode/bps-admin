@@ -56,9 +56,6 @@ Ext.define('MyApp.view.sys.widget.UserWindow', {
             defaults: {
                 anchor: '100%'
             },
-            bind: {
-                hidden: '{current.operation === "edit"}'
-            },
             items: [{
                 xtype: 'container',
                 layout: 'hbox',

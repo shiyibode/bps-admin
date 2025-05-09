@@ -10,7 +10,20 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
     data: {
         gridSelectionRecords: [],
 
-        accountEmployee: null
+        currentAccountEmployeeNumber: 1,
+        currentAccountEmployeePaymentNumber: 1,
+        accountEmployee1: null,
+        accountEmployee2: null,
+        accountEmployee3: null,
+        accountEmployee4: null,
+        accountEmployee5: null,
+        accountEmployee6: null,
+        accountEmployeePayment1: null,
+        accountEmployeePayment2: null,
+        accountEmployeePayment3: null,
+        accountEmployeePayment4: null,
+        accountEmployeePayment5: null,
+        accountEmployeePayment6: null
     },
 
     formulas: {
@@ -102,14 +115,26 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
 
         userStoreReg: {
             type: 'store',
-            model: 'MyApp.model.sys.User',
             autoLoad: false,
-            remoteFilter: true,
-            remoteSort: true,
-            listeners: {
-                beforeload: 'onRegisterUserStoreBeforeLoad',
-                load: 'onUserStoreLoad'
+            fields: ['code', 'name'],
+            pageSize: 0,
+            proxy: {
+                type: 'ajax',
+                url: CFG.getGlobalPath() + '/sys/user/getTenUsers', // 后端接口地址
+                reader: {
+                    type: 'json',
+                    rootProperty: 'data'
+                }
             }
+            // type: 'store',
+            // model: 'MyApp.model.sys.User',
+            // autoLoad: false,
+            // remoteFilter: true,
+            // remoteSort: true,
+            // listeners: {
+            //     beforeload: 'onRegisterUserStoreBeforeLoad',
+            //     load: 'onUserStoreLoad'
+            // }
         },
 
         userStoreMod: {
@@ -232,17 +257,33 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
             }
         },
 
-        //存款种类Store(如普通存款、爱行存款)
-        depositSortStore: {
+        depositAccountAutoBindRuleStore:{
+            fields: ['name', 'code'],
             type: 'store',
-            model: 'MyApp.model.cktj.DepositSort',
             autoLoad: true,
-            remoteFilter: true,
-            remoteSort: true,
+            pageSize: 0,
             proxy: {
-                type: 'format',
-                url: CFG.getGlobalPath() + '/cktj/employeeaccount/depositsort'
+                type: 'ajax',
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/getAutoBindRule',
+                reader: {
+                    type: 'json',
+                    rootProperty: 'data'
+                }
             }
         }
+        // ,
+
+        // //存款种类Store(如普通存款、爱行存款)
+        // depositSortStore: {
+        //     type: 'store',
+        //     model: 'MyApp.model.cktj.DepositSort',
+        //     autoLoad: true,
+        //     remoteFilter: true,
+        //     remoteSort: true,
+        //     proxy: {
+        //         type: 'format',
+        //         url: CFG.getGlobalPath() + '/cktj/employeeaccount/depositsort'
+        //     }
+        // }
     }
 });

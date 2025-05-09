@@ -271,6 +271,7 @@ Ext.define('MyApp.view.sys.UserController', {
             record = viewModel.get('current.record'),
             operation = viewModel.get('current.operation');
 
+        console.log(form.isValid());
         if (form.isValid()) {
             var values = form.getValues();
 

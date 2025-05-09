@@ -31,7 +31,7 @@ Ext.define('MyApp.view.sys.widget.UserEditWindow', {
 
     items: [{
         xtype: 'form',
-        reference: 'userForm',
+        reference: 'userEditForm',
         scrollable: true,
         border: false,
         modelValidation: true,

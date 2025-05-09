@@ -77,6 +77,11 @@ Ext.define('MyApp.view.cktj.widget.EmployeeAccountGrid', {
                 dataIndex: 'accountNo',
                 searchable: true,
                 flex: 1
+            },{
+                text: '子账号',
+                dataIndex: 'childAccountNo',
+                searchable: true,
+                flex: 1
             }, {
                 text: '卡号',
                 dataIndex: 'cardNo',
