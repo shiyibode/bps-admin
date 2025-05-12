@@ -437,9 +437,9 @@ Ext.define('MyApp.view.cktj.widget.RegEmployeeWindow', {
                 xtype: 'container',
                 // layout: 'hbox',
                 padding: '0 0 0 500',
-                cls: 'backgroundColor: red',
                 items: [{
                     xtype: 'button',
+                    itemId: 'regEmployeeAddPercentageBtn',
                     text: '添加揽储人',
                     handler: 'onAddPercentageBtnClick'
                 }]

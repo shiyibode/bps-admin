@@ -6,8 +6,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountRegisterCheck',{
     requires: [
         'Ext.layout.container.Border',
         'MyApp.view.cktj.widget.EmployeeAccountGrid',
-        'MyApp.view.cktj.widget.RegEmployeeWindow',
-        'MyApp.view.cktj.widget.ModifyEmployeeWindow'
+        'MyApp.view.cktj.widget.RegEmployeeWindow'
     ],
 
     controller: 'cktjemployeeaccount',
@@ -49,9 +48,6 @@ Ext.define('MyApp.view.cktj.EmployeeAccountRegisterCheck',{
         }, {
             //登记揽储人窗口
             xtype: 'regemployeewindow'
-        }, {
-            //变更揽储人窗口
-            xtype: 'modifyemployeewindow'
         });
 
         this.callParent(arguments);

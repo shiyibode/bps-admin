@@ -1,12 +1,12 @@
 
-Ext.define('MyApp.view.cktj.EmployeeAccountRegister',{
+Ext.define('MyApp.view.cktj.EmployeeAccountAlterPayment',{
     extend: 'Ext.panel.Panel',
-    xtype: 'cktjemployeeaccountregister',
+    xtype: 'cktjemployeeaccountalterpayment',
 
     requires: [
         'Ext.layout.container.Border',
         'MyApp.view.cktj.widget.EmployeeAccountGrid',
-        'MyApp.view.cktj.widget.RegEmployeeWindow'
+        'MyApp.view.cktj.widget.ModifyEmployeePaymentWindow'
     ],
 
     controller: 'cktjemployeeaccount',
@@ -25,8 +25,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountRegister',{
 
         //表格的数据存储器
         var dataStore = null;
-        dataStore = me.getViewModel().getStore('unregisterAccountStore');
-
+        dataStore = me.getViewModel().getStore('paymentModifiableAccountStore');
 
         me.items = [];
         me.items.push({
@@ -41,14 +40,13 @@ Ext.define('MyApp.view.cktj.EmployeeAccountRegister',{
             region : 'center',
             xtype : 'employeeaccountgrid',
             bind: {
-                title: '登记申请'+'{selectionText}'
+                title: '变更申请'+'{selectionText}'
             },
-            permissiveOpts: me.permissiveOpts,
-            moduleId: 'register',
+            moduleId: 'alterPayment',
             store: dataStore
         }, {
-            //登记揽储人窗口
-            xtype: 'regemployeewindow'
+            //变更揽储人窗口
+            xtype: 'modifyemployeepaymentwindow'
         });
 
         this.callParent(arguments);

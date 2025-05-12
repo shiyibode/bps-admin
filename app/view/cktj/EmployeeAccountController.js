@@ -265,18 +265,49 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
     },
 
     onAddPercentageBtnClick: function(button){
+
+        var itemId = button.getItemId();
+
         var me = this;
         var totalCount = 6;
         var viewModel = me.getViewModel();
-        var currentCount = viewModel.get('currentAccountEmployeeNumber');
-        if(currentCount < totalCount){
-            currentCount = currentCount + 1;
-            viewModel.set('currentAccountEmployeeNumber', currentCount);
-            var nextContainer = me.lookupReference('regEmployeeContainer-'+currentCount);
-            nextContainer.setHidden(false);
+        if(itemId === 'regEmployeeAddPercentageBtn'){
+            var currentCount = viewModel.get('currentAccountEmployeeNumber');
+            if(currentCount < totalCount){
+                currentCount = currentCount + 1;
+                viewModel.set('currentAccountEmployeeNumber', currentCount);
+                var nextContainer = me.lookupReference('regEmployeeContainer-'+currentCount);
+                nextContainer.setHidden(false);
+            }
+            else{
+                Ext.Msg.alert('提示','最多只能有6位揽储人');
+            }
         }
-        else{
-            Ext.Msg.alert('提示','最多只能有6位揽储人');
+
+        if(itemId == 'modEmployeeTaskAddPercentageBtn'){
+            var currentCount = viewModel.get('currentModAccountEmployeeNumber');
+            if(currentCount < totalCount){
+                currentCount = currentCount + 1;
+                viewModel.set('currentModAccountEmployeeNumber', currentCount);
+                var nextContainer = me.lookupReference('modEmployeeTaskContainer-'+currentCount);
+                nextContainer.setHidden(false);
+            }
+            else{
+                Ext.Msg.alert('提示','最多只能有6位揽储人');
+            }
+        }
+
+        if(itemId == 'modEmployeePaymentAddPercentageBtn'){
+            var currentCount = viewModel.get('currentModAccountEmployeePaymentNumber');
+            if(currentCount < totalCount){
+                currentCount = currentCount + 1;
+                viewModel.set('currentModAccountEmployeePaymentNumber', currentCount);
+                var nextContainer = me.lookupReference('modEmployeePaymentContainer-'+currentCount);
+                nextContainer.setHidden(false);
+            }
+            else{
+                Ext.Msg.alert('提示','最多只能有6位揽储人');
+            }
         }
     },
 
@@ -336,8 +367,15 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
 
         var itemId = window.getItemId();
         if (itemId === 'regEmployeeWindow') {
-        } else if (itemId === 'modifyEmployeeWindow') {
-            var modifyEmployeeWindowAccountStore = Ext.StoreManager.get('modifyEmployeeWindowAccountStore');
+        } else if (itemId === 'modifyEmployeeTaskWindow') {
+            var modifyEmployeeWindowAccountStore = Ext.StoreManager.get('modifyEmployeeTaskWindowAccountStore');
+
+            if (modifyEmployeeWindowAccountStore) {
+                modifyEmployeeWindowAccountStore.removeAll()
+                modifyEmployeeWindowAccountStore.insert(0, gridSelectionRecords);
+            }
+        }else if (itemId === 'modifyEmployeePaymentWindow') {
+            var modifyEmployeeWindowAccountStore = Ext.StoreManager.get('modifyEmployeePaymentWindowAccountStore');
 
             if (modifyEmployeeWindowAccountStore) {
                 modifyEmployeeWindowAccountStore.removeAll()
@@ -506,7 +544,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
      * @param button
      */
     onRegisterEmployeeSaveBtnClick: function(button) {
-        button.setDisabled(true);
+        
         var me = this,
             viewModel = me.getViewModel(),
             unregisterAccountStore = viewModel.getStore('unregisterAccountStore');
@@ -586,8 +624,6 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
             if(values.jccode5 && values.jcpercentage5) tellerPaymentPercentageList.push({tellerCode:values.jccode5,percentage:values.jcpercentage5});
             if(values.jccode6 && values.jcpercentage6) tellerPaymentPercentageList.push({tellerCode:values.jccode6,percentage:values.jcpercentage6});
 
-            console.log(values);
-
             var data = {
                 unboundAccountId: record.get('unboundAccountId'),
                 accountNo: values.accountNo,
@@ -599,6 +635,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
                 autoBindRule: values.autoBindRule
             }
 
+            button.setDisabled(true);
             Ext.Ajax.request({
                 url: CFG.getGlobalPath() + '/cktj/employeeaccount/registeremployee',
                 method: 'POST',
@@ -632,7 +669,8 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
         var me = this,
             viewModel = me.getViewModel(),
             registerUncheckedAccountStore = viewModel.getStore('registerUncheckedAccountStore'),
-            gridSelectionRecords = viewModel.get('gridSelectionRecords');
+            gridSelectionRecords = viewModel.get('gridSelectionRecords'),
+            selectionRecord = viewModel.get('selectionRecord');
 
         if (!gridSelectionRecords || gridSelectionRecords.length <= 0) {
             Ext.Msg.alert('提示', '请选择要提交的正确的登记揽储人申请记录！');
@@ -646,20 +684,22 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
             icon: Ext.Msg.QUESTION,
             fn: function(btn) {
                 if (btn === 'yes') {
-                    var data = new Array();
-                    Ext.Array.each(gridSelectionRecords, function(record) {
-                        data.push({id: record.get('id'), accountNo: record.get('accountNo')});
-                    });
-
-                    var dataJson = {
-                        data: data
-                    };
+                    // var data = new Array();
+                    // Ext.Array.each(gridSelectionRecords, function(record) {
+                    //     data.push({id: record.get('id'), accountNo: record.get('accountNo')});
+                    // });
+                    var data = {
+                        accountNo: selectionRecord.get('accountNo'),
+                        childAccountNo: selectionRecord.get('childAccountNo')
+                    }
 
                     Ext.Ajax.request({
-                        url: '/cktj/employeeaccount/checkregisteremployee',
+                        url: CFG.getGlobalPath() + '/cktj/employeeaccount/checkregisteremployee',
                         method: 'POST',
-                        defaultPostHeader: 'application/json;charset=UTF-8',
-                        params: Ext.JSON.encode(dataJson),
+                        headers: {
+                            'Content-Type': 'application/json'  // 必须设置 Content-Type
+                        },
+                        jsonData: data,
                         scope: this,
                         success: function(response, opts) {
                             var result = Ext.decode(response.responseText, true);
@@ -684,7 +724,8 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
         var me = this,
             viewModel = me.getViewModel(),
             registerUncheckedAccountStore = viewModel.getStore('registerUncheckedAccountStore'),
-            gridSelectionRecords = viewModel.get('gridSelectionRecords');
+            gridSelectionRecords = viewModel.get('gridSelectionRecords'),
+            selectionRecord = viewModel.get('selectionRecord');
 
         if (!gridSelectionRecords || gridSelectionRecords.length <= 0) {
             Ext.Msg.alert('提示', '请选择要撤销的登记揽储人申请记录！');
@@ -698,20 +739,23 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
             icon: Ext.Msg.QUESTION,
             fn: function(btn) {
                 if (btn === 'yes') {
-                    var data = new Array();
-                    Ext.Array.each(gridSelectionRecords, function(record) {
-                        data.push({id: record.get('id'), accountNo: record.get('accountNo')});
-                    });
+                    // var data = new Array();
+                    // Ext.Array.each(gridSelectionRecords, function(record) {
+                    //     data.push({id: record.get('id'), accountNo: record.get('accountNo')});
+                    // });
 
-                    var dataJson = {
-                        data: data
-                    };
+                    var data = {
+                        accountNo: selectionRecord.get('accountNo'),
+                        childAccountNo: selectionRecord.get('childAccountNo')
+                    }
 
                     Ext.Ajax.request({
-                        url: '/cktj/employeeaccount/undoregisteremployee',
+                        url: CFG.getGlobalPath() + '/cktj/employeeaccount/undoregisteremployee',
                         method: 'POST',
-                        defaultPostHeader: 'application/json;charset=UTF-8',
-                        params: Ext.JSON.encode(dataJson),
+                        headers: {
+                            'Content-Type': 'application/json'  // 必须设置 Content-Type
+                        },
+                        jsonData: data,
                         scope: this,
                         success: function(response, opts) {
                             var result = Ext.decode(response.responseText, true);
@@ -732,7 +776,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
     /**
      * 显示变更揽储人窗口
      */
-    modifyEmployee: function() {
+    modifyEmployeeTask: function() {
         var me = this,
             view = me.getView(),
             viewModel = me.getViewModel(),
@@ -743,7 +787,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
             return;
         }
 
-        var window = view.floatingItems.get('modifyEmployeeWindow');
+        var window = view.floatingItems.get('modifyEmployeeTaskWindow');
 
         Ext.getBody().mask(); //遮罩
         window.center();
@@ -751,49 +795,221 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
     },
 
     /**
-     * 提交变更揽储人申请
+     * 显示变更揽储人窗口
+     */
+    modifyEmployeePayment: function() {
+        var me = this,
+            view = me.getView(),
+            viewModel = me.getViewModel(),
+            gridSelectionRecords = viewModel.get('gridSelectionRecords');
+
+        if (!gridSelectionRecords || gridSelectionRecords.length <= 0) {
+            Ext.Msg.alert('提示', '请选择要变更揽储人的账户！');
+            return;
+        }
+
+        var window = view.floatingItems.get('modifyEmployeePaymentWindow');
+
+        Ext.getBody().mask(); //遮罩
+        window.center();
+        window.show();
+    },
+
+    /**
+     * 提交变更揽储人申请--任务
      * @param button
      */
-    onModifyEmployeeSaveBtnClick: function(button) {
+    onModifyEmployeeTaskSaveBtnClick: function(button) {
         var me = this,
             viewModel = me.getViewModel(),
-            modifiableAccountStore = viewModel.getStore('modifiableAccountStore');
-            gridSelectionRecords = viewModel.get('gridSelectionRecords'),
-            accountEmployee = viewModel.get('accountEmployee');
+            taskModifiableAccountStore = viewModel.getStore('taskModifiableAccountStore');
+            gridSelectionRecords = viewModel.get('gridSelectionRecords');
 
-        var form = me.lookupReference('modifyEmployeeForm').getForm();
+        var record = viewModel.get('selectionRecord');
+        var form = me.lookupReference('modifyEmployeeTaskForm').getForm();
 
         if (form.isValid()) {
             var values = form.getValues();
-            var data = new Array();
-            Ext.Array.each(gridSelectionRecords, function(record) {
-                data.push({
-                    id: record.get('id'),                   //原揽储人存款账户信息ID
-                    tellerCode: accountEmployee.userCode,   //新揽储人柜员号
-                    remarks: values.remarks
-                });
-            });
-            var dataJson = {
-                data: data
+            var mainTellerRadio = values.mainTeller;
+            var tellerTaskPercentageList = new Array();
+            if(values.rwcode1 && values.rwpercentage1){
+                 var ttp = {
+                    tellerCode:values.rwcode1,
+                    percentage:values.rwpercentage1
+                } 
+                 if(mainTellerRadio == 'radio1') ttp.mainTeller = true;
+                 else ttp.mainTeller = false;
+                 tellerTaskPercentageList.push(ttp) 
+            };
+            if(values.rwcode2 && values.rwpercentage2){
+                var ttp = {
+                   tellerCode:values.rwcode2,
+                   percentage:values.rwpercentage2
+               } 
+                if(mainTellerRadio == 'radio2') ttp.mainTeller = true;
+                else ttp.mainTeller = false;
+                tellerTaskPercentageList.push(ttp) 
+           };
+           if(values.rwcode3 && values.rwpercentage3){
+                var ttp = {
+                    tellerCode:values.rwcode3,
+                    percentage:values.rwpercentage3
+                } 
+                if(mainTellerRadio == 'radio3') ttp.mainTeller = true;
+                else ttp.mainTeller = false;
+                tellerTaskPercentageList.push(ttp) 
+            };
+            if(values.rwcode4 && values.rwpercentage4){
+                var ttp = {
+                    tellerCode:values.rwcode4,
+                    percentage:values.rwpercentage4
+                } 
+                if(mainTellerRadio == 'radio4') ttp.mainTeller = true;
+                else ttp.mainTeller = false;
+                tellerTaskPercentageList.push(ttp) 
+            };
+            if(values.rwcode5 && values.rwpercentage5){
+                var ttp = {
+                    tellerCode:values.rwcode5,
+                    percentage:values.rwpercentage5
+                } 
+                if(mainTellerRadio == 'radio5') ttp.mainTeller = true;
+                else ttp.mainTeller = false;
+                tellerTaskPercentageList.push(ttp) 
+            };
+            if(values.rwcode6 && values.rwpercentage6){
+                var ttp = {
+                    tellerCode:values.rwcode6,
+                    percentage:values.rwpercentage6
+                } 
+                if(mainTellerRadio == 'radio6') ttp.mainTeller = true;
+                else ttp.mainTeller = false;
+                tellerTaskPercentageList.push(ttp) 
             };
 
+            var data = {
+                accountNo: record.get('accountNo'),
+                childAccountNo: record.get('childAccountNo'),
+                tellerTaskPercentageList: tellerTaskPercentageList,
+                remarks: values.remarks
+            }
+
+            button.setDisabled(true);
             Ext.Ajax.request({
-                url: '/cktj/employeeaccount/modifyemployee',
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/modifyemployeetask',
                 method: 'POST',
-                defaultPostHeader: 'application/json;charset=UTF-8',
-                params: Ext.JSON.encode(dataJson),
+                headers: {
+                    'Content-Type': 'application/json'  // 必须设置 Content-Type
+                },
+                jsonData: data,
                 scope: this,
                 success: function(response, opts) {
                     var result = Ext.decode(response.responseText, true);
                     if (result.success) {
                         Ext.toast(result.msg);
-                        modifiableAccountStore.reload();
+                        taskModifiableAccountStore.reload();
                         button.up('window').close();
                     } else {
                         Ext.Msg.alert('存款账户变更揽储人出错', result.msg);
                     }
                 },
-                failure: MyApp.ux.data.FailureProcess.Ajax
+                failure: MyApp.ux.data.FailureProcess.Ajax,
+                callback: function(){
+                    button.setDisabled(false);
+                }
+            });
+        }
+    },
+
+    /**
+     * 提交变更揽储人申请--计酬
+     * @param button
+     */
+    onModifyEmployeePaymentSaveBtnClick: function(button) {
+        var me = this,
+            viewModel = me.getViewModel(),
+            paymentModifiableAccountStore = viewModel.getStore('paymentModifiableAccountStore');
+            gridSelectionRecords = viewModel.get('gridSelectionRecords');
+
+        var record = viewModel.get('selectionRecord');
+        var form = me.lookupReference('modifyEmployeePaymentForm').getForm();
+
+        if (form.isValid()) {
+            var values = form.getValues();
+            var tellerPaymentPercentageList = new Array();
+            if(values.jccode1 && values.jcpercentage1){
+                 var ttp = {
+                    tellerCode:values.jccode1,
+                    percentage:values.jcpercentage1
+                } 
+                 tellerPaymentPercentageList.push(ttp) 
+            };
+            if(values.jccode2 && values.jcpercentage2){
+                 var ttp = {
+                    tellerCode:values.jccode2,
+                    percentage:values.jcpercentage2
+                } 
+                 tellerPaymentPercentageList.push(ttp) 
+            };
+           if(values.jccode3 && values.jcpercentage3){
+                 var ttp = {
+                    tellerCode:values.jccode3,
+                    percentage:values.jcpercentage3
+                } 
+                 tellerPaymentPercentageList.push(ttp) 
+            };
+            if(values.jccode4 && values.jcpercentage4){
+                 var ttp = {
+                    tellerCode:values.jccode4,
+                    percentage:values.jcpercentage4
+                } 
+                 tellerPaymentPercentageList.push(ttp) 
+            };
+            if(values.jccode5 && values.jcpercentage5){
+                 var ttp = {
+                    tellerCode:values.jccode5,
+                    percentage:values.jcpercentage5
+                } 
+                 tellerPaymentPercentageList.push(ttp) 
+            };
+            if(values.jccode6 && values.jcpercentage6){
+                 var ttp = {
+                    tellerCode:values.jccode6,
+                    percentage:values.jcpercentage6
+                } 
+                 tellerPaymentPercentageList.push(ttp) 
+            };
+
+            var data = {
+                accountNo: record.get('accountNo'),
+                childAccountNo: record.get('childAccountNo'),
+                tellerPaymentPercentageList: tellerPaymentPercentageList,
+                remarks: values.remarks
+            }
+
+            button.setDisabled(true)
+            Ext.Ajax.request({
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/modifyemployeepayment',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'  // 必须设置 Content-Type
+                },
+                jsonData: data,
+                scope: this,
+                success: function(response, opts) {
+                    var result = Ext.decode(response.responseText, true);
+                    if (result.success) {
+                        Ext.toast(result.msg);
+                        paymentModifiableAccountStore.reload();
+                        button.up('window').close();
+                    } else {
+                        Ext.Msg.alert('存款账户变更揽储人出错', result.msg);
+                    }
+                },
+                failure: MyApp.ux.data.FailureProcess.Ajax,
+                callback: function(){
+                    button.setDisabled(false);
+                }
             });
         }
     },

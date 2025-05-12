@@ -1,12 +1,12 @@
 
-Ext.define('MyApp.view.cktj.EmployeeAccountAlter',{
+Ext.define('MyApp.view.cktj.EmployeeAccountAlterTask',{
     extend: 'Ext.panel.Panel',
-    xtype: 'cktjemployeeaccountalter',
+    xtype: 'cktjemployeeaccountaltertask',
 
     requires: [
         'Ext.layout.container.Border',
         'MyApp.view.cktj.widget.EmployeeAccountGrid',
-        'MyApp.view.cktj.widget.ModifyEmployeeWindow'
+        'MyApp.view.cktj.widget.ModifyEmployeeTaskWindow'
     ],
 
     controller: 'cktjemployeeaccount',
@@ -25,7 +25,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountAlter',{
 
         //表格的数据存储器
         var dataStore = null;
-        dataStore = me.getViewModel().getStore('modifiableAccountStore');
+        dataStore = me.getViewModel().getStore('taskModifiableAccountStore');
 
         me.items = [];
         me.items.push({
@@ -42,11 +42,11 @@ Ext.define('MyApp.view.cktj.EmployeeAccountAlter',{
             bind: {
                 title: '变更申请'+'{selectionText}'
             },
-            moduleId: 'alter',
+            moduleId: 'alterTask',
             store: dataStore
         }, {
             //变更揽储人窗口
-            xtype: 'modifyemployeewindow'
+            xtype: 'modifyemployeetaskwindow'
         });
 
         this.callParent(arguments);

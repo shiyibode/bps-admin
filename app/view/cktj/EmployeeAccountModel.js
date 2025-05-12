@@ -8,7 +8,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
     ],
 
     data: {
-        gridSelectionRecords: [],
+        gridSelectionRecords: null,
 
         currentAccountEmployeeNumber: 1,
         currentAccountEmployeePaymentNumber: 1,
@@ -23,7 +23,10 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
         accountEmployeePayment3: null,
         accountEmployeePayment4: null,
         accountEmployeePayment5: null,
-        accountEmployeePayment6: null
+        accountEmployeePayment6: null,
+
+        currentModAccountEmployeeNumber: 1,
+        currentModAccountEmployeePaymentNumber: 1
     },
 
     formulas: {
@@ -58,31 +61,10 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
             }
         },
 
-        detailSource: {
-            bind: {
-                bindTo: '{gridSelectionRecords}',
-                deep: true
-            },
-            get: function(records) {
-                var source = {};
-                if (records && records.length >= 1) {
-                    source = {
-                        '名称' : records[0].get('text'),
-                        '图标' : records[0].get('iconCls'),
-                        '顺序' : records[0].get('sort'),
-                        '创建时间' : records[0].get('createTime')
-                    };
-                }
-                return source
-            }
-        },
-
         regEmployeeUserComboboxSelection: {
             bind: '{regEmployeeUserCombobox.data}',
             get: function(data) {
                 this.set('accountEmployee', data);
-                console.log(data.get('organizationName'));
-                console.log(data.get('userStatusStr'));
             }
         }
     },
@@ -126,23 +108,17 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
                     rootProperty: 'data'
                 }
             }
-            // type: 'store',
-            // model: 'MyApp.model.sys.User',
-            // autoLoad: false,
-            // remoteFilter: true,
-            // remoteSort: true,
-            // listeners: {
-            //     beforeload: 'onRegisterUserStoreBeforeLoad',
-            //     load: 'onUserStoreLoad'
-            // }
         },
 
         userStoreMod: {
             type: 'store',
-            model: 'MyApp.model.sys.User',
             autoLoad: false,
-            remoteFilter: true,
-            remoteSort: true,
+            fields: ['code', 'name'],
+            pageSize: 0,
+            proxy: {
+                type: 'format',
+                url: CFG.getGlobalPath() + '/sys/user/getTenUsers'
+            },
             listeners: {
                 beforeload: 'onModifyUserStoreBeforeLoad',
                 load: 'onUserStoreLoad'
@@ -175,21 +151,11 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
             ]
         },
 
-        // customerSubTypeStore: {
-        //     fields: ['text', 'value'],
-        //     data:[
-        //         ['个人', '1'],
-        //         ['行政单位', '2'],
-        //         ['事业单位', '3'],
-        //         ['企业单位', '4']
-        //     ]
-        // },
-
         //已登记揽储人但未复核的账户Store
         registerUncheckedAccountStore: {
             type: 'store',
             model: 'MyApp.model.cktj.EmployeeAccount',
-            pageSize: 30,
+            pageSize: CFG.getDefaultPageSize(),
             autoLoad: false,
             remoteFilter: true,
             remoteSort: true,
@@ -204,16 +170,34 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
         },
 
         //可变更揽储人账户Store
-        modifiableAccountStore: {
+        taskModifiableAccountStore: {
             type: 'store',
             model: 'MyApp.model.cktj.EmployeeAccount',
-            pageSize: 30,
+            pageSize: CFG.getDefaultPageSize(),
             autoLoad: false,
             remoteFilter: true,
             remoteSort: true,
             proxy: {
                 type: 'format',
-                url: CFG.getGlobalPath() + '/cktj/employeeaccount/getmodifiableaccount'
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/gettaskmodifiableaccount'
+            },
+            listeners: {
+                beforeload: 'onEmployeeAccountStoreBeforeLoad',
+                load: 'onEmployeeAccountStoreLoad'
+            }
+        },
+
+        //可变更揽储人账户Store
+        paymentModifiableAccountStore: {
+            type: 'store',
+            model: 'MyApp.model.cktj.EmployeeAccount',
+            pageSize: CFG.getDefaultPageSize(),
+            autoLoad: false,
+            remoteFilter: true,
+            remoteSort: true,
+            proxy: {
+                type: 'format',
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/getpaymentmodifiableaccount'
             },
             listeners: {
                 beforeload: 'onEmployeeAccountStoreBeforeLoad',
@@ -225,7 +209,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
         modifiedUncheckedAccountStore: {
             type: 'store',
             model: 'MyApp.model.cktj.EmployeeAccount',
-            pageSize: 30,
+            pageSize: CFG.getDefaultPageSize(),
             autoLoad: false,
             remoteFilter: true,
             remoteSort: true,
@@ -243,7 +227,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
         employeeAccountStore: {
             type: 'store',
             model: 'MyApp.model.cktj.EmployeeAccount',
-            pageSize: 30,
+            pageSize: CFG.getDefaultPageSize(),
             autoLoad: false,
             remoteFilter: true,
             remoteSort: true,
@@ -271,19 +255,10 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
                 }
             }
         }
-        // ,
 
-        // //存款种类Store(如普通存款、爱行存款)
-        // depositSortStore: {
-        //     type: 'store',
-        //     model: 'MyApp.model.cktj.DepositSort',
-        //     autoLoad: true,
-        //     remoteFilter: true,
-        //     remoteSort: true,
-        //     proxy: {
-        //         type: 'format',
-        //         url: CFG.getGlobalPath() + '/cktj/employeeaccount/depositsort'
-        //     }
-        // }
+
+
+
+
     }
 });
