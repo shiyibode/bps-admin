@@ -375,6 +375,7 @@ Ext.define('MyApp.view.cktj.widget.ModifyEmployeeTaskWindow', {
             }, {
                 xtype: 'container',
                 layout: 'hbox',
+                padding: '0 15 0 0',
                 items: [{
                     xtype: 'textareafield',
                     fieldLabel: '变更原因',

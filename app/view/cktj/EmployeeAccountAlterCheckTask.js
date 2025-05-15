@@ -1,7 +1,7 @@
 
-Ext.define('MyApp.view.cktj.EmployeeAccountList',{
+Ext.define('MyApp.view.cktj.EmployeeAccountAlterCheckTask',{
     extend: 'Ext.panel.Panel',
-    xtype: 'cktjemployeeaccount',
+    xtype: 'cktjemployeeaccountalterchecktask',
 
     requires: [
         'Ext.layout.container.Border',
@@ -18,13 +18,11 @@ Ext.define('MyApp.view.cktj.EmployeeAccountList',{
     layout : 'border',
 
     initComponent: function() {
-        Ext.log('EmployeeAccount view initComponent');
-        
         var me = this;
 
         //表格的数据存储器
         var dataStore = null;
-        dataStore = me.getViewModel().getStore('employeeAccountStore');
+        dataStore = me.getViewModel().getStore('taskModifiedUncheckedAccountStore');
 
         me.items = [];
         me.items.push({
@@ -39,10 +37,10 @@ Ext.define('MyApp.view.cktj.EmployeeAccountList',{
             region : 'center',
             xtype : 'employeeaccountgrid',
             bind: {
-                title: '揽储人账户'+'{selectionText}'
+                title: '变更复核'+'{selectionText}'
             },
-            permissiveOpts: me.permissiveOpts,
-            moduleId: 'list',
+            // permissiveOpts: me.permissiveOpts,
+            moduleId: 'alterCheckTask',
             store: dataStore
         });
 

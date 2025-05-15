@@ -206,7 +206,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
         },
 
         //已变更揽储人但未复核的账户Store
-        modifiedUncheckedAccountStore: {
+        taskModifiedUncheckedAccountStore: {
             type: 'store',
             model: 'MyApp.model.cktj.EmployeeAccount',
             pageSize: CFG.getDefaultPageSize(),
@@ -215,7 +215,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
             remoteSort: true,
             proxy: {
                 type: 'format',
-                url: CFG.getGlobalPath() + '/cktj/employeeaccount/getmodifieduncheckedaccount'
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/getmodifieduncheckedaccounttask'
             },
             listeners: {
                 beforeload: 'onEmployeeAccountStoreBeforeLoad',
@@ -223,8 +223,8 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
             }
         },
 
-        //揽储人存款账户Store
-        employeeAccountStore: {
+        //已变更揽储人但未复核的账户Store
+        paymentModifiedUncheckedAccountStore: {
             type: 'store',
             model: 'MyApp.model.cktj.EmployeeAccount',
             pageSize: CFG.getDefaultPageSize(),
@@ -233,7 +233,43 @@ Ext.define('MyApp.view.cktj.EmployeeAccountModel', {
             remoteSort: true,
             proxy: {
                 type: 'format',
-                url: CFG.getGlobalPath() + '/cktj/employeeaccount/get'
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/getmodifieduncheckedaccountpayment'
+            },
+            listeners: {
+                beforeload: 'onEmployeeAccountStoreBeforeLoad',
+                load: 'onEmployeeAccountStoreLoad'
+            }
+        },
+
+        //揽储人存款账户Store-任务
+        taskEmployeeAccountStore: {
+            type: 'store',
+            model: 'MyApp.model.cktj.EmployeeAccount',
+            pageSize: CFG.getDefaultPageSize(),
+            autoLoad: false,
+            remoteFilter: true,
+            remoteSort: true,
+            proxy: {
+                type: 'format',
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/gettask'
+            },
+            listeners: {
+                beforeload: 'onEmployeeAccountStoreBeforeLoad',
+                load: 'onEmployeeAccountStoreLoad'
+            }
+        },
+
+        //揽储人存款账户Store-计酬
+        paymentEmployeeAccountStore: {
+            type: 'store',
+            model: 'MyApp.model.cktj.EmployeeAccount',
+            pageSize: CFG.getDefaultPageSize(),
+            autoLoad: false,
+            remoteFilter: true,
+            remoteSort: true,
+            proxy: {
+                type: 'format',
+                url: CFG.getGlobalPath() + '/cktj/employeeaccount/getpayment'
             },
             listeners: {
                 beforeload: 'onEmployeeAccountStoreBeforeLoad',

@@ -739,10 +739,6 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
             icon: Ext.Msg.QUESTION,
             fn: function(btn) {
                 if (btn === 'yes') {
-                    // var data = new Array();
-                    // Ext.Array.each(gridSelectionRecords, function(record) {
-                    //     data.push({id: record.get('id'), accountNo: record.get('accountNo')});
-                    // });
 
                     var data = {
                         accountNo: selectionRecord.get('accountNo'),
@@ -888,8 +884,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
             };
 
             var data = {
-                accountNo: record.get('accountNo'),
-                childAccountNo: record.get('childAccountNo'),
+                id: record.get('id'),
                 tellerTaskPercentageList: tellerTaskPercentageList,
                 remarks: values.remarks
             }
@@ -981,8 +976,7 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
             };
 
             var data = {
-                accountNo: record.get('accountNo'),
-                childAccountNo: record.get('childAccountNo'),
+                id: record.get('id'),
                 tellerPaymentPercentageList: tellerPaymentPercentageList,
                 remarks: values.remarks
             }
@@ -1016,13 +1010,14 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
 
 
     /**
-     * 复核变更揽储人申请
+     * 复核变更揽储人申请--任务数
      */
-    checkModifyEmployee: function() {
+    checkModifyEmployeeTask: function() {
         var me = this,
             viewModel = me.getViewModel(),
-            modifiedUncheckedAccountStore = viewModel.getStore('modifiedUncheckedAccountStore'),
-            gridSelectionRecords = viewModel.get('gridSelectionRecords');
+            modifiedUncheckedAccountStore = viewModel.getStore('taskModifiedUncheckedAccountStore'),
+            gridSelectionRecords = viewModel.get('gridSelectionRecords'),
+            selectionRecord = viewModel.get('selectionRecord');
 
         if (!gridSelectionRecords || gridSelectionRecords.length <= 0) {
             Ext.Msg.alert('提示', '请选择要提交的正确的变更揽储人申请记录！');
@@ -1036,20 +1031,17 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
             icon: Ext.Msg.QUESTION,
             fn: function(btn) {
                 if (btn === 'yes') {
-                    var data = new Array();
-                    Ext.Array.each(gridSelectionRecords, function(record) {
-                        data.push({id: record.get('id'), accountNo: record.get('accountNo')});
-                    });
-
-                    var dataJson = {
-                        data: data
-                    };
+                    var data = {
+                        id: selectionRecord.get('id')
+                    }
 
                     Ext.Ajax.request({
-                        url: '/cktj/employeeaccount/checkmodifyemployee',
+                        url: CFG.getGlobalPath() + '/cktj/employeeaccount/checkmodifyemployeetask',
                         method: 'POST',
-                        defaultPostHeader: 'application/json;charset=UTF-8',
-                        params: Ext.JSON.encode(dataJson),
+                        headers: {
+                            'Content-Type': 'application/json'  // 必须设置 Content-Type
+                        },
+                        jsonData: data,
                         scope: this,
                         success: function(response, opts) {
                             var result = Ext.decode(response.responseText, true);
@@ -1068,13 +1060,14 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
     },
 
     /**
-     * 撤销变更揽储人申请
+     * 撤销变更揽储人申请-任务数
      */
-    undoModifyEmployee: function() {
+    undoModifyEmployeeTask: function() {
         var me = this,
             viewModel = me.getViewModel(),
-            modifiedUncheckedAccountStore = viewModel.getStore('modifiedUncheckedAccountStore'),
-            gridSelectionRecords = viewModel.get('gridSelectionRecords');
+            modifiedUncheckedAccountStore = viewModel.getStore('taskModifiedUncheckedAccountStore'),
+            gridSelectionRecords = viewModel.get('gridSelectionRecords'),
+            selectionRecord = viewModel.get('selectionRecord');
 
         if (!gridSelectionRecords || gridSelectionRecords.length <= 0) {
             Ext.Msg.alert('提示', '请选择要撤销的变更揽储人申请记录！');
@@ -1088,20 +1081,17 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
             icon: Ext.Msg.QUESTION,
             fn: function(btn) {
                 if (btn === 'yes') {
-                    var data = new Array();
-                    Ext.Array.each(gridSelectionRecords, function(record) {
-                        data.push({id: record.get('id'), accountNo: record.get('accountNo')});
-                    });
-
-                    var dataJson = {
-                        data: data
-                    };
+                    var data = {
+                        id: selectionRecord.get('id')
+                    }
 
                     Ext.Ajax.request({
-                        url: '/cktj/employeeaccount/undomodifyemployee',
+                        url: CFG.getGlobalPath() + '/cktj/employeeaccount/undomodifyemployeetask',
                         method: 'POST',
-                        defaultPostHeader: 'application/json;charset=UTF-8',
-                        params: Ext.JSON.encode(dataJson),
+                        headers: {
+                            'Content-Type': 'application/json'  // 必须设置 Content-Type
+                        },
+                        jsonData: data,
                         scope: this,
                         success: function(response, opts) {
                             var result = Ext.decode(response.responseText, true);
@@ -1109,7 +1099,108 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
                                 Ext.toast(result.msg);
                                 modifiedUncheckedAccountStore.reload();
                             } else {
-                                Ext.Msg.alert('撤销变更揽储人申请出错', result.msg);
+                                Ext.Msg.alert('复核变更揽储人申请出错', result.msg);
+                            }
+                        },
+                        failure: MyApp.ux.data.FailureProcess.Ajax
+                    });
+                }
+            }
+        });
+    },
+
+
+    /**
+     * 复核变更揽储人申请--计酬数
+     */
+    checkModifyEmployeePayment: function() {
+        var me = this,
+            viewModel = me.getViewModel(),
+            modifiedUncheckedAccountStore = viewModel.getStore('paymentModifiedUncheckedAccountStore'),
+            gridSelectionRecords = viewModel.get('gridSelectionRecords'),
+            selectionRecord = viewModel.get('selectionRecord');
+
+        if (!gridSelectionRecords || gridSelectionRecords.length <= 0) {
+            Ext.Msg.alert('提示', '请选择要提交的正确的变更揽储人申请记录！');
+            return;
+        }
+
+        Ext.Msg.show({
+            title: '复核变更揽储人申请确认',
+            message: '您确定所选择的 ' + gridSelectionRecords.length + ' 条变更揽储人申请信息正确并同意变更吗？',
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.QUESTION,
+            fn: function(btn) {
+                if (btn === 'yes') {
+                    var data = {
+                        id: selectionRecord.get('id')
+                    }
+
+                    Ext.Ajax.request({
+                        url: CFG.getGlobalPath() + '/cktj/employeeaccount/checkmodifyemployeepayment',
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'  // 必须设置 Content-Type
+                        },
+                        jsonData: data,
+                        scope: this,
+                        success: function(response, opts) {
+                            var result = Ext.decode(response.responseText, true);
+                            if (result.success) {
+                                Ext.toast(result.msg);
+                                modifiedUncheckedAccountStore.reload();
+                            } else {
+                                Ext.Msg.alert('复核变更揽储人申请出错', result.msg);
+                            }
+                        },
+                        failure: MyApp.ux.data.FailureProcess.Ajax
+                    });
+                }
+            }
+        });
+    },
+
+/**
+     * 撤销变更揽储人申请-计酬数
+     */
+    undoModifyEmployeePayment: function() {
+        var me = this,
+            viewModel = me.getViewModel(),
+            modifiedUncheckedAccountStore = viewModel.getStore('paymentModifiedUncheckedAccountStore'),
+            gridSelectionRecords = viewModel.get('gridSelectionRecords'),
+            selectionRecord = viewModel.get('selectionRecord');
+
+        if (!gridSelectionRecords || gridSelectionRecords.length <= 0) {
+            Ext.Msg.alert('提示', '请选择要撤销的变更揽储人申请记录！');
+            return;
+        }
+
+        Ext.Msg.show({
+            title: '撤销变更揽储人申请确认',
+            message: '您确定要撤销所选择的 ' + gridSelectionRecords.length + ' 条变更揽储人申请信息吗？',
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.QUESTION,
+            fn: function(btn) {
+                if (btn === 'yes') {
+                    var data = {
+                        id: selectionRecord.get('id')
+                    }
+
+                    Ext.Ajax.request({
+                        url: CFG.getGlobalPath() + '/cktj/employeeaccount/undomodifyemployeepayment',
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'  // 必须设置 Content-Type
+                        },
+                        jsonData: data,
+                        scope: this,
+                        success: function(response, opts) {
+                            var result = Ext.decode(response.responseText, true);
+                            if (result.success) {
+                                Ext.toast(result.msg);
+                                modifiedUncheckedAccountStore.reload();
+                            } else {
+                                Ext.Msg.alert('复核变更揽储人申请出错', result.msg);
                             }
                         },
                         failure: MyApp.ux.data.FailureProcess.Ajax
@@ -1118,4 +1209,8 @@ Ext.define('MyApp.view.cktj.EmployeeAccountController', {
             }
         });
     }
+
+
+
+
 });
