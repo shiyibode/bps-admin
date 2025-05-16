@@ -1,12 +1,12 @@
-Ext.define('MyApp.view.cktj.widget.DepositGrid', {
+Ext.define('MyApp.view.cktj.widget.DepositOrgGrid', {
     extend: 'Ext.pivot.Grid',
-    alias: 'widget.depositgrid',
+    alias: 'widget.depositorggrid',
 
     requires: [
         'MyApp.ux.GridToolBar'
     ],
 
-    reference: 'depositgrid',
+    reference: 'depositorganizationgrid',
 
     tools: [{
         type: 'refresh',
@@ -56,80 +56,11 @@ Ext.define('MyApp.view.cktj.widget.DepositGrid', {
         }, {
             fieldLabel: '存款机构',
             name: 'dpOrgCode'
-        }, {
-            xtype: 'combobox',
-            name: 'depositSortId',
-            fieldLabel: '账户种类',
-            displayField: 'cnName',
-            valueField: 'id',
-            allowBlank: false,
-            anchor: '-15',
-            bind: {
-                store: '{depositSortStore}'
-            },
-            minChars: 2,
-            value: 1
         }];
 
         switch (me.moduleId) {
-            //员工时点
-            case 'employeetask':
-                searchItems.push({
-                    fieldLabel: '柜员号',
-                    name: 'tellerCode'
-                }, {
-                    fieldLabel: '员工姓名',
-                    name: 'tellerName'
-                }, {
-                    xtype: 'combo',
-                    reference: 'depositTypeCombo',
-                    fieldLabel: '存款类型',
-                    displayField: 'text',
-                    valueField: 'id',
-                    editable: false,
-                    name: 'depositType',
-                    queryMode: 'local',
-                    bind: {
-                        store: '{empDepositTypeStore}',
-                    },
-                    value: 0,
-                    listConfig: {
-                        itemTpl: [
-                            '<div data-qtip="{text}: {tips}">{text}</div>'
-                        ]
-                    }
-                });
-                break;
-            //员工日均
-            case 'empavgtask':
-                searchItems.push({
-                    fieldLabel: '柜员号',
-                    name: 'tellerCode'
-                }, {
-                    fieldLabel: '员工姓名',
-                    name: 'tellerName'
-                }, {
-                    xtype: 'combo',
-                    reference: 'depositTypeCombo',
-                    fieldLabel: '存款类型',
-                    displayField: 'text',
-                    valueField: 'id',
-                    editable: false,
-                    name: 'depositType',
-                    queryMode: 'local',
-                    bind: {
-                        store: '{empDepositTypeStore}',
-                    },
-                    value: 0,
-                    listConfig: {
-                        itemTpl: [
-                            '<div data-qtip="{text}: {tips}">{text}</div>'
-                        ]
-                    }
-                });
-                break;
             //机构时点
-            case 'org':
+            case 'orgtask':
                 searchItems.push({
                     xtype: 'combo',
                     reference: 'depositTypeCombo',
@@ -142,7 +73,6 @@ Ext.define('MyApp.view.cktj.widget.DepositGrid', {
                     bind: {
                         store: '{orgDepositTypeStore}',
                     },
-                    value: 0,
                     listConfig: {
                         itemTpl: [
                             '<div data-qtip="{text}: {tips}">{text}</div>'
@@ -151,7 +81,7 @@ Ext.define('MyApp.view.cktj.widget.DepositGrid', {
                 });
                 break;
             //机构时点
-            case 'orgavg':
+            case 'orgavgtask':
                 searchItems.push({
                     xtype: 'combo',
                     reference: 'depositTypeCombo',
@@ -164,7 +94,6 @@ Ext.define('MyApp.view.cktj.widget.DepositGrid', {
                     bind: {
                         store: '{orgDepositTypeStore}',
                     },
-                    value: 0,
                     listConfig: {
                         itemTpl: [
                             '<div data-qtip="{text}: {tips}">{text}</div>'
@@ -184,6 +113,58 @@ Ext.define('MyApp.view.cktj.widget.DepositGrid', {
             grid: this,
             searchItems: searchItems,
             searchAllBtnHidden: true
+        });
+
+        me.callParent(arguments);
+    },
+
+
+afterRender: function(){
+        var me = this;
+        var uri;
+        switch (me.moduleId) {
+            //机构时点
+            case 'orgtask':
+                uri = 'orgDepositTask'
+                break;
+            case 'orgavgtask':
+                uri = 'orgDepositAvgTask'
+                break;
+        }
+        Ext.Msg.wait(I18N.GetRoleInfo);
+        Ext.Ajax.request({
+            url: CFG.getGlobalPath() + '/sys/menu/currentUser/currentMenuPermission',
+            method: 'POST',
+            params: {
+                uri: '/cktj/deposit/' + uri
+            },
+            success: function(response, opts) {
+                Ext.Msg.hide();
+                var obj = Ext.decode(response.responseText, true);
+                
+                if(obj.success == false && obj.code ==='401'){
+                    window.location.href='/#lockscreen';
+                    return;
+                }
+                
+                if(obj.data){
+                    permissiveOpts = obj.data;
+                    
+                    for(var i=0;i<permissiveOpts.length;i++){
+                        var button = permissiveOpts[i];
+                        var btn = Ext.widget('buttontransparent',{
+                            text: button.text,
+                            iconCls: button.iconCls,
+                            handler: button.viewType,
+                            tooltip: button.description
+                        });
+                        me.down('gridtoolbar').add(btn);
+                    }
+                }
+                Ext.Msg.hide();
+            },
+            failure: FAILED.ajax,
+            scope: me
         });
 
         me.callParent(arguments);

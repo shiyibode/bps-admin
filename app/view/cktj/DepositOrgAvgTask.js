@@ -1,16 +1,16 @@
 
-Ext.define('MyApp.view.cktj.DepositOrgAvg',{
+Ext.define('MyApp.view.cktj.DepositOrgAvgTask',{
     extend: 'Ext.panel.Panel',
-    xtype: 'cktjdepositorgavg',
+    xtype: 'cktjdepositorgavgtask',
 
     requires: [
         'Ext.layout.container.Border',
-        'MyApp.view.cktj.DepositController',
+        'MyApp.view.cktj.DepositOrgController',
         'MyApp.view.cktj.DepositModel',
-        'MyApp.view.cktj.widget.DepositGrid'
+        'MyApp.view.cktj.widget.DepositOrgGrid'
     ],
 
-    controller: 'cktjdeposit',
+    controller: 'cktjdepositorg',
     viewModel: {
         type: 'cktjdeposit'
     },
@@ -28,7 +28,7 @@ Ext.define('MyApp.view.cktj.DepositOrgAvg',{
         var dataStore = null;
         var myMatrix = null;
 
-        dataStore = viewModel.getStore('organizationAvgDepositStore');
+        dataStore = viewModel.getStore('organizationAvgDepositTaskStore');
         myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
             textRowLabels: '日均日期/机构信息/存款分类',
             compactViewColumnWidth: 210,
@@ -98,11 +98,11 @@ Ext.define('MyApp.view.cktj.DepositOrgAvg',{
             width: 220
         }, {
             region : 'center',
-            xtype : 'depositgrid',
+            xtype : 'depositorggrid',
             bind: {
                 title: '机构日均' + '{selectionText}'
             },
-            moduleId: 'orgavg',
+            moduleId: 'orgavgtask',
             matrix: myMatrix
         });
 

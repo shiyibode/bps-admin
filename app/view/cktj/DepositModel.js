@@ -78,33 +78,35 @@ Ext.define('MyApp.view.cktj.DepositModel', {
             ]
         },
 
-        // organizationDepositStore: {
-        //     storeId: 'organizationDepositStore',
-        //     type: 'store',
-        //     model: 'MyApp.model.cktj.Deposit',
-        //     proxy: {
-        //         type: 'format',
-        //         url: '/cktj/deposit/organization'
-        //     },
-        //     autoLoad: false,
-        //     listeners: {
-        //         beforeload: 'onDepositStoreBeforeLoad'
-        //     }
-        // },
+        organizationDepositTaskStore: {
+            storeId: 'organizationDepositTaskStore',
+            type: 'store',
+            model: 'MyApp.model.cktj.Deposit',
+            pageSize: CFG.getDefaultPageSize(),
+            proxy: {
+                type: 'format',
+                url: CFG.getGlobalPath() + '/cktj/deposit/organizationtask'
+            },
+            autoLoad: false,
+            listeners: {
+                beforeload: 'onDepositStoreBeforeLoad'
+            }
+        },
 
-        // organizationAvgDepositStore: {
-        //     storeId: 'organizationDepositStore',
-        //     type: 'store',
-        //     model: 'MyApp.model.cktj.Deposit',
-        //     proxy: {
-        //         type: 'format',
-        //         url: '/cktj/deposit/orgaverage'
-        //     },
-        //     autoLoad: false,
-        //     listeners: {
-        //         beforeload: 'onDepositStoreBeforeLoad'
-        //     }
-        // },
+        organizationAvgDepositTaskStore: {
+            storeId: 'organizationDepositStore',
+            type: 'store',
+            pageSize: CFG.getDefaultPageSize(),
+            model: 'MyApp.model.cktj.Deposit',
+            proxy: {
+                type: 'format',
+                url: CFG.getGlobalPath() + '/cktj/deposit/orgaveragetask'
+            },
+            autoLoad: false,
+            listeners: {
+                beforeload: 'onDepositStoreBeforeLoad'
+            }
+        },
 
         employeeDepositTaskStore: {
             storeId: 'employeeDepositTaskStore',

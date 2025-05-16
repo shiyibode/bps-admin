@@ -6,8 +6,7 @@ Ext.define('MyApp.view.cktj.DepositEmpAvgTask',{
     requires: [
         'Ext.layout.container.Border',
         'MyApp.view.cktj.DepositController',
-        'MyApp.view.cktj.DepositModel',
-        'MyApp.view.cktj.widget.DepositGrid'
+        'MyApp.view.cktj.DepositModel'
     ],
 
     controller: 'cktjdepositemployee',

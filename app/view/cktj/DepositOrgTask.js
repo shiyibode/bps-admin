@@ -1,13 +1,14 @@
-Ext.define('MyApp.view.cktj.DepositOrg',{
+Ext.define('MyApp.view.cktj.DepositOrgTask',{
     extend: 'Ext.panel.Panel',
-    xtype: 'cktjdepositorg',
+    xtype: 'cktjdepositorgtask',
 
     requires: [
         'Ext.layout.container.Border',
-        'MyApp.view.cktj.widget.DepositGrid'
+        'MyApp.view.cktj.DepositOrgController',
+        'MyApp.view.cktj.widget.DepositOrgGrid'
     ],
 
-    controller: 'cktjdeposit',
+    controller: 'cktjdepositorg',
     viewModel: {
         type: 'cktjdeposit'
     },
@@ -25,7 +26,7 @@ Ext.define('MyApp.view.cktj.DepositOrg',{
         var dataStore = null;
         var myMatrix = null;
         
-        dataStore = viewModel.getStore('organizationDepositStore');
+        dataStore = viewModel.getStore('organizationDepositTaskStore');
         myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
             textRowLabels: '存款日期/机构信息/存款分类',
             compactViewColumnWidth: 210,
@@ -92,14 +93,16 @@ Ext.define('MyApp.view.cktj.DepositOrg',{
                 store: '{organizationStore}'
             },
             width: 220
-        }
-        , {
+        }, {
             region : 'center',
-            xtype : 'depositgrid',
+            xtype : 'depositorggrid',
             bind: {
                 title: '机构时点' + '{selectionText}'
             },
-            moduleId: 'org',
+            moduleId: 'orgtask',
+            bind: {
+                store: '{organizationDepositTaskStore}'
+            },
             matrix: myMatrix
         }
         );

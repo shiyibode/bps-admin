@@ -1,18 +1,18 @@
-Ext.define('MyApp.view.cktj.DepositController', {
+Ext.define('MyApp.view.cktj.DepositOrgController', {
     extend: 'Ext.app.ViewController',
-    alias: 'controller.cktjdeposit',
+    alias: 'controller.cktjdepositorg',
 
     expandBtnClick : function() {
-        this.lookupReference('depositgrid').expandAll();
+        this.lookupReference('depositorganizationgrid').expandAll();
     },
 
     collapseBtnClick : function() {
-        this.lookupReference('depositgrid').collapseAll();
+        this.lookupReference('depositorganizationgrid').collapseAll();
     },
 
     autoColumnWidthButtonClick : function() {
         var me = this,
-            depositgrid = me.lookupReference('depositgrid');
+            depositgrid = me.lookupReference('depositorganizationgrid');
         
         Ext.suspendLayouts();
         Ext.Array.forEach(depositgrid.columnManager.getColumns(),
@@ -29,7 +29,7 @@ Ext.define('MyApp.view.cktj.DepositController', {
     },
 
     refreshBtnClick : function() {
-        this.lookupReference('depositgrid').getStore().reload();
+        this.lookupReference('depositorganizationgrid').getStore().reload();
     },
 
     // store 相关函数
@@ -70,11 +70,6 @@ Ext.define('MyApp.view.cktj.DepositController', {
         if (filter) {
             var f1 = filter.startDate == null || filter.startDate == undefined || filter.startDate == '';
             var f2 = filter.endDate == null || filter.endDate == undefined || filter.endDate == '';
-            // if (f1 && f2) { //startDate, endDate 都没有输入
-            //     var dpCurrDate = me.getViewModel().get('dpCurrDate');
-            //     filter.startDate = dpCurrDate;
-            //     filter.endDate = dpCurrDate;
-            // } else 
             if (!f1 && f2) { //startDate已输入, endDate没有输入
                 filter.endDate = filter.startDate;
             } else if (f1 && !f2) { //startDate没有输入, endDate已输入
@@ -90,7 +85,7 @@ Ext.define('MyApp.view.cktj.DepositController', {
      */
     onDepositStoreLoad: function(store, records, successful, operation, eOpts) {
         var me = this,
-            depositgrid = me.lookupReference('depositgrid'),
+            depositgrid = me.lookupReference('depositorganizationgrid'),
             selModel = depositgrid.getSelectionModel();
 
         //先中表格中的第一条记录
@@ -125,41 +120,14 @@ Ext.define('MyApp.view.cktj.DepositController', {
      */
     onNavigationTreeSelectionChange: function(treepanel, selected, eOpts) {
         var me = this,
-            depositemployeegrid = me.lookupReference('depositemployeegrid'),
-            store = depositemployeegrid.getStore(),
-            empDepositTypeStore = me.getViewModel().getStore('empDepositTypeStore'),
-            orgDepositTypeStore = me.getViewModel().getStore('orgDepositTypeStore'),
-            depositTypeCombo = me.lookupReference('depositTypeCombo');
+            depositorganizationgrid = me.lookupReference('depositorganizationgrid'),
+            store = depositorganizationgrid.getStore();
 
-        var selectionModel = selected[0];
-        if (selectionModel) {
-            var type = selectionModel.get('type');
-            empDepositTypeStore.clearFilter();
-            orgDepositTypeStore.clearFilter();
-            if (depositTypeCombo) {
-                depositTypeCombo.setValue(0);
-            }
-            if (type === '000' || type === '100') {
-                empDepositTypeStore.filterBy(function(item) {
-                    return item.get('id') === 0;
-                });
-                orgDepositTypeStore.filterBy(function(item) {
-                    return item.get('id') === 0;
-                });
-            } else if (type === '200' || type === '201') {
-                empDepositTypeStore.filterBy(function(item) {
-                    return item.get('id') === 1;
-                });
-                if (depositTypeCombo) {
-                    depositTypeCombo.setValue(1);
-                }
-            }
-        }
         store.load();
     },
     
 
-    exportEmpDepositTask: function(){
+    exportOrgDepositTask: function(){
         var me = this,
         searchForm = me.lookupReference('searchForm'),
         selectionOrganization = me.getSelectionOrganization();
@@ -171,18 +139,12 @@ Ext.define('MyApp.view.cktj.DepositController', {
         }
 
         if (selectionOrganization) {
-            if (filter) {
-                filter.organizationId = selectionOrganization.getId();
-            } else {
-                filter: {
-                    organizationId: selectionOrganization.getId()
-                }
-            }
+            filter.organizationId = selectionOrganization.getId();
         }
 
         var form = Ext.create('Ext.form.Panel', {
             standardSubmit: true,
-            url: CFG.getGlobalPath() + '/cktj/deposit/exportempdeposittask'
+            url: CFG.getGlobalPath() + '/cktj/deposit/exportorgdeposittask'
         });
 
         var params = {};
@@ -193,55 +155,6 @@ Ext.define('MyApp.view.cktj.DepositController', {
         form.submit({
             params: params
         });
-    },
-
-
-
-    onDepositCategoryStoreLoad: function(store) {
-        var rootNode = store.getNodeById(1);
-
-        var depositgrid = this.lookupReference('depositgrid');
-        // var gridColumns = depositgrid.getColumns();
-
-        var columns = [];
-
-        this.depathNode(rootNode, columns);
-
-        depositgrid.reconfigure(columns);
-        // depositgrid.render();
-    },
-
-    depathNode: function(node, columns) {
-        if (!node) {
-            return;
-        }
-
-        var validFlag = node.get('validFlag');
-
-        if (node.hasChildNodes()) {
-            if (validFlag && validFlag === true) {
-                var subColumn = {
-                    text: node.get('name'),
-                    dpCategoryId: node.get(id),
-                    columns: []
-                };
-                node.eachChild(function(child) {
-                    this.depathNode(child, subColumn.columns);
-                }, this);
-                columns.push(subColumn);
-            } else {
-                node.eachChild(function(child) {
-                    this.depathNode(child, columns);
-                }, this);
-            }
-        } else {
-            if (validFlag && validFlag === true) {
-                columns.push({
-                    text: node.get('name'),
-                    dpCategoryId: node.get(id)
-                });
-            }
-        }
     }
 
 
