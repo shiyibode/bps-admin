@@ -133,7 +133,38 @@ Ext.define('MyApp.view.cktj.DepositModel', {
             listeners: {
                 beforeload: 'onDepositStoreBeforeLoad'
             }
+        },
+
+        employeeDepositPaymentStore: {
+            storeId: 'employeeDepositPaymentStore',
+            type: 'store',
+            model: 'MyApp.model.cktj.Deposit',
+            pageSize: CFG.getDefaultPageSize(),
+            proxy: {
+                type: 'format',
+                url: CFG.getGlobalPath() + '/cktj/deposit/employeepayment'
+            },
+            autoLoad: false,
+            listeners: {
+                beforeload: 'onDepositStoreBeforeLoad'
+            }
+        },
+
+        employeeAvgDepositPaymentStore: {
+            storeId: 'employeeAvgDepositPaymentStore',
+            type: 'store',
+            model: 'MyApp.model.cktj.Deposit',
+            proxy: {
+                type: 'format',
+                url: CFG.getGlobalPath() + '/cktj/deposit/empaveragepayment'
+            },
+            autoLoad: false,
+            listeners: {
+                beforeload: 'onDepositStoreBeforeLoad'
+            }
         }
+
+
     }
 
 });

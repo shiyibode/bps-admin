@@ -106,30 +106,30 @@ Ext.define('MyApp.view.cktj.DepositController', {
             orgDepositTypeStore = me.getViewModel().getStore('orgDepositTypeStore'),
             depositTypeCombo = me.lookupReference('depositTypeCombo');
 
-        var selectionModel = selected[0];
-        if (selectionModel) {
-            var type = selectionModel.get('type');
-            empDepositTypeStore.clearFilter();
-            orgDepositTypeStore.clearFilter();
-            if (depositTypeCombo) {
-                depositTypeCombo.setValue(0);
-            }
-            if (type === '000' || type === '100') {
-                empDepositTypeStore.filterBy(function(item) {
-                    return item.get('id') === 0;
-                });
-                orgDepositTypeStore.filterBy(function(item) {
-                    return item.get('id') === 0;
-                });
-            } else if (type === '200' || type === '201') {
-                empDepositTypeStore.filterBy(function(item) {
-                    return item.get('id') === 1;
-                });
-                if (depositTypeCombo) {
-                    depositTypeCombo.setValue(1);
-                }
-            }
-        }
+        // var selectionModel = selected[0];
+        // if (selectionModel) {
+        //     var type = selectionModel.get('type');
+        //     empDepositTypeStore.clearFilter();
+        //     orgDepositTypeStore.clearFilter();
+        //     if (depositTypeCombo) {
+        //         depositTypeCombo.setValue(0);
+        //     }
+        //     if (type === '000' || type === '100') {
+        //         empDepositTypeStore.filterBy(function(item) {
+        //             return item.get('id') === 0;
+        //         });
+        //         orgDepositTypeStore.filterBy(function(item) {
+        //             return item.get('id') === 0;
+        //         });
+        //     } else if (type === '200' || type === '201') {
+        //         empDepositTypeStore.filterBy(function(item) {
+        //             return item.get('id') === 1;
+        //         });
+        //         if (depositTypeCombo) {
+        //             depositTypeCombo.setValue(1);
+        //         }
+        //     }
+        // }
         store.load();
     },
     

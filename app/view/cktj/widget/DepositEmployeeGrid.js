@@ -89,7 +89,6 @@ Ext.define('MyApp.view.cktj.widget.DepositEmployeeGrid', {
                     bind: {
                         store: '{empDepositTypeStore}',
                     },
-                    value: 0,
                     listConfig: {
                         itemTpl: [
                             '<div data-qtip="{text}: {tips}">{text}</div>'
@@ -117,7 +116,61 @@ Ext.define('MyApp.view.cktj.widget.DepositEmployeeGrid', {
                     bind: {
                         store: '{empDepositTypeStore}',
                     },
-                    value: 0,
+                    // value: 0,
+                    listConfig: {
+                        itemTpl: [
+                            '<div data-qtip="{text}: {tips}">{text}</div>'
+                        ]
+                    }
+                });
+                break;
+            case 'employeepayment':
+                searchItems.push({
+                    fieldLabel: '柜员号',
+                    name: 'tellerCode'
+                }, {
+                    fieldLabel: '员工姓名',
+                    name: 'tellerName'
+                }, {
+                    xtype: 'combo',
+                    reference: 'depositTypeCombo',
+                    fieldLabel: '存款类型',
+                    displayField: 'text',
+                    valueField: 'id',
+                    editable: false,
+                    name: 'depositType',
+                    queryMode: 'local',
+                    bind: {
+                        store: '{empDepositTypeStore}',
+                    },
+                    // value: 0,
+                    listConfig: {
+                        itemTpl: [
+                            '<div data-qtip="{text}: {tips}">{text}</div>'
+                        ]
+                    }
+                });
+                break;
+            case 'empavgpayment':
+                searchItems.push({
+                    fieldLabel: '柜员号',
+                    name: 'tellerCode'
+                }, {
+                    fieldLabel: '员工姓名',
+                    name: 'tellerName'
+                }, {
+                    xtype: 'combo',
+                    reference: 'depositTypeCombo',
+                    fieldLabel: '存款类型',
+                    displayField: 'text',
+                    valueField: 'id',
+                    editable: false,
+                    name: 'depositType',
+                    queryMode: 'local',
+                    bind: {
+                        store: '{empDepositTypeStore}',
+                    },
+                    // value: 0,
                     listConfig: {
                         itemTpl: [
                             '<div data-qtip="{text}: {tips}">{text}</div>'
@@ -153,6 +206,12 @@ Ext.define('MyApp.view.cktj.widget.DepositEmployeeGrid', {
                 break;
             case 'empavgtask':
                 uri = 'empDepositAvgTask'
+                break;
+            case 'employeepayment':
+                uri = 'empDepositPayment'
+                break;
+            case 'empavgpayment':
+                uri = 'empDepositAvgPayment'
                 break;
         }
         Ext.Msg.wait(I18N.GetRoleInfo);
