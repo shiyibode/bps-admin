@@ -32,6 +32,34 @@ Ext.define('MyApp.view.cktj.DepositController', {
         this.lookupReference('depositemployeegrid').getStore().reload();
     },
 
+    onDepositStoreBeforeLoad: function(store , operation , eOpts) {
+        var me = this,
+            searchForm = me.lookupReference('searchForm'),
+            selectionOrganization = me.getSelectionOrganization();
+
+        var filter = null;
+
+        if (searchForm) {
+            filter = searchForm.getForm().getValues();
+        }
+
+        if (selectionOrganization) {
+            filter.organizationId = selectionOrganization.getId();
+        }
+
+        if (filter) {
+            var f1 = filter.startDate == null || filter.startDate == undefined || filter.startDate == '';
+            var f2 = filter.endDate == null || filter.endDate == undefined || filter.endDate == '';
+            if (!f1 && f2) { //startDate已输入, endDate没有输入
+                filter.endDate = filter.startDate;
+            } else if (f1 && !f2) { //startDate没有输入, endDate已输入
+                filter.startDate = filter.endDate;
+            }
+
+            store.getProxy().extraParams = filter;
+        }
+    },
+
     // store 相关函数
     /**
      * 机构树的 store load 完成后, 选中第一个节点
@@ -50,44 +78,6 @@ Ext.define('MyApp.view.cktj.DepositController', {
             function(){
                 navigationtree.expandAll();
             },100);
-    },
-
-    onEmployeeDepositTaskStoreBeforeLoad: function(store , operation , eOpts) {
-        var me = this,
-            searchForm = me.lookupReference('searchForm'),
-            selectionOrganization = me.getSelectionOrganization();
-
-        var filter = null;
-
-        if (searchForm) {
-            filter = searchForm.getForm().getValues();
-        }
-
-        if (selectionOrganization) {
-            if (filter) {
-                filter.organizationId = selectionOrganization.getId();
-            } else {
-                filter: {
-                    organizationId: selectionOrganization.getId()
-                }
-            }
-        }
-
-        if (filter) {
-            var f1 = filter.startDate == null || filter.startDate == undefined || filter.startDate == '';
-            var f2 = filter.endDate == null || filter.endDate == undefined || filter.endDate == '';
-            if (f1 && f2) { //startDate, endDate 都没有输入
-                var dpCurrDate = me.getViewModel().get('dpCurrDate');
-                filter.startDate = dpCurrDate;
-                filter.endDate = dpCurrDate;
-            } else if (!f1 && f2) { //startDate已输入, endDate没有输入
-                filter.endDate = filter.startDate;
-            } else if (f1 && !f2) { //startDate没有输入, endDate已输入
-                filter.startDate = filter.endDate;
-            }
-
-            store.getProxy().extraParams = filter
-        }
     },
 
     //OrganizationTree 相关函数

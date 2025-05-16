@@ -1,7 +1,7 @@
 
-Ext.define('MyApp.view.cktj.DepositEmpAvg',{
+Ext.define('MyApp.view.cktj.DepositEmpAvgTask',{
     extend: 'Ext.panel.Panel',
-    xtype: 'cktjdepositempavg',
+    xtype: 'cktjdepositempavgtask',
 
     requires: [
         'Ext.layout.container.Border',
@@ -10,7 +10,7 @@ Ext.define('MyApp.view.cktj.DepositEmpAvg',{
         'MyApp.view.cktj.widget.DepositGrid'
     ],
 
-    controller: 'cktjdeposit',
+    controller: 'cktjdepositemployee',
     viewModel: {
         type: 'cktjdeposit'
     },
@@ -28,7 +28,7 @@ Ext.define('MyApp.view.cktj.DepositEmpAvg',{
         var dataStore = null;
         var myMatrix = null;
 
-        dataStore = viewModel.getStore('employeeAvgDepositStore');
+        dataStore = viewModel.getStore('employeeAvgDepositTaskStore');
         myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
             textRowLabels: '日均日期/存款人信息/存款机构',
             compactViewColumnWidth: 210,
@@ -80,9 +80,6 @@ Ext.define('MyApp.view.cktj.DepositEmpAvg',{
             }]
         });
 
-
-                
-
         dataStore.load();
 
         me.items = [];
@@ -96,11 +93,12 @@ Ext.define('MyApp.view.cktj.DepositEmpAvg',{
             width: 220
         }, {
             region : 'center',
-            xtype : 'depositgrid',
+            xtype : 'depositemployeegrid',
             bind: {
-                title: '员工日均' + '{selectionText}'
+                title: '员工任务数日均' + '{selectionText}',
+                store: '{employeeAvgDepositTaskStore}'
             },
-            moduleId: 'empavg',
+            moduleId: 'empavgtask',
             matrix: myMatrix
         });
 

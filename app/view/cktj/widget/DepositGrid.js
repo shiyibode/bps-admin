@@ -73,7 +73,7 @@ Ext.define('MyApp.view.cktj.widget.DepositGrid', {
 
         switch (me.moduleId) {
             //员工时点
-            case 'employee':
+            case 'employeetask':
                 searchItems.push({
                     fieldLabel: '柜员号',
                     name: 'tellerCode'
@@ -101,7 +101,7 @@ Ext.define('MyApp.view.cktj.widget.DepositGrid', {
                 });
                 break;
             //员工日均
-            case 'empavg':
+            case 'empavgtask':
                 searchItems.push({
                     fieldLabel: '柜员号',
                     name: 'tellerCode'

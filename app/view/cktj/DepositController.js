@@ -64,31 +64,24 @@ Ext.define('MyApp.view.cktj.DepositController', {
         }
 
         if (selectionOrganization) {
-            if (filter) {
-                filter.organizationId = selectionOrganization.getId();
-            } else {
-                filter: {
-                    organizationId: selectionOrganization.getId()
-                }
-            }
+            filter.organizationId = selectionOrganization.getId();
         }
 
         if (filter) {
             var f1 = filter.startDate == null || filter.startDate == undefined || filter.startDate == '';
             var f2 = filter.endDate == null || filter.endDate == undefined || filter.endDate == '';
-            if (f1 && f2) { //startDate, endDate 都没有输入
-                var dpCurrDate = me.getViewModel().get('dpCurrDate');
-                filter.startDate = dpCurrDate;
-                filter.endDate = dpCurrDate;
-            } else if (!f1 && f2) { //startDate已输入, endDate没有输入
+            // if (f1 && f2) { //startDate, endDate 都没有输入
+            //     var dpCurrDate = me.getViewModel().get('dpCurrDate');
+            //     filter.startDate = dpCurrDate;
+            //     filter.endDate = dpCurrDate;
+            // } else 
+            if (!f1 && f2) { //startDate已输入, endDate没有输入
                 filter.endDate = filter.startDate;
             } else if (f1 && !f2) { //startDate没有输入, endDate已输入
                 filter.startDate = filter.endDate;
             }
 
-            store.getProxy().extraParams = {
-                filter: filter
-            }
+            store.getProxy().extraParams = filter;
         }
     },
 

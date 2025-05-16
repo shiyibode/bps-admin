@@ -33,7 +33,6 @@ Ext.define('MyApp.view.cktj.widget.DepositEmployeeGrid', {
             xtype: 'datefield',
             fieldLabel: '起始日期',
             name: 'startDate',
-            // value: Ext.Date.add(new Date(), Ext.Date.MONTH, -1),
             maxValue: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
             format: 'Y-m-d',
             formatText: '年-月-日',
@@ -78,16 +77,52 @@ Ext.define('MyApp.view.cktj.widget.DepositEmployeeGrid', {
                 }, {
                     fieldLabel: '员工姓名',
                     name: 'tellerName'
+                }, {
+                    xtype: 'combo',
+                    reference: 'depositTypeCombo',
+                    fieldLabel: '存款类型',
+                    displayField: 'text',
+                    valueField: 'id',
+                    editable: false,
+                    name: 'depositType',
+                    queryMode: 'local',
+                    bind: {
+                        store: '{empDepositTypeStore}',
+                    },
+                    value: 0,
+                    listConfig: {
+                        itemTpl: [
+                            '<div data-qtip="{text}: {tips}">{text}</div>'
+                        ]
+                    }
                 });
                 break;
             //员工日均
-            case 'empavg':
+            case 'empavgtask':
                 searchItems.push({
                     fieldLabel: '柜员号',
                     name: 'tellerCode'
                 }, {
                     fieldLabel: '员工姓名',
                     name: 'tellerName'
+                }, {
+                    xtype: 'combo',
+                    reference: 'depositTypeCombo',
+                    fieldLabel: '存款类型',
+                    displayField: 'text',
+                    valueField: 'id',
+                    editable: false,
+                    name: 'depositType',
+                    queryMode: 'local',
+                    bind: {
+                        store: '{empDepositTypeStore}',
+                    },
+                    value: 0,
+                    listConfig: {
+                        itemTpl: [
+                            '<div data-qtip="{text}: {tips}">{text}</div>'
+                        ]
+                    }
                 });
                 break;
         }
@@ -109,14 +144,23 @@ Ext.define('MyApp.view.cktj.widget.DepositEmployeeGrid', {
 
 
     afterRender: function(){
-        console.log('表格加载');
         var me = this;
+        var uri;
+        switch (me.moduleId) {
+            //员工时点
+            case 'employeetask':
+                uri = 'empDepositTask'
+                break;
+            case 'empavgtask':
+                uri = 'empDepositAvgTask'
+                break;
+        }
         Ext.Msg.wait(I18N.GetRoleInfo);
         Ext.Ajax.request({
             url: CFG.getGlobalPath() + '/sys/menu/currentUser/currentMenuPermission',
             method: 'POST',
             params: {
-                uri: '/cktj/deposit/empDepositTask'
+                uri: '/cktj/deposit/' + uri
             },
             success: function(response, opts) {
                 Ext.Msg.hide();

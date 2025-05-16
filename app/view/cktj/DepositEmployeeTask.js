@@ -1,7 +1,7 @@
 
-Ext.define('MyApp.view.cktj.DepositEmployee',{
+Ext.define('MyApp.view.cktj.DepositEmployeeTask',{
     extend: 'Ext.panel.Panel',
-    xtype: 'cktjdepositemployee',
+    xtype: 'cktjdepositemployeetask',
 
     requires: [
         'Ext.layout.container.Border',

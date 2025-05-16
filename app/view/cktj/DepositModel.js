@@ -117,7 +117,7 @@ Ext.define('MyApp.view.cktj.DepositModel', {
             },
             autoLoad: false,
             listeners: {
-                beforeload: 'onEmployeeDepositTaskStoreBeforeLoad'
+                beforeload: 'onDepositStoreBeforeLoad'
             }
         },
 
@@ -127,11 +127,11 @@ Ext.define('MyApp.view.cktj.DepositModel', {
             model: 'MyApp.model.cktj.Deposit',
             proxy: {
                 type: 'format',
-                url: CFG.getGlobalPath() + '/cktj/deposit/empaverage'
+                url: CFG.getGlobalPath() + '/cktj/deposit/empaveragetask'
             },
             autoLoad: false,
             listeners: {
-                beforeload: 'onEmployeeAvgDepositTaskStoreBeforeLoad'
+                beforeload: 'onDepositStoreBeforeLoad'
             }
         }
     }
