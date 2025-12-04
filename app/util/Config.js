@@ -6,8 +6,8 @@
         userInfo: null,
         navigationTreeWidth: 270,
         defaultPageSize: 20,
-        // globalPath: 'http://192.168.2.252:18080/api'
-        globalPath: 'http://192.168.1.201/api'
+        globalPath: 'http://10.40.92.110/api'
+        // globalPath: 'http://172.16.130.151/api'
     },
 
     constructor: function (config) {

@@ -1,0 +1,103 @@
+Ext.define('MyApp.view.dktj.CustomerPropertyModel', {
+    extend: 'Ext.app.ViewModel',
+    alias: 'viewmodel.dktjcustomerproperty',
+
+    requires: [
+        'Ext.data.Store',
+        'Ext.data.TreeStore'
+    ],
+
+    data: {
+        gridSelectionRecords: []
+    },
+
+    formulas: {
+        selectionRecord: {
+            bind: {
+                bindTo: '{gridSelectionRecords}',
+                deep: true
+            },
+            get: function(records) {
+                if (records && records.length > 0) {
+                    return records[0];
+                }
+                return null;
+            }
+        },
+
+        selectionText: {
+            bind: {
+                bindTo: '{gridSelectionRecords}',
+                deep: true
+            },
+            get: function(records) {
+                var title = '';
+                if (records) {
+                    if (records.length == 1) {
+                        title = '　〖<em> ' + ' ' + records[0].get('customerName') + records[0].get('identityNo') + ' </em>〗';
+                    } else if (records.length > 1) {
+                        title = '　已选择〖<em> ' + records.length + ' </em>〗个账户';
+                    }
+                }
+                return title;
+            }
+        }
+
+    },
+
+    stores: {
+        organizationStore: {
+            type: 'tree',
+            model: 'MyApp.model.sys.Organization',
+            pageSize: 0,
+            autoLoad: false,
+            proxy: {
+                type: 'format',
+                url: CFG.getGlobalPath() + '/sys/organization/getOrganizationTree'
+            },
+            remoteFilter: true,
+            remoteSort: true,
+            root: {
+                id: 0,
+                text: '最高机构',
+                expanded: true
+            },
+            listeners: {
+                load: {
+                    fn: 'onOrganizationStoreLoad',
+                    single: true,       //只执行一次
+                    delay:1
+                }
+            }
+        },
+
+
+        customerPropertyStore: {
+            type: 'store',
+            model: 'MyApp.model.dktj.CustomerProperty',
+            pageSize: 30,
+            autoLoad: false,
+            remoteFilter: true,
+            remoteSort: true,
+            proxy: {
+                type: 'format',
+                url: CFG.getGlobalPath() + '/dktj/employeecustomer/getEmployeeCustomer'
+            },
+            listeners: {
+                beforeload: 'onCustomerPropertyStoreBeforeLoad',
+                load: 'onCustomerPropertyStoreLoad'
+            }
+        },
+
+        customerPropertyStoreForCombo: {
+            storeId: 'customerPropertyStoreForCombo',
+            fields: ['text','value'],
+            data:[
+                ['固定客户','1'],
+                ['流动客户','2']
+            ]
+        }
+
+
+    }
+});

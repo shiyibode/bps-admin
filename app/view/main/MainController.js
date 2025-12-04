@@ -80,6 +80,9 @@ Ext.define('MyApp.view.main.MainController', {
     onNavigationTreeSelectionChange: function (tree, node) {
         var to = node && (node.get('routeId') || node.get('viewType'));
 
+        var menuId = node?node.getId():'';
+        Ext.util.Cookies.set('currentMenuId', menuId);
+
         if (to) {
             this.redirectTo(to);
         }
