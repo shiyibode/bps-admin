@@ -198,7 +198,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
         console.log(me.moduleId);
         switch (me.moduleId){
             //登记揽储人
-            case 502:
+            case '502':
                 me.dockedItems.push({
                     xtype: 'gridtoolbar',
                     dock: 'top',
@@ -222,7 +222,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                 me.columns.push(customerColumn);
                 break;
             //复核登记申请
-            case 504:
+            case '504':
                 me.dockedItems.push({
                     xtype: 'gridtoolbar',
                     dock: 'top',
@@ -257,7 +257,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                 me.columns.push(customerColumn);
                 break;
             //变更揽储人申请
-            case 507:
+            case '507':
                 me.dockedItems.push({
                     xtype: 'gridtoolbar',
                     dock: 'top',
@@ -355,7 +355,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                 me.columns.push(customerColumn);
                 break;
             //复核变更揽储人申请
-            case 509:
+            case '509':
                 me.dockedItems.push({
                     xtype: 'gridtoolbar',
                     dock: 'top',
@@ -417,7 +417,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                 me.columns.push(customerColumn);
                 break;
             //维护人贷款客户
-            case 512:
+            case '512':
                 me.selModel = { mode: 'SINGLE' };
                 me.dockedItems.push({
                     xtype: 'gridtoolbar',
@@ -532,5 +532,67 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
         me.callParent(arguments);
 
 
+    },
+
+    afterRender: function(){
+        var me = this;
+        var uri = '';
+
+        switch(me.moduleId){
+            case '502':
+                uri = 'getUnregisterCustomer';
+                break;
+            case '504':
+                uri = 'getUncheckedCustomer';
+                break;
+            case '507':
+                uri = 'getModifiableCustomer';
+                break;
+            case '509':
+                uri = 'getModifiedUncheckedCustomer';
+                break;
+            case '512':
+                uri = 'get';
+                break;
+        }
+
+        Ext.Msg.wait(I18N.GetRoleInfo);
+        Ext.Ajax.request({
+            url: CFG.getGlobalPath() + '/sys/menu/currentUser/currentMenuPermission',
+            method: 'POST',
+            params: {
+                uri: '/dktj/employeecustomer/' + uri
+            },
+            success: function(response, opts) {
+                Ext.Msg.hide();
+                var obj = Ext.decode(response.responseText, true);
+                
+                if(obj.success == false && obj.code ==='401'){
+                    window.location.href='/#lockscreen';
+                    return;
+                }
+                
+                if(obj.data){
+                    permissiveOpts = obj.data;
+                    
+                    for(var i=0;i<permissiveOpts.length;i++){
+                        var button = permissiveOpts[i];
+                        var btn = Ext.widget('buttontransparent',{
+                            text: button.text,
+                            iconCls: button.iconCls,
+                            handler: button.viewType,
+                            tooltip: button.description
+                        });
+                        me.down('gridtoolbar').add(btn);
+                    }
+                }
+                Ext.Msg.hide();
+            },
+            failure: FAILED.ajax,
+            scope: me
+        });
+
+        me.callParent(arguments);
     }
+
 });

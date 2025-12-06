@@ -164,10 +164,10 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
 
         var userCode = regEmployeeUserCombobox.getValue() ? regEmployeeUserCombobox.getValue() : modifyEmployeeUserCombobox.getValue();
         store.getProxy().extraParams = {
-            filter: {
+            // filter: {
                 userCodeOrName: userCode,
                 notUserType: 0
-            }
+            // }
         }
     },
 
@@ -203,9 +203,10 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
         }
 
         if (filter) {
-            store.getProxy().extraParams = {
-                filter: filter
-            }
+            // store.getProxy().extraParams = {
+            //     filter: filter
+            // }
+            store.getProxy().extraParams = filter;
         }
     },
 
@@ -263,10 +264,10 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
         if (newValue !== undefined && newValue !== '' && newValue !== null){
             let record = gridSelectionRecords[0];
             store.getProxy().extraParams = {
-                filter:{
+                // filter:{
                     templateId: newValue,
                     accountNo: record.get('accountNo')
-                }
+                // }
             };
             store.reload();
         }
@@ -494,8 +495,6 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
             // var dataJson = {
             //     data: data
             // };
-
-            console.log(dataJson);
 
             Ext.Ajax.request({
                 url: CFG.getGlobalPath() + '/dktj/employeecustomer/registerEmployee',
