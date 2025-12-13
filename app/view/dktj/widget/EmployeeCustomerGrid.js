@@ -87,29 +87,35 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
             columns: [{
                 text: '机构编号',
                 dataIndex: 'orgCode',
+                sortable: false,
                 flex: 1
             }, {
                 text: '机构名称',
                 dataIndex: 'organizationName',
+                sortable: false,
                 flex: 1
             }, {
                 text: '账号',
                 dataIndex: 'accountNo',
+                sortable: false,
                 searchable: true,
                 flex: 1
             }, {
                 text: '信贷客户号',
                 dataIndex: 'xdCustomerNo',
+                sortable: false,
                 searchable: true,
                 flex: 1
             }, {
                 text: '客户名称',
                 dataIndex: 'customerName',
+                sortable: false,
                 searchable: true,
                 flex: 1
             }, {
                 text: '客户类型',
                 dataIndex: 'customerType',
+                sortable: false,
                 flex: 1,
                 renderer: function(value, metaData, record) {
                     return record.get('customerTypeStr');
@@ -117,10 +123,12 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
             }, {
                 text: '证件号码',
                 dataIndex: 'identityNo',
+                sortable: false,
                 flex: 1
             }, {
                 text: '固定/流动客户',
                 dataIndex: 'status',
+                sortable: false,
                 flex: 1,
                 renderer: function (val) {
                     switch (val) {
@@ -132,6 +140,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
             }, {
                 text: '日期',
                 dataIndex: 'startDate',
+                sortable: false,
                 flex: 1
                 }
             ]
@@ -143,28 +152,34 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
             columns: [{
                 text: '柜员编号',
                 dataIndex: 'tellerCode',
+                sortable: false,
                 searchable: true,
                 flex: 1
             }, {
                 text: '姓名',
                 dataIndex: 'tellerName',
+                sortable: false,
                 searchable: true,
                 flex: 1
             }, {
                 text: '在职机构编号',
                 dataIndex: 'tellerOrgCode',
+                sortable: false,
                 flex: 1
             }, {
                 text: '在职机构名称',
                 dataIndex: 'tellerOrgName',
+                sortable: false,
                 flex: 1
             }, {
                 text: '登记人',
                 dataIndex: 'opTellerCode',
+                sortable: false,
                 flex: 1
             }, {
                 text: '登记方式',
                 dataIndex: 'registerType',
+                sortable: false,
                 flex: 1,
                 renderer: function (val) {
                     switch (val) {
@@ -182,6 +197,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
             }, {
                 text: '复核',
                 dataIndex: 'registerCheckStatus',
+                sortable: false,
                 flex: 1,
                 renderer: function (val) {
                     switch (val) {
@@ -195,7 +211,6 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
             }]
         };
 
-        console.log(me.moduleId);
         switch (me.moduleId){
             //登记揽储人
             case '502':
@@ -275,6 +290,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                     text: '登记复核状态',
                     dataIndex: 'registerCheckStatus',
                     flex: 1,
+                    sortable: false,
                     renderer: function (val) {
                         switch (val) {
                             case "0":
@@ -287,15 +303,18 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                 },{
                     text: '登记复核人',
                     dataIndex: 'registerCheckTellerCode',
+                    sortable: false,
                     flex: 1,
                 }, {
                     text: '登记复核时间',
                     dataIndex: 'registerCheckTime',
+                    sortable: false,
                     flex: 1
                 },{
                     text: '变更复核状态',
                     dataIndex: 'alterCheckStatus',
                     flex: 1,
+                    sortable: false,
                     renderer: function (val) {
                         switch (val) {
                             case "0":
@@ -308,39 +327,47 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                 },{
                     text: '变更复核人',
                     dataIndex: 'alterCheckTellerCode',
+                    sortable: false,
                     flex: 1,
                 }, {
                     text: '变更复核时间',
                     dataIndex: 'alterCheckTime',
+                    sortable: false,
                     flex: 1
                 }, {
                     text: '统计贷款起始日',
                     dataIndex: 'startDate',
+                    sortable: false,
                     flex: 1
                 }, {
                     text: '原营销人员柜员号',
                     dataIndex: 'oldTellerCode',
+                    sortable: false,
                     searchable: true,
                     flex: 1
                 }, {
                     text: '原营销人员姓名',
                     dataIndex: 'oldTellerName',
+                    sortable: false,
                     searchable: true,
                     flex: 1
                 });
                 customerColumn.columns.unshift({
                     text: '贷款账号',
                     dataIndex: 'accountNo',
+                    sortable: false,
                     flex: 1
                 },{
                     text: '开户时间',
                     dataIndex: 'accountOpenDate',
+                    sortable: false,
                     flex: 1
                 });
                 customerColumn.columns.push({
                     text: '客户来源',
                     dataIndex: 'registerType',
                     flex: 1,
+                    sortable: false,
                     renderer: function (val) {
                         switch (val) {
                             case 1: return '新客户';
@@ -370,16 +397,19 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                 customerColumn.columns.unshift({
                     text: '贷款账号',
                     dataIndex: 'accountNo',
+                    sortable: false,
                     flex: 1
                 },{
                     text: '开户时间',
                     dataIndex: 'accountOpenDate',
+                    sortable: false,
                     flex: 1
                 });
                 employeeColumn.columns.pop(); //删除登记审核状态
                 employeeColumn.columns.push({ //增加变更审核状态
                     text: '复核',
                     dataIndex: 'alterCheckStatus',
+                    sortable: false,
                     flex: 1,
                     renderer: function (val) {
                         switch (val) {
@@ -393,9 +423,11 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                 },{
                     text: '原营销人员柜员号',
                     dataIndex: 'oldTellerCode',
+                    sortable: false,
                     flex: 1
                 }, {
                     text: '原营销人员姓名',
+                    sortable: false,
                     dataIndex: 'oldTellerName',
                     flex: 1
                 });
@@ -403,6 +435,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                     text: '客户来源',
                     dataIndex: 'registerType',
                     flex: 1,
+                    sortable: false,
                     renderer: function (val) {
                         switch (val) {
                             case 1: return '新客户';
@@ -433,6 +466,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                     text: '登记复核状态',
                     dataIndex: 'registerCheckStatus',
                     flex: 1,
+                    sortable: false,
                     renderer: function (val) {
                         switch (val) {
                             case "0":
@@ -445,14 +479,17 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                 },{
                     text: '登记复核人',
                     dataIndex: 'registerCheckTellerCode',
+                    sortable: false,
                     flex: 1,
                 }, {
                     text: '登记复核时间',
                     dataIndex: 'registerCheckTime',
+                    sortable: false,
                     flex: 1
                 },{
                     text: '变更复核状态',
                     dataIndex: 'alterCheckStatus',
+                    sortable: false,
                     flex: 1,
                     renderer: function (val) {
                         switch (val) {
@@ -466,31 +503,38 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                 },{
                     text: '变更复核人',
                     dataIndex: 'alterCheckTellerCode',
+                    sortable: false,
                     flex: 1,
                 }, {
                     text: '变更复核时间',
                     dataIndex: 'alterCheckTime',
+                    sortable: false,
                     flex: 1
                 },{
                     text: '原营销人员柜员号',
                     dataIndex: 'oldTellerCode',
+                    sortable: false,
                     searchable: true,
                     flex: 1
                 }, {
                     text: '原营销人员姓名',
+                    sortable: false,
                     dataIndex: 'oldTellerName',
                     searchable: true,
                     flex: 1
                 }, {
                     text: '统计贷款起始日',
+                    sortable: false,
                     dataIndex: 'startDate',
                     flex: 1
                 }, {
                     text: '统计贷款结束日',
+                    sortable: false,
                     dataIndex: 'endDate',
                     flex: 1
                 }, {
                     xtype: 'booleancolumn',
+                    sortable: false,
                     text: '可变更营销人员',
                     trueText: '可变更',
                     falseText: '不可变更',
@@ -504,15 +548,18 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                 customerColumn.columns.unshift({
                     text: '贷款账号',
                     dataIndex: 'accountNo',
+                    sortable: false,
                     flex: 1
                 },{
                     text: '开户时间',
                     dataIndex: 'accountOpenDate',
+                    sortable: false,
                     flex: 1
                 });
                 customerColumn.columns.push({
                     text: '客户来源',
                     dataIndex: 'registerType',
+                    sortable: false,
                     flex: 1,
                     renderer: function (val) {
                         switch (val) {

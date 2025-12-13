@@ -58,7 +58,7 @@ Ext.define('MyApp.ux.data.proxy.Format', {
     // },
 
     listeners: {
-        exception: function () {
+        exception: function (proxy, response, operation, eOpts ) {
             MyApp.FailureProcess.Proxy.apply(this, arguments);
         }
     }

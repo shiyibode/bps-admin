@@ -7,7 +7,7 @@
         navigationTreeWidth: 270,
         defaultPageSize: 20,
         // globalPath: 'http://10.40.92.110/api'
-        globalPath: 'http://192.168.0.110/api'
+        globalPath: 'http://192.168.70.110/api'
     },
 
     constructor: function (config) {

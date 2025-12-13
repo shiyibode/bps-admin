@@ -17,6 +17,8 @@ Ext.define('MyApp.ux.data.FailureProcess', {
                 fn: function (btn) {
                     if (btn === 'ok') {
                         // mainViewController.redirectTo('blankPage')
+                        console.log('修改路由了');
+                        window.location.hash = '#login';
                     }
                 }
             });
@@ -37,10 +39,9 @@ Ext.define('MyApp.ux.data.FailureProcess', {
 
     Proxy: function (proxy, response, options, epots) {
         var status = response.status;
-
         
         if ((status >= 200 && status < 300) || status == 304) {
-            var result = Ext.decode(response.responseText, true);
+            var result = response.responseJson;
             Ext.Msg.show({
                 title: '错误提示',
                 message: options.error,
@@ -49,20 +50,22 @@ Ext.define('MyApp.ux.data.FailureProcess', {
                 fn: function (btn) {
                     if (btn === 'ok') {
                         if (result && result.data && result.data.loggedIn === false) {
-                            var mainView = MyApp.viewport;
-                            var userInfo = mainView.getViewModel().get('userInfo');
-                            if (userInfo) {
-                                Ext.create({
-                                    xtype: 'login',
-                                    modal: true,
-                                    userInfo: userInfo
-                                });
-                            } else {
-                                mainView.destroy();
-                                Ext.create({
-                                    xtype: 'login'
-                                });
-                            }
+                            var mainView = Ext.getCmp("mainView");
+                            var mainViewController = mainView.getController();
+                            mainViewController.setCurrentView('login')
+                            // var userInfo = mainView?mainView.getViewModel().get('userInfo'):undefined;
+                            // if (userInfo) {
+                            //     Ext.create({
+                            //         xtype: 'login',
+                            //         modal: true,
+                            //         userInfo: userInfo
+                            //     });
+                            // } else {
+                            //     mainView.destroy();
+                            //     Ext.create({
+                            //         xtype: 'login'
+                            //     });
+                            // }
                         }
                     }
                 }
