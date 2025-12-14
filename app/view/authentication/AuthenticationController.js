@@ -40,6 +40,10 @@ Ext.define('MyApp.view.authentication.AuthenticationController', {
                         mainViewModel.set('currentUserCode', obj.data.userInfo.code);
                         mainViewModel.set('currentUserName', obj.data.userInfo.name);
                         if(obj.data.userInfo && obj.data.userInfo.userMenuList && obj.data.userInfo.userMenuList[0].children){
+                            var origNode = root.findChild('type','MENU_TYPE_MENU_ROOT');
+                            if(origNode){   // session失效，重新登录时，删除已经存在的菜单，否则菜单会重复
+                                root.removeChild(origNode);
+                            }
                             root.appendChild(obj.data.userInfo.userMenuList[0].children)
                         }
                     }
