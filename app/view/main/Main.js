@@ -34,7 +34,7 @@ Ext.define('MyApp.view.main.Main', {
                     xtype: 'component',
                     reference: 'senchaLogo',
                     cls: 'sencha-logo',
-                    html: '<div class="main-logo"><img src="resources/images/sys/company-logo.png">存款统计系统</div>',
+                    html: '<div class="main-logo"><img src="resources/images/sys/company-logo.png">业绩管理系统</div>',
                     width: CFG.getNavigationTreeWidth()
                 },
                 {

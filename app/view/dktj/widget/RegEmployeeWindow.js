@@ -7,7 +7,7 @@ Ext.define('MyApp.view.dktj.widget.RegEmployeeWindow', {
         'MyApp.ux.form.trigger.TriggerClear'
     ],
 
-    itemId: 'regEmployeeWindow',
+    itemId: 'regDkEmployeeWindow',
 
     title: '登记营销人员',
 
@@ -23,7 +23,7 @@ Ext.define('MyApp.view.dktj.widget.RegEmployeeWindow', {
 
     items:[{
         xtype: 'form',
-        reference: 'regEmployeeForm',
+        reference: 'regDkEmployeeForm',
 
         layout: {
             type: 'form',
@@ -142,8 +142,8 @@ Ext.define('MyApp.view.dktj.widget.RegEmployeeWindow', {
                     items: [{
                         xtype: 'combobox',
                         name: 'userCode',
-                        reference: 'regEmployeeUserCombobox',
-                        fieldLabel: '营销人员',
+                        reference: 'regDkEmployeeUserCombobox',
+                        fieldLabel: '主营销人员',
                         displayField: 'userCode',
                         valueField: 'userCode',
                         allowBlank: false,
@@ -179,23 +179,25 @@ Ext.define('MyApp.view.dktj.widget.RegEmployeeWindow', {
                             change: 'onTemplateComboboxChange'
                         }
                     }]
-                },{
-                xtype: 'container',
-                layout: 'hbox',
-                items: [{
-                    xtype: 'combobox',
-                    name: 'specialAccountTypeId',
-                    fieldLabel: '特殊标记',
-                    reference: 'specialAccountTypeCombo',
-                    allowBlank: true,
-                    displayField: 'name',
-                    valueField: 'id',
-                    editable: false,
-                    bind: {
-                        store: '{specialAccountTypeStore}'
-                    }
-                }]
-            }]
+                }
+                // ,{
+                // xtype: 'container',
+                // layout: 'hbox',
+                // items: [{
+                //     xtype: 'combobox',
+                //     name: 'specialAccountTypeId',
+                //     fieldLabel: '特殊标记',
+                //     reference: 'specialAccountTypeCombo',
+                //     allowBlank: true,
+                //     displayField: 'name',
+                //     valueField: 'id',
+                //     editable: false,
+                //     bind: {
+                //         store: '{specialAccountTypeStore}'
+                //     }
+                // }]
+                // }
+            ]
         }, {
             xtype: 'container',
             reference: 'templateDetailContainer',
@@ -209,7 +211,7 @@ Ext.define('MyApp.view.dktj.widget.RegEmployeeWindow', {
             items: [{
                 xtype: 'grid',
                 reference: 'templateDetailGrid',
-                title: '分成模板',
+                title: '计酬分成模板',
                 height: 256,
                 layout: 'fit',
                 bind: {
@@ -219,7 +221,8 @@ Ext.define('MyApp.view.dktj.widget.RegEmployeeWindow', {
                     text: '岗位类型',
                     dataIndex: 'positionName',
                     width: 200,
-                    sortable: false
+                    sortable: false,
+                    align: 'center'
                 }
                 // ,{
                 //     text: '分成比例',
@@ -252,6 +255,287 @@ Ext.define('MyApp.view.dktj.widget.RegEmployeeWindow', {
                     ptype: 'cellediting',
                     clicksToEdit: 1
                 }
+            }]
+        },
+        // 任务分成
+        {
+            xtype: 'fieldset',
+            title: '任务数分成比例',
+            layout: 'anchor',
+            margin: '5 5 0 5',
+            defaults: {
+                anchor: '100%'
+            },
+            items: [{
+                xtype: 'container',
+                layout: 'hbox',
+                hidden: false,
+                items: [{
+                    xtype: 'checkbox',
+                    boxLabel: '100%归属于主营销人员',
+                    reference: 'regDkEmployeeTaskCheckBox',
+                    name: 'taskAllBelongMainTellerFlag',
+                    checked: true,
+                    listeners: {
+                        change: 'onDkTaskCheckBoxChange'
+                    }
+                }]
+            },{
+                xtype: 'container',
+                layout: 'hbox',
+                hidden: true,
+                reference: 'regDkEmployeeContainer-1',
+                items: [{
+                    xtype: 'combobox',
+                    reference: 'regDkEmployeeUserCombobox-1',
+                    flex: 5,
+                    fieldLabel: '员工编号',
+                    displayField: 'code',
+                    name: 'rwcode1',
+                    anchor: '-15',
+                    bind: {
+                        store: '{userStoreReg}'
+                    },
+                    minChars: 2,
+                    queryParam: 'code',
+                    queryMode: 'remote',
+                    listConfig: {
+                        itemTpl: [
+                            '<div data-qtip="{code} - {name} - {organizationName}">{code} - {name} - {organizationName}</div>'
+                        ]
+                    },
+                    listeners: {
+                        change: 'onEmployeeComboboxChange1',
+                        select: 'onEmployeeComboboxSelect1'
+                    }
+                },{
+                    xtype: 'numberfield',
+                    fieldLabel: '比例',
+                    name: 'rwpercentage1',
+                    flex: 3,
+                    minValue: 0,
+                    maxValue: 1,
+                    hidden: false,
+                    decimalPrecision: 2,
+                    allowDecimals: true,
+                    reference: 'regDkEmployeeUserPercentage-1',
+                    text: '分成比例'    
+                }]
+            },{
+                xtype: 'container',
+                layout: 'hbox',
+                hidden: true,
+                reference: 'regDkEmployeeContainer-2',
+                items: [{
+                    xtype: 'combobox',
+                    reference: 'regDkEmployeeUserCombobox-2',
+                    fieldLabel: '员工编号',
+                    flex: 5,
+                    displayField: 'code',
+                    name: 'rwcode2',
+                    anchor: '-15',
+                    bind: {
+                        store: '{userStoreReg}'
+                    },
+                    minChars: 2,
+                    queryParam: 'code',
+                    queryMode: 'remote',
+                    listConfig: {
+                        itemTpl: [
+                            '<div data-qtip="{code} - {name} - {organizationName}">{code} - {name} - {organizationName}</div>'
+                        ]
+                    },
+                    listeners: {
+                        change: 'onEmployeeComboboxChange2',
+                        select: 'onEmployeeComboboxSelect2'
+                    }
+                },{
+                    xtype: 'numberfield',
+                    fieldLabel: '比例',
+                    flex: 3,
+                    name: 'rwpercentage2',
+                    minValue: 0,
+                    maxValue: 1,
+                    hidden: false,
+                    decimalPrecision: 2,
+                    allowDecimals: true,
+                    reference: 'regDkEmployeeUserPercentage-2',
+                    text: '分成比例'    
+                }]
+            },{
+                xtype: 'container',
+                layout: 'hbox',
+                hidden: true,
+                reference: 'regDkEmployeeContainer-3',
+                items: [{
+                    xtype: 'combobox',
+                    reference: 'regDkEmployeeUserCombobox-3',
+                    flex: 5,
+                    fieldLabel: '员工编号',
+                    displayField: 'code',
+                    name: 'rwcode3',
+                    anchor: '-15',
+                    bind: {
+                        store: '{userStoreReg}'
+                    },
+                    minChars: 2,
+                    queryParam: 'code',
+                    queryMode: 'remote',
+                    listConfig: {
+                        itemTpl: [
+                            '<div data-qtip="{code} - {name} - {organizationName}">{code} - {name} - {organizationName}</div>'
+                        ]
+                    },
+                    listeners: {
+                        change: 'onEmployeeComboboxChange3',
+                        select: 'onEmployeeComboboxSelect3'
+                    }
+                },{
+                    xtype: 'numberfield',
+                    fieldLabel: '比例',
+                    name: 'rwpercentage3',
+                    flex: 3,
+                    minValue: 0,
+                    maxValue: 1,
+                    hidden: false,
+                    decimalPrecision: 2,
+                    allowDecimals: true,
+                    reference: 'regDkEmployeeUserPercentage-3',
+                    text: '分成比例'    
+                }]
+            },{
+                xtype: 'container',
+                layout: 'hbox',
+                hidden: true,
+                reference: 'regDkEmployeeContainer-4',
+                items: [{
+                    xtype: 'combobox',
+                    reference: 'regDkEmployeeUserCombobox-4',
+                    fieldLabel: '员工编号',
+                    flex: 5,
+                    displayField: 'code',
+                    name: 'rwcode4',
+                    anchor: '-15',
+                    bind: {
+                        store: '{userStoreReg}'
+                    },
+                    minChars: 2,
+                    queryParam: 'code',
+                    queryMode: 'remote',
+                    listConfig: {
+                        itemTpl: [
+                            '<div data-qtip="{code} - {name} - {organizationName}">{code} - {name} - {organizationName}</div>'
+                        ]
+                    },
+                    listeners: {
+                        change: 'onEmployeeComboboxChange4',
+                        select: 'onEmployeeComboboxSelect4'
+                    }
+                },{
+                    xtype: 'numberfield',
+                    fieldLabel: '比例',
+                    flex: 3,
+                    name: 'rwpercentage4',
+                    minValue: 0,
+                    maxValue: 1,
+                    hidden: false,
+                    decimalPrecision: 2,
+                    allowDecimals: true,
+                    reference: 'regDkEmployeeUserPercentage-4',
+                    text: '分成比例'    
+                }]
+            },{
+                xtype: 'container',
+                layout: 'hbox',
+                hidden: true,
+                reference: 'regDkEmployeeContainer-5',
+                items: [{
+                    xtype: 'combobox',
+                    reference: 'regDkEmployeeUserCombobox-5',
+                    fieldLabel: '员工编号',
+                    flex: 5,
+                    displayField: 'code',
+                    name: 'rwcode5',
+                    anchor: '-15',
+                    bind: {
+                        store: '{userStoreReg}'
+                    },
+                    minChars: 2,
+                    queryParam: 'code',
+                    queryMode: 'remote',
+                    listConfig: {
+                        itemTpl: [
+                            '<div data-qtip="{code} - {name} - {organizationName}">{code} - {name} - {organizationName}</div>'
+                        ]
+                    },
+                    listeners: {
+                        change: 'onEmployeeComboboxChange5',
+                        select: 'onEmployeeComboboxSelect5'
+                    }
+                },{
+                    xtype: 'numberfield',
+                    fieldLabel: '比例',
+                    flex: 3,
+                    name: 'rwpercentage5',
+                    minValue: 0,
+                    maxValue: 1,
+                    hidden: false,
+                    decimalPrecision: 2,
+                    allowDecimals: true,
+                    reference: 'regDkEmployeeUserPercentage-5',
+                    text: '分成比例'    
+                }]
+            },{
+                xtype: 'container',
+                layout: 'hbox',
+                hidden: true,
+                reference: 'regDkEmployeeContainer-6',
+                items: [{
+                    xtype: 'combobox',
+                    reference: 'regDkEmployeeUserCombobox-6',
+                    flex: 5,
+                    fieldLabel: '员工编号',
+                    displayField: 'code',
+                    name: 'rwcode6',
+                    anchor: '-15',
+                    bind: {
+                        store: '{userStoreReg}'
+                    },
+                    minChars: 2,
+                    queryParam: 'code',
+                    queryMode: 'remote',
+                    listConfig: {
+                        itemTpl: [
+                            '<div data-qtip="{code} - {name} - {organizationName}">{code} - {name} - {organizationName}</div>'
+                        ]
+                    },
+                    listeners: {
+                        change: 'onEmployeeComboboxChange6',
+                        select: 'onEmployeeComboboxSelect6'
+                    }
+                },{
+                    xtype: 'numberfield',
+                    fieldLabel: '比例',
+                    flex: 3,
+                    name: 'rwpercentage6',
+                    minValue: 0,
+                    maxValue: 1,
+                    hidden: false,
+                    decimalPrecision: 2,
+                    allowDecimals: true,
+                    reference: 'regDkEmployeeUserPercentage-6',
+                    text: '分成比例'    
+                }]
+            },{
+                xtype: 'container',
+                padding: '0 0 0 500',
+                reference: 'regDkEmployeeAddPercentageBtn',
+                hidden: true,
+                items: [{
+                    xtype: 'button',
+                    text: '添加分成人',
+                    handler: 'onAddPercentageBtnClick'
+                }]
             }]
         }],
 

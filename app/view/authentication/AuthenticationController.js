@@ -46,7 +46,8 @@ Ext.define('MyApp.view.authentication.AuthenticationController', {
                         }
                     }
 
-                    me.redirectTo('blankpage', true);
+                    // me.redirectTo('blankpage', true);
+                    window.location.href="/"
                 }
                 else{
                     viewModel.set('loginErrorMessage',obj.msg);

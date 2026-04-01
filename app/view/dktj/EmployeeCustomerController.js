@@ -57,87 +57,87 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
         this.getView().down('EmployeeCustomergrid tool[type=restore]').setHidden(false);
     },
 
-    prevBtnClick: function() {
-        var me = this;
-        // var EmployeeCustomerTreeGrid = me.getView().down('EmployeeCustomertreegrid');
-        var EmployeeCustomerGrid = me.lookupReference('employeecustomergrid');
-        var selectionModel = EmployeeCustomerGrid.getSelectionModel();
-        var store = EmployeeCustomerGrid.getStore();
+    // prevBtnClick: function() {
+    //     var me = this;
+    //     // var EmployeeCustomerTreeGrid = me.getView().down('EmployeeCustomertreegrid');
+    //     var EmployeeCustomerGrid = me.lookupReference('employeecustomergrid');
+    //     var selectionModel = EmployeeCustomerGrid.getSelectionModel();
+    //     var store = EmployeeCustomerGrid.getStore();
 
-        if (selectionModel.getCount() == 0) {
-            if (store.getCount() > 0) {
-                selectionModel.select(store.getAt(0));
-            } else {
-                Ext.toastWarn('当前列表中没有可显示的记录!');
-            }
-        } else {
-            var index = store.indexOf(selectionModel.getSelection()[0]);
-            if (index + ((store.currentPage - 1) * store.pageSize) == 0) {
-                Ext.toastWarn('已经是当前列表的第一条记录!');
-                return false;
-            }else {
-                if (store.buffered) {
-                    selectionModel.select(store.getAt(index - 1));
-                } else {
-                    // 如果是第二页以后的第一条记录，那么就往上翻一页
-                    if (index == 0) {
-                        store.previousPage({
-                            scope : this,
-                            callback : function(records, operation, success) {
-                                if (records.length > 0) {
-                                    // 翻页过后，选中最后一条
-                                    selectionModel.select(records[records.length - 1]);
-                                }
-                            }
-                        });
-                    } else {
-                        selectionModel.select(store.getAt(index - 1));
-                    }
-                }
-            }
-        }
+    //     if (selectionModel.getCount() == 0) {
+    //         if (store.getCount() > 0) {
+    //             selectionModel.select(store.getAt(0));
+    //         } else {
+    //             Ext.toastWarn('当前列表中没有可显示的记录!');
+    //         }
+    //     } else {
+    //         var index = store.indexOf(selectionModel.getSelection()[0]);
+    //         if (index + ((store.currentPage - 1) * store.pageSize) == 0) {
+    //             Ext.toastWarn('已经是当前列表的第一条记录!');
+    //             return false;
+    //         }else {
+    //             if (store.buffered) {
+    //                 selectionModel.select(store.getAt(index - 1));
+    //             } else {
+    //                 // 如果是第二页以后的第一条记录，那么就往上翻一页
+    //                 if (index == 0) {
+    //                     store.previousPage({
+    //                         scope : this,
+    //                         callback : function(records, operation, success) {
+    //                             if (records.length > 0) {
+    //                                 // 翻页过后，选中最后一条
+    //                                 selectionModel.select(records[records.length - 1]);
+    //                             }
+    //                         }
+    //                     });
+    //                 } else {
+    //                     selectionModel.select(store.getAt(index - 1));
+    //                 }
+    //             }
+    //         }
+    //     }
 
-    },
+    // },
 
-    nextBtnClick: function() {
-        var me = this;
-        // var EmployeeCustomerTreeGrid = me.getView().down('EmployeeCustomertreegrid');
-        var EmployeeCustomerGrid = me.lookupReference('employeecustomergrid');
-        var selectionModel = EmployeeCustomerGrid.getSelectionModel();
-        var store = EmployeeCustomerGrid.getStore();
+    // nextBtnClick: function() {
+    //     var me = this;
+    //     // var EmployeeCustomerTreeGrid = me.getView().down('EmployeeCustomertreegrid');
+    //     var EmployeeCustomerGrid = me.lookupReference('employeecustomergrid');
+    //     var selectionModel = EmployeeCustomerGrid.getSelectionModel();
+    //     var store = EmployeeCustomerGrid.getStore();
 
-        if (selectionModel.getCount() == 0) {
-            if (store.getCount() > 0) {
-                selectionModel.select(store.getAt(0));
-            } else {
-                Ext.toastWarn('当前列表中没有可显示的记录!');
-            }
-        } else {
-            var index = store.indexOf(selectionModel.getSelection()[0]);
-            if (index + ((store.currentPage - 1) * store.pageSize) == store.getTotalCount() - 1) {
-                Ext.toastWarn('已经是当前列表的最后一条记录!');
-            }else {
-                if (store.buffered) {
-                    selectionModel.select(store.getAt(index + 1));
-                } else {
-                    // 如果是最后一页以前的最后一条记录，那么就往下翻一页
-                    if (index + ((store.currentPage - 1) * store.pageSize) == store.currentPage * store.pageSize - 1) {
-                        store.nextPage({
-                            scope : this,
-                            callback : function(records, operation, success) {
-                                if (records.length > 0) {
-                                    // 翻页过后，选中第一条
-                                    selectionModel.select(records[0]);
-                                }
-                            }
-                        });
-                    } else {
-                        selectionModel.select(store.getAt(index + 1));
-                    }
-                }
-            }
-        }
-    },
+    //     if (selectionModel.getCount() == 0) {
+    //         if (store.getCount() > 0) {
+    //             selectionModel.select(store.getAt(0));
+    //         } else {
+    //             Ext.toastWarn('当前列表中没有可显示的记录!');
+    //         }
+    //     } else {
+    //         var index = store.indexOf(selectionModel.getSelection()[0]);
+    //         if (index + ((store.currentPage - 1) * store.pageSize) == store.getTotalCount() - 1) {
+    //             Ext.toastWarn('已经是当前列表的最后一条记录!');
+    //         }else {
+    //             if (store.buffered) {
+    //                 selectionModel.select(store.getAt(index + 1));
+    //             } else {
+    //                 // 如果是最后一页以前的最后一条记录，那么就往下翻一页
+    //                 if (index + ((store.currentPage - 1) * store.pageSize) == store.currentPage * store.pageSize - 1) {
+    //                     store.nextPage({
+    //                         scope : this,
+    //                         callback : function(records, operation, success) {
+    //                             if (records.length > 0) {
+    //                                 // 翻页过后，选中第一条
+    //                                 selectionModel.select(records[0]);
+    //                             }
+    //                         }
+    //                     });
+    //                 } else {
+    //                     selectionModel.select(store.getAt(index + 1));
+    //                 }
+    //             }
+    //         }
+    //     }
+    // },
 
     // store 相关函数
     /**
@@ -159,10 +159,9 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
 
     onUserStoreBeforeLoad: function(store, operation, eOpts) {
         var me = this,
-            regEmployeeUserCombobox = me.lookupReference('regEmployeeUserCombobox'),
-            modifyEmployeeUserCombobox = me.lookupReference('modifyEmployeeUserCombobox');
+            modifyEmployeeUserCombobox = me.lookupReference('modifyDkEmployeeUserCombobox');
 
-        var userCode = regEmployeeUserCombobox.getValue() ? regEmployeeUserCombobox.getValue() : modifyEmployeeUserCombobox.getValue();
+        var userCode = modifyEmployeeUserCombobox.getValue();
         store.getProxy().extraParams = {
             // filter: {
                 userCodeOrName: userCode,
@@ -327,10 +326,10 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
             gridSelectionRecords = viewModel.get('gridSelectionRecords');
 
         var itemId = window.getItemId();
-        if (itemId === 'regEmployeeWindow') {
+        if (itemId === 'regDkEmployeeWindow') {
             var customerStatusCombo = me.lookupReference('customerStatusCombo'),
                 templateDetailContainer = me.lookupReference('templateDetailContainer'),
-                regEmployeeUserCombobox = me.lookupReference('regEmployeeUserCombobox'),
+                regEmployeeUserCombobox = me.lookupReference('regDkEmployeeUserCombobox'),
                 templateCombo = me.lookupReference('templateCombo'),
                 specialAccountTypeCombo = me.lookupReference('specialAccountTypeCombo');
 
@@ -343,7 +342,7 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
                 templateDetailContainer.setHidden(false);
                 templateCombo.allowBlank = false;
                 templateCombo.setHidden(false);
-                specialAccountTypeCombo.setHidden(false);
+                if(specialAccountTypeCombo) specialAccountTypeCombo.setHidden(false);
             }
             else if (record.get('flag') === '2') {
                 //柜员调动释放的客户： 1-不允许修改客户状态
@@ -353,7 +352,7 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
                 //3-隐藏模板选项
                 templateCombo.allowBlank = true;
                 templateCombo.setHidden(true);
-                specialAccountTypeCombo.setHidden(true);
+                if(specialAccountTypeCombo) specialAccountTypeCombo.setHidden(true);
             }
             else if (record.get('flag') === '3') {
                 //流动转固定释放的客户： 1-不允许修改客户状态
@@ -363,7 +362,7 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
                 //3-隐藏模板选项
                 templateCombo.allowBlank = true;
                 templateCombo.setHidden(true);
-                specialAccountTypeCombo.setHidden(true);
+                if(specialAccountTypeCombo) specialAccountTypeCombo.setHidden(true);
             }
             else {
                 console.error('前端未识别的客户状态：'); console.error(record.get('flag'));
@@ -399,10 +398,10 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
         let me = this,
             itemId = window.getItemId();
 
-        if (itemId === 'regEmployeeWindow') {
+        if (itemId === 'regDkEmployeeWindow') {
             let viewModel = me.getViewModel(),
                 unregisterCustomerStore = viewModel.getStore('unregisterCustomerStore'),
-                regEmployeeUserCombobox = me.lookupReference('regEmployeeUserCombobox'),
+                regEmployeeUserCombobox = me.lookupReference('regDkEmployeeUserCombobox'),
                 templateDetailStore = viewModel.getStore('templateDetailStore'),
                 templateCombo = me.lookupReference('templateCombo');
 
@@ -410,9 +409,18 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
             unregisterCustomerStore.rejectChanges();
             templateCombo.clearValue();
             templateDetailStore.removeAll();
-        } else if (itemId === 'modifyEmployeeWindow') {
-            let modifyEmployeeUserCombobox = me.lookupReference('modifyEmployeeUserCombobox');
-            modifyEmployeeUserCombobox.clearValue();
+
+            let regDkEmployeeTaskCheckBox = me.lookupReference('regDkEmployeeTaskCheckBox');
+            if(regDkEmployeeTaskCheckBox) regDkEmployeeTaskCheckBox.setValue(true);
+            
+
+        } 
+        else if (itemId === 'modifyEmployeeWindow') {
+            let modifyDkEmployeeUserCombobox = me.lookupReference('modifyDkEmployeeUserCombobox');
+            modifyDkEmployeeUserCombobox.clearValue();
+
+            let modDkEmployeeTaskCheckBox = me.lookupReference('modDkEmployeeTaskCheckBox');
+            if(modDkEmployeeTaskCheckBox) modDkEmployeeTaskCheckBox.setValue(true);
         }
 
         Ext.getBody().unmask();
@@ -446,11 +454,12 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
             return;
         }
 
-        var window = view.floatingItems.get('regEmployeeWindow');
+        var window = view.floatingItems.get('regDkEmployeeWindow');
 
         Ext.getBody().mask(); //遮罩
-        window.center();
+        // window.center();
         window.show();
+        window.setY(0);
     },
 
     /**
@@ -466,7 +475,8 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
         let templateDetailStore = viewModel.getStore('templateDetailStore'),
             records = templateDetailStore.getData();
         let record = gridSelectionRecords[0];
-        let form = me.lookupReference('regEmployeeForm').getForm();
+        let form = me.lookupReference('regDkEmployeeForm').getForm();
+        let taskAllBelongMainTellerFlag = me.lookupReference('regDkEmployeeTaskCheckBox');
 
         let accountShareInfo = [];
         for (let i=0;i<records.length;i++){
@@ -480,6 +490,16 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
 
         if (form.isValid()) {
             var values = form.getValues();
+
+            var tellerTaskPercentageList = new Array();
+            if(values.rwcode1 && values.rwpercentage1) tellerTaskPercentageList.push({tellerCode:values.rwcode1, percentage:values.rwpercentage1});
+            if(values.rwcode2 && values.rwpercentage2) tellerTaskPercentageList.push({tellerCode:values.rwcode2, percentage:values.rwpercentage2});
+            if(values.rwcode3 && values.rwpercentage3) tellerTaskPercentageList.push({tellerCode:values.rwcode3, percentage:values.rwpercentage3});
+            if(values.rwcode4 && values.rwpercentage4) tellerTaskPercentageList.push({tellerCode:values.rwcode4, percentage:values.rwpercentage4});
+            if(values.rwcode5 && values.rwpercentage5) tellerTaskPercentageList.push({tellerCode:values.rwcode5, percentage:values.rwpercentage5});
+            if(values.rwcode6 && values.rwpercentage6) tellerTaskPercentageList.push({tellerCode:values.rwcode6, percentage:values.rwpercentage6}); 
+            
+
             // var data = new Array();
             var data ={
                 // xdCustomerNo: record.get('xdCustomerNo'),
@@ -490,27 +510,30 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
                 remarks: values.remarks,
                 accountShareInfoList: accountShareInfo,
                 templateId: values.templateId,
-                specialAccountTypeId: values.specialAccountTypeId
+                specialAccountTypeId: values.specialAccountTypeId,
+                tellerTaskPercentageList: tellerTaskPercentageList,
+                taskAllBelongMainTellerFlag: taskAllBelongMainTellerFlag.getValue()
             };
-            // var dataJson = {
-            //     data: data
-            // };
 
             Ext.Ajax.request({
                 url: CFG.getGlobalPath() + '/dktj/employeecustomer/registerEmployee',
                 method: 'POST',
                 defaultPostHeader: 'application/json;charset=UTF-8',
-                // params: Ext.JSON.encode(dataJson),
                 jsonData: data,
                 scope: this,
                 success: function(response, opts) {
                     let result = Ext.decode(response.responseText, true);
                     if (result.success) {
-                        Ext.toastInfo(result.msg);
+                        Ext.toast(result.msg);
                         unregisterCustomerStore.reload();
                         button.up('window').close();
                     } else {
-                        Ext.alertError('贷款客户登记营销人员出错', result.msg);
+                        Ext.Msg.show({
+                            title: '贷款客户登记营销人员出错', 
+                            message: result.msg,
+                            icon: Ext.Msg.ERROR,   // 错误图标（红色叉号）
+                            buttons: Ext.Msg.OK
+                        });
                     }
                 },
                 failure: MyApp.ux.data.FailureProcess.Ajax
@@ -544,23 +567,24 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
                         data.push({orgCode: record.get('orgCode'), accountNo: record.get('accountNo'), id: record.get('id')});
                     });
 
-                    var dataJson = {
-                        data: data
-                    };
+                    // var dataJson = {
+                    //     data: data
+                    // };
 
                     Ext.Ajax.request({
                         url:CFG.getGlobalPath() + '/dktj/employeecustomer/checkRegisterEmployee',
                         method: 'POST',
                         defaultPostHeader: 'application/json;charset=UTF-8',
-                        params: Ext.JSON.encode(dataJson),
+                        jsonData: data,
+                        // params: Ext.JSON.encode(dataJson),
                         scope: this,
                         success: function(response, opts) {
                             var result = Ext.decode(response.responseText, true);
                             if (result.success) {
-                                Ext.toastInfo(result.msg);
+                                Ext.toast(result.msg);
                                 registerUncheckedCustomerStore.reload();
                             } else {
-                                Ext.alertError('复核登记揽储人申请出错', result.msg);
+                                Ext.Msg.show({title: '复核登记揽储人申请出错', message: result.msg, icon: Ext.MessageBox.ERROR, buttons: Ext.Msg.OK});
                             }
                         },
                         failure: MyApp.ux.data.FailureProcess.Ajax
@@ -596,24 +620,19 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
                         data.push({orgCode: record.get('orgCode'), accountNo: record.get('accountNo'), id: record.get('id')});
                     });
 
-                    // var dataJson = {
-                    //     data: data
-                    // };
-
                     Ext.Ajax.request({
                         url: CFG.getGlobalPath() + '/dktj/employeecustomer/undoRegisterEmployee',
                         method: 'POST',
                         defaultPostHeader: 'application/json;charset=UTF-8',
-                        // params: Ext.JSON.encode(dataJson),
                         jsonData: data,
                         scope: this,
                         success: function(response, opts) {
                             var result = Ext.decode(response.responseText, true);
                             if (result.success) {
-                                Ext.toastInfo(result.msg);
+                                Ext.toast(result.msg);
                                 registerUncheckedCustomerStore.reload();
                             } else {
-                                Ext.alertError('撤销登记揽储人申请出错', result.msg);
+                                Ext.Msg.show({title:'撤销登记揽储人申请出错', message: result.msg, icon: Ext.MessageBox.ERROR, buttons: Ext.Msg.OK});
                             }
                         },
                         failure: MyApp.ux.data.FailureProcess.Ajax
@@ -640,8 +659,9 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
         var window = view.floatingItems.get('modifyEmployeeWindow');
 
         Ext.getBody().mask(); //遮罩
-        window.center();
+        // window.center();
         window.show();
+        window.setY(0);
     },
 
     /**
@@ -654,11 +674,21 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
             modifiableCustomerStore = viewModel.getStore('modifiableCustomerStore');
             gridSelectionRecords = viewModel.get('gridSelectionRecords'),
             accountEmployee = viewModel.get('accountEmployee');
+        let taskAllBelongMainTellerFlag = me.lookupReference('modDkEmployeeTaskCheckBox');
 
         var form = me.lookupReference('modifyEmployeeForm').getForm();
 
         if (form.isValid()) {
             var values = form.getValues();
+
+            var tellerTaskPercentageList = new Array();
+            if(values.rwcode1 && values.rwpercentage1) tellerTaskPercentageList.push({tellerCode:values.rwcode1, percentage:values.rwpercentage1});
+            if(values.rwcode2 && values.rwpercentage2) tellerTaskPercentageList.push({tellerCode:values.rwcode2, percentage:values.rwpercentage2});
+            if(values.rwcode3 && values.rwpercentage3) tellerTaskPercentageList.push({tellerCode:values.rwcode3, percentage:values.rwpercentage3});
+            if(values.rwcode4 && values.rwpercentage4) tellerTaskPercentageList.push({tellerCode:values.rwcode4, percentage:values.rwpercentage4});
+            if(values.rwcode5 && values.rwpercentage5) tellerTaskPercentageList.push({tellerCode:values.rwcode5, percentage:values.rwpercentage5});
+            if(values.rwcode6 && values.rwpercentage6) tellerTaskPercentageList.push({tellerCode:values.rwcode6, percentage:values.rwpercentage6}); 
+
             var data = new Array();
             Ext.Array.each(gridSelectionRecords, function(record) {
                 data.push({
@@ -667,12 +697,14 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
                     accountNo: record.get('accountNo'),
                     orgCode: record.get('orgCode'),
                     tellerCode: accountEmployee.userCode,   //新揽储人柜员号
-                    remarks: values.remarks
+                    remarks: values.remarks,
+                    tellerTaskPercentageList: tellerTaskPercentageList,         //新的任务分成比例
+                    taskAllBelongMainTellerFlag: taskAllBelongMainTellerFlag.getValue()  
                 });
             });
-            var dataJson = {
-                data: data
-            };
+            // var dataJson = {
+            //     data: data
+            // };
 
             Ext.Ajax.request({
                 url: CFG.getGlobalPath() + '/dktj/employeecustomer/modifyEmployee',
@@ -684,11 +716,11 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
                 success: function(response, opts) {
                     var result = Ext.decode(response.responseText, true);
                     if (result.success) {
-                        Ext.toastInfo(result.msg);
+                        Ext.toast(result.msg);
                         modifiableCustomerStore.reload();
                         button.up('window').close();
                     } else {
-                        Ext.alertError('贷款客户变更营销人员出错', result.msg);
+                        Ext.Msg.show({title: '贷款客户变更营销人员出错', message: result.msg, buttons: Ext.Msg.OK, icon: Ext.MessageBox.ERROR});
                     }
                 },
                 failure: MyApp.ux.data.FailureProcess.Ajax
@@ -738,15 +770,15 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
                         method: 'POST',
                         defaultPostHeader: 'application/json;charset=UTF-8',
                         // params: Ext.JSON.encode(dataJson),
-                        dataJson: data,
+                        jsonData: data,
                         scope: this,
                         success: function(response, opts) {
                             var result = Ext.decode(response.responseText, true);
                             if (result.success) {
-                                Ext.toastInfo(result.msg);
+                                Ext.toast(result.msg);
                                 modifiedUncheckedCustomerStore.reload();
                             } else {
-                                Ext.alertError('复核变更揽储人申请出错', result.msg);
+                                Ext.Msg.show({title: '复核变更揽储人申请出错', message:result.msg, buttons: Ext.Msg.OK, icon: Ext.MessageBox.ERROR});
                             }
                         },
                         failure: MyApp.ux.data.FailureProcess.Ajax
@@ -800,10 +832,10 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
                         success: function(response, opts) {
                             var result = Ext.decode(response.responseText, true);
                             if (result.success) {
-                                Ext.toastInfo(result.msg);
+                                Ext.toast(result.msg);
                                 modifiedUncheckedCustomerStore.reload();
                             } else {
-                                Ext.alertError('撤销变更揽储人申请出错', result.msg);
+                                Ext.Msg.show({title:'撤销变更揽储人申请出错', message: result.msg, buttons: Ext.Msg.OK, icon: Ext.MessageBox.ERROR});
                             }
                         },
                         failure: MyApp.ux.data.FailureProcess.Ajax
@@ -887,9 +919,9 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
                             var result = Ext.decode(response.responseText, true);
                             if (result.success) {
                                 employeeCustomerStore.reload();
-                                Ext.toastInfo(result.msg);
+                                Ext.toast(result.msg);
                             } else {
-                                Ext.alertError('客户固定/流动状态变更出错', result.msg);
+                                Ext.Msg.show({title: '客户固定/流动状态变更出错', message:result.msg, buttons: Ext.Msg.OK, icon: Ext.MessageBox.ERROR});
                             }
                         },
                         failure: MyApp.ux.data.FailureProcess.Ajax
@@ -897,9 +929,186 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerController', {
                 }
             }
         });
-    }
+    },
 
 
+    onAddPercentageBtnClick: function(button){
+
+        var itemId = button.getItemId();
+
+        var me = this;
+        var totalCount = 6;
+        var viewModel = me.getViewModel();
+
+        var currentCount = viewModel.get('currentAccountEmployeeNumber');
+        if(currentCount < totalCount){
+            currentCount = currentCount + 1;
+            viewModel.set('currentAccountEmployeeNumber', currentCount);
+            var nextContainer = me.lookupReference('regDkEmployeeContainer-'+currentCount);
+            nextContainer.setHidden(false);
+        }
+        else{
+            Ext.Msg.alert('提示','最多只能有6位营销人员');
+        }
+
+    },
+
+    onEmployeeComboboxChange1: function(combobox, newValue, oldValue, eOpts) {
+        if (newValue != oldValue) {
+            this.getViewModel().set('accountEmployee1', null);
+        }
+    },
+    
+    onEmployeeComboboxSelect1: function(combobox, record, eOpts) {
+        var obj = {
+            id: record.id,
+            userId: record.get('id'),
+            userCode: record.get('code'),
+            userName: record.get('name'),
+            organizationCode: record.get('organizationCode'),
+            organizationName: record.get('organizationName')
+        };
+        this.getViewModel().set('accountEmployee1', obj);
+    },
+
+
+    // 选定任务数100%归属于主营销人员
+    onDkTaskCheckBoxChange: function(checkbox, newValue){
+        var me = this,
+            viewModel = me.getViewModel();
+        if(newValue === true){
+            var regEmployeePaymentContainer1 = me.lookupReference('regDkEmployeeContainer-1');
+            regEmployeePaymentContainer1.setHidden(true);
+            var regEmployeePaymentContainer2 = me.lookupReference('regDkEmployeeContainer-2');
+            regEmployeePaymentContainer2.setHidden(true);
+            var regEmployeePaymentContainer3 = me.lookupReference('regDkEmployeeContainer-3');
+            regEmployeePaymentContainer3.setHidden(true);
+            var regEmployeePaymentContainer4 = me.lookupReference('regDkEmployeeContainer-4');
+            regEmployeePaymentContainer4.setHidden(true);
+            var regEmployeePaymentContainer5 = me.lookupReference('regDkEmployeeContainer-5');
+            regEmployeePaymentContainer5.setHidden(true);
+            var regEmployeePaymentContainer6 = me.lookupReference('regDkEmployeeContainer-6');
+            regEmployeePaymentContainer6.setHidden(true);
+
+            var regDkEmployeeAddPercentageBtn = me.lookupReference('regDkEmployeeAddPercentageBtn');
+            regDkEmployeeAddPercentageBtn.setHidden(true);
+            viewModel.set('currentAccountEmployeeNumber', 1);
+
+            // 清除已经填写在分成内容中的信息
+            let regDkEmployeeUserCombobox1 = me.lookupReference('regDkEmployeeUserCombobox-1');
+            if(regDkEmployeeUserCombobox1) regDkEmployeeUserCombobox1.clearValue();
+            let regDkEmployeeUserPercentage1 = me.lookupReference('regDkEmployeeUserPercentage-1');
+            if(regDkEmployeeUserPercentage1) regDkEmployeeUserPercentage1.setValue(null);
+            let regDkEmployeeUserCombobox2 = me.lookupReference('regDkEmployeeUserCombobox-2');
+            if(regDkEmployeeUserCombobox2) regDkEmployeeUserCombobox2.clearValue();
+            let regDkEmployeeUserPercentage2 = me.lookupReference('regDkEmployeeUserPercentage-2');
+            if(regDkEmployeeUserPercentage2) regDkEmployeeUserPercentage2.setValue(null);
+            let regDkEmployeeUserCombobox3 = me.lookupReference('regDkEmployeeUserCombobox-3');
+            if(regDkEmployeeUserCombobox3) regDkEmployeeUserCombobox3.clearValue();
+            let regDkEmployeeUserPercentage3 = me.lookupReference('regDkEmployeeUserPercentage-3');
+            if(regDkEmployeeUserPercentage3) regDkEmployeeUserPercentage3.setValue(null);
+            let regDkEmployeeUserCombobox4 = me.lookupReference('regDkEmployeeUserCombobox-4');
+            if(regDkEmployeeUserCombobox4) regDkEmployeeUserCombobox4.clearValue();
+            let regDkEmployeeUserPercentage4 = me.lookupReference('regDkEmployeeUserPercentage-4');
+            if(regDkEmployeeUserPercentage4) regDkEmployeeUserPercentage4.setValue(null);
+            let regDkEmployeeUserCombobox5 = me.lookupReference('regDkEmployeeUserCombobox-5');
+            if(regDkEmployeeUserCombobox5) regDkEmployeeUserCombobox5.clearValue();
+            let regDkEmployeeUserPercentage5 = me.lookupReference('regDkEmployeeUserPercentage-5');
+            if(regDkEmployeeUserPercentage5) regDkEmployeeUserPercentage5.setValue(null);
+            let regDkEmployeeUserCombobox6 = me.lookupReference('regDkEmployeeUserCombobox-6');
+            if(regDkEmployeeUserCombobox6) regDkEmployeeUserCombobox6.clearValue();
+            let regDkEmployeeUserPercentage6 = me.lookupReference('regDkEmployeeUserPercentage-6');
+            if(regDkEmployeeUserPercentage6) regDkEmployeeUserPercentage6.setValue(null);
+        }
+        if(newValue === false){
+            var regEmployeePaymentContainer1 = me.lookupReference('regDkEmployeeContainer-1');
+            regEmployeePaymentContainer1.setHidden(false);
+
+            var regDkEmployeeAddPercentageBtn = me.lookupReference('regDkEmployeeAddPercentageBtn');
+            regDkEmployeeAddPercentageBtn.setHidden(false);
+        }
+    },
+
+
+    // 变更时，选定任务数100%归属于主营销人员
+    onDkTaskCheckBoxChangeModWindow: function(checkbox, newValue){
+        var me = this,
+            viewModel = me.getViewModel();
+
+        if(newValue === true){
+            var modEmployeePaymentContainer1 = me.lookupReference('modDkEmployeeContainer-1');
+            modEmployeePaymentContainer1.setHidden(true);
+            var modEmployeePaymentContainer2 = me.lookupReference('modDkEmployeeContainer-2');
+            modEmployeePaymentContainer2.setHidden(true);
+            var modEmployeePaymentContainer3 = me.lookupReference('modDkEmployeeContainer-3');
+            modEmployeePaymentContainer3.setHidden(true);
+            var modEmployeePaymentContainer4 = me.lookupReference('modDkEmployeeContainer-4');
+            modEmployeePaymentContainer4.setHidden(true);
+            var modEmployeePaymentContainer5 = me.lookupReference('modDkEmployeeContainer-5');
+            modEmployeePaymentContainer5.setHidden(true);
+            var modEmployeePaymentContainer6 = me.lookupReference('modDkEmployeeContainer-6');
+            modEmployeePaymentContainer6.setHidden(true);
+
+            var modDkEmployeeAddPercentageBtn = me.lookupReference('modDkEmployeeAddPercentageBtn');
+            modDkEmployeeAddPercentageBtn.setHidden(true);
+            viewModel.set('currentAccountEmployeeNumberModWindow', 1);
+
+            // 清除已经填写的内容
+            let modDkEmployeeUserCombobox1 = me.lookupReference('modDkEmployeeUserCombobox-1');
+            if(modDkEmployeeUserCombobox1) modDkEmployeeUserCombobox1.clearValue();
+            let modDkEmployeeUserPercentage1 = me.lookupReference('modDkEmployeeUserPercentage-1');
+            if(modDkEmployeeUserPercentage1) modDkEmployeeUserPercentage1.setValue(null);
+            let modDkEmployeeUserCombobox2 = me.lookupReference('modDkEmployeeUserCombobox-2');
+            if(modDkEmployeeUserCombobox2) modDkEmployeeUserCombobox2.clearValue();
+            let modDkEmployeeUserPercentage2 = me.lookupReference('modDkEmployeeUserPercentage-2');
+            if(modDkEmployeeUserPercentage2) modDkEmployeeUserPercentage2.setValue(null);
+            let modDkEmployeeUserCombobox3 = me.lookupReference('modDkEmployeeUserCombobox-3');
+            if(modDkEmployeeUserCombobox3) modDkEmployeeUserCombobox3.clearValue();
+            let modDkEmployeeUserPercentage3 = me.lookupReference('modDkEmployeeUserPercentage-3');
+            if(modDkEmployeeUserPercentage3) modDkEmployeeUserPercentage3.setValue(null);
+            let modDkEmployeeUserCombobox4 = me.lookupReference('modDkEmployeeUserCombobox-4');
+            if(modDkEmployeeUserCombobox4) modDkEmployeeUserCombobox4.clearValue();
+            let modDkEmployeeUserPercentage4 = me.lookupReference('modDkEmployeeUserPercentage-4');
+            if(modDkEmployeeUserPercentage4) modDkEmployeeUserPercentage4.setValue(null);
+            let modDkEmployeeUserCombobox5 = me.lookupReference('modDkEmployeeUserCombobox-5');
+            if(modDkEmployeeUserCombobox5) modDkEmployeeUserCombobox5.clearValue();
+            let modDkEmployeeUserPercentage5 = me.lookupReference('modDkEmployeeUserPercentage-5');
+            if(modDkEmployeeUserPercentage5) modDkEmployeeUserPercentage5.setValue(null);
+            let modDkEmployeeUserCombobox6 = me.lookupReference('modDkEmployeeUserCombobox-6');
+            if(modDkEmployeeUserCombobox6) modDkEmployeeUserCombobox6.clearValue();
+            let modDkEmployeeUserPercentage6 = me.lookupReference('modDkEmployeeUserPercentage-6');
+            if(modDkEmployeeUserPercentage6) modDkEmployeeUserPercentage6.setValue(null);
+
+        }
+        if(newValue === false){
+            var modEmployeePaymentContainer1 = me.lookupReference('modDkEmployeeContainer-1');
+            modEmployeePaymentContainer1.setHidden(false);
+
+            var modDkEmployeeAddPercentageBtn = me.lookupReference('modDkEmployeeAddPercentageBtn');
+            modDkEmployeeAddPercentageBtn.setHidden(false);
+        }
+    },
+
+    onAddPercentageBtnClickModWindow: function(button){
+
+        var itemId = button.getItemId();
+
+        var me = this;
+        var totalCount = 6;
+        var viewModel = me.getViewModel();
+
+        var currentCount = viewModel.get('currentAccountEmployeeNumberModWindow');
+        if(currentCount < totalCount){
+            currentCount = currentCount + 1;
+            viewModel.set('currentAccountEmployeeNumberModWindow', currentCount);
+            var nextContainer = me.lookupReference('modDkEmployeeContainer-'+currentCount);
+            nextContainer.setHidden(false);
+        }
+        else{
+            Ext.Msg.alert('提示','最多只能有6位营销人员');
+        }
+
+    },
 
 
 

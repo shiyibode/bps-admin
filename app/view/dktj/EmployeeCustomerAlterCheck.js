@@ -32,7 +32,7 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerAlterCheck',{
         var me = this;
 
         //表格的数据存储器
-        var dataStore = me.getViewModel().getStore('employeeCustomerStore');
+        var dataStore = me.getViewModel().getStore('modifiedUncheckedCustomerStore');
 
         me.items = [];
         me.items.push({

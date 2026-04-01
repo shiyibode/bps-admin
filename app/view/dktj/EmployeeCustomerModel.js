@@ -8,6 +8,15 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerModel', {
     ],
 
     data: {
+        currentAccountEmployeeNumber: 1,
+        currentAccountEmployeeNumberModWindow: 1,
+
+        accountEmployee1: null,
+        accountEmployee2: null,
+        accountEmployee3: null,
+        accountEmployee4: null,
+        accountEmployee5: null,
+        accountEmployee6: null,
         gridSelectionRecords: [],
 
         accountEmployee: null
@@ -279,6 +288,21 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerModel', {
             proxy: {
                 type: 'format',
                 url: CFG.getGlobalPath() + '/dktj/employeecustomer/getSpecialAccountTypeList'
+            }
+        },
+
+        userStoreReg: {
+            type: 'store',
+            autoLoad: false,
+            fields: ['code', 'name'],
+            pageSize: 0,
+            proxy: {
+                type: 'ajax',
+                url: CFG.getGlobalPath() + '/sys/user/getTenUsers', // 后端接口地址
+                reader: {
+                    type: 'json',
+                    rootProperty: 'data'
+                }
             }
         }
 

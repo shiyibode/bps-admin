@@ -39,21 +39,21 @@ Ext.define('MyApp.view.dktj.EmployeeCustomer',{
                 dataStore = me.getViewModel().getStore('unregisterCustomerStore');
                 break;
             //登记复核
-            case '504':
-                dataStore = me.getViewModel().getStore('registerUncheckedCustomerStore');
-                break;
-            //变更申请
-            case '507':
-                dataStore = me.getViewModel().getStore('modifiableCustomerStore');
-                break;
-            //变更复核
-            case '509':
-                dataStore = me.getViewModel().getStore('modifiedUncheckedCustomerStore');
-                break;
-            //维护人贷款客户
-            case '512':
-                dataStore = me.getViewModel().getStore('employeeCustomerStore');
-                break;
+            // case '504':
+            //     dataStore = me.getViewModel().getStore('registerUncheckedCustomerStore');
+            //     break;
+            // //变更申请
+            // case '507':
+            //     dataStore = me.getViewModel().getStore('modifiableCustomerStore');
+            //     break;
+            // //变更复核
+            // case '509':
+            //     dataStore = me.getViewModel().getStore('modifiedUncheckedCustomerStore');
+            //     break;
+            // //维护人贷款客户
+            // case '512':
+            //     dataStore = me.getViewModel().getStore('employeeCustomerStore');
+            //     break;
         };
 
         me.items = [];

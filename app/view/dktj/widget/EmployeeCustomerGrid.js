@@ -150,19 +150,19 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
             text: '营销人员信息',
             flex: 2,
             columns: [{
-                text: '柜员编号',
+                text: '主营销人员编号',
                 dataIndex: 'tellerCode',
                 sortable: false,
                 searchable: true,
                 flex: 1
             }, {
-                text: '姓名',
+                text: '主营销人员姓名',
                 dataIndex: 'tellerName',
                 sortable: false,
                 searchable: true,
                 flex: 1
             }, {
-                text: '在职机构编号',
+                text: '主营销人员在职机构',
                 dataIndex: 'tellerOrgCode',
                 sortable: false,
                 flex: 1
@@ -194,8 +194,13 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                     }
                     return '未知'
                 }
+            },{
+                text: '任务分成比例',
+                dataIndex: 'tellerTaskPercentageStr',
+                sortable: false,
+                flex: 1
             }, {
-                text: '复核',
+                text: '复核状态',
                 dataIndex: 'registerCheckStatus',
                 sortable: false,
                 flex: 1,
@@ -407,7 +412,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
                 });
                 employeeColumn.columns.pop(); //删除登记审核状态
                 employeeColumn.columns.push({ //增加变更审核状态
-                    text: '复核',
+                    text: '变更复核状态',
                     dataIndex: 'alterCheckStatus',
                     sortable: false,
                     flex: 1,

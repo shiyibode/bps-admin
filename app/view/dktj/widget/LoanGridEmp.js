@@ -1,12 +1,16 @@
-Ext.define('MyApp.view.dktj.widget.LoanGrid', {
+/**
+ * Created by syb on 25/12/14.
+ */
+Ext.define('MyApp.view.dktj.widget.LoanGridEmp', {
     extend: 'Ext.pivot.Grid',
-    alias: 'widget.loangrid',
+    alias: 'widget.loangridemp',
 
     requires: [
         'MyApp.ux.GridToolBar'
+        // 'Ext.pivot.plugin.Exporter'
     ],
 
-    reference: 'loangrid',
+    reference: 'loangridemp',
 
     tools: [{
         type: 'refresh',
@@ -27,46 +31,56 @@ Ext.define('MyApp.view.dktj.widget.LoanGrid', {
 
     collapsible: false,
 
+    // multiSelect: true,
+
+    // selModel: {
+    //     type: 'spreadsheet'
+    // },
+
+    // plugins: [{
+    //     ptype: 'pivotexporter'
+    // }],
+
+
     initComponent: function () {
         var me = this;
         var searchItems = [{
-            xtype: 'datefield',
-            fieldLabel: '起始日期',
-            name: 'startDate',
-            maxValue: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
-            format: 'Y-m-d',
-            formatText: '年-月-日',
-            listeners: {
-                change: function(datefield, newValue, oldValue, eOpts) {
-                    if (datefield.isValid() && newValue && newValue != oldValue) {
-                        var endDate = this.up('form').down('datefield[name=endDate]');
+                xtype: 'datefield',
+                fieldLabel: '起始日期',
+                name: 'startDate',
+                // value: Ext.Date.add(new Date(), Ext.Date.MONTH, -1),
+                maxValue: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
+                format: 'Y-m-d',
+                formatText: '年-月-日',
+                listeners: {
+                    change: function(datefield, newValue, oldValue, eOpts) {
+                        if (newValue && newValue != oldValue) {
+                            var endDate = this.up('form').down('datefield[name=endDate]');
 
-                        var endDateMaxValue = Ext.Date.add(Ext.Date.add(newValue, Ext.Date.MONTH, 12), Ext.Date.DAY, -1);
+                            var endDateMaxValue = Ext.Date.add(Ext.Date.add(newValue, Ext.Date.MONTH, 12), Ext.Date.DAY, -1);
 
-                        var currDate = Ext.Date.add(new Date, Ext.Date.DAY, -1);
+                            var currDate = Ext.Date.add(new Date, Ext.Date.DAY, -1);
 
-                        if (endDateMaxValue > currDate) {
-                            endDateMaxValue = currDate;
-                        }
-                        endDate.setMaxValue(endDateMaxValue);
+                            if (endDateMaxValue > currDate) {
+                                endDateMaxValue = currDate;
+                            }
+                            endDate.setMaxValue(endDateMaxValue);
 
-                        if (endDate.getValue() && !Ext.Date.between(endDate.getValue(), newValue, endDateMaxValue)) {
-                            endDate.setValue(endDateMaxValue);
+                            if (endDate.getValue() && !Ext.Date.between(endDate.getValue(), newValue, endDateMaxValue)) {
+                                endDate.setValue(endDateMaxValue);
+                            }
                         }
                     }
                 }
+            },{
+                xtype: 'datefield',
+                fieldLabel: '终止日期',
+                name: 'endDate',
+                maxValue: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
+                format: 'Y-m-d',
+                formatText: '年-月-日'
             }
-        },{
-            xtype: 'datefield',
-            fieldLabel: '终止日期',
-            name: 'endDate',
-            maxValue: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
-            format: 'Y-m-d',
-            formatText: '年-月-日'
-        }, {
-            fieldLabel: '存款机构',
-            name: 'dpOrgCode'
-        }];
+        ];
 
         switch (me.moduleId) {
             //员工时点
@@ -97,7 +111,7 @@ Ext.define('MyApp.view.dktj.widget.LoanGrid', {
                 });
                 break;
             //员工日均
-            case 'empavgtask':
+            case 'loanempavg':
                 searchItems.push({
                     fieldLabel: '柜员号',
                     name: 'tellerCode'
@@ -106,17 +120,16 @@ Ext.define('MyApp.view.dktj.widget.LoanGrid', {
                     name: 'tellerName'
                 }, {
                     xtype: 'combo',
-                    reference: 'depositTypeCombo',
-                    fieldLabel: '存款类型',
+                    reference: 'loanTypeCombo',
+                    fieldLabel: '贷款类型',
                     displayField: 'text',
                     valueField: 'id',
                     editable: false,
-                    name: 'depositType',
-                    queryMode: 'local',
+                    name: 'loanType',
                     bind: {
-                        store: '{empDepositTypeStore}',
+                        store: '{empLoanTypeStore}'
                     },
-                    // value: 0,
+                    value: 0,
                     listConfig: {
                         itemTpl: [
                             '<div data-qtip="{text}: {tips}">{text}</div>'
@@ -124,26 +137,20 @@ Ext.define('MyApp.view.dktj.widget.LoanGrid', {
                     }
                 });
                 break;
-            case 'employeepayment':
+            //机构时点
+            case '520':
                 searchItems.push({
-                    fieldLabel: '柜员号',
-                    name: 'tellerCode'
-                }, {
-                    fieldLabel: '员工姓名',
-                    name: 'tellerName'
-                }, {
                     xtype: 'combo',
-                    reference: 'depositTypeCombo',
-                    fieldLabel: '存款类型',
+                    reference: 'loanTypeCombo',
+                    fieldLabel: '贷款类型',
                     displayField: 'text',
                     valueField: 'id',
                     editable: false,
-                    name: 'depositType',
-                    queryMode: 'local',
+                    name: 'loanType',
                     bind: {
-                        store: '{empDepositTypeStore}',
+                        store: '{orgLoanTypeStore}'
                     },
-                    // value: 0,
+                    value: 0,
                     listConfig: {
                         itemTpl: [
                             '<div data-qtip="{text}: {tips}">{text}</div>'
@@ -151,26 +158,20 @@ Ext.define('MyApp.view.dktj.widget.LoanGrid', {
                     }
                 });
                 break;
-            case 'empavgpayment':
+            //机构日均
+            case '522':
                 searchItems.push({
-                    fieldLabel: '柜员号',
-                    name: 'tellerCode'
-                }, {
-                    fieldLabel: '员工姓名',
-                    name: 'tellerName'
-                }, {
                     xtype: 'combo',
-                    reference: 'depositTypeCombo',
-                    fieldLabel: '存款类型',
+                    reference: 'loanTypeCombo',
+                    fieldLabel: '贷款类型',
                     displayField: 'text',
                     valueField: 'id',
                     editable: false,
-                    name: 'depositType',
-                    queryMode: 'local',
+                    name: 'loanType',
                     bind: {
-                        store: '{empDepositTypeStore}',
+                        store: '{orgLoanTypeStore}'
                     },
-                    // value: 0,
+                    value: 0,
                     listConfig: {
                         itemTpl: [
                             '<div data-qtip="{text}: {tips}">{text}</div>'
@@ -189,7 +190,8 @@ Ext.define('MyApp.view.dktj.widget.LoanGrid', {
             searchBox: true,
             grid: this,
             searchItems: searchItems,
-            searchAllBtnHidden: true
+            searchAllBtnHidden: true,
+            permissiveOpts: me.permissiveOpts
         });
 
         me.callParent(arguments);
@@ -204,16 +206,21 @@ Ext.define('MyApp.view.dktj.widget.LoanGrid', {
             case 'loanemp':
                 uri = 'employee'
                 break;
-            case 'empavgtask':
-                uri = 'empDepositAvgTask'
+            case 'loanempavg':
+                uri = 'empAverage'
                 break;
-            case 'employeepayment':
-                uri = 'empDepositPayment'
-                break;
-            case 'empavgpayment':
-                uri = 'empDepositAvgPayment'
-                break;
+            // case 'employeepayment':
+            //     uri = 'empDepositPayment'
+            //     break;
+            // case 'empavgpayment':
+            //     uri = 'empDepositAvgPayment'
+            //     break;
         }
+
+        var bbar = me.down('pagingtoolbar');
+        console.log(bbar)
+
+
         Ext.Msg.wait(I18N.GetRoleInfo);
         Ext.Ajax.request({
             url: CFG.getGlobalPath() + '/sys/menu/currentUser/currentMenuPermission',

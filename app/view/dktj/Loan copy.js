@@ -21,13 +21,15 @@ Ext.define('MyApp.view.dktj.Loan',{
     initComponent: function() {
         var me = this,
             viewModel = me.getViewModel();
+        var moduleId = Ext.util.Cookies.get('currentMenuId');
 
         //表格的数据存储器
         var dataStore = null;
         var myMatrix = null;
-        switch (me.moduleId) {
+        switch (moduleId) {
             //员工时点
-            case 516:
+            case '516':
+                console.log('点击了516菜单')
                 dataStore = viewModel.getStore('employeeLoanStore');
                 myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
                     textRowLabels: '日期/营销人员/机构',
@@ -81,7 +83,7 @@ Ext.define('MyApp.view.dktj.Loan',{
                 });
                 break;
             //员工日均
-            case 518:
+            case '518':
                 dataStore = viewModel.getStore('employeeAvgLoanStore');
                 myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
                     textRowLabels: '日均日期/存款人信息/存款机构',
@@ -127,7 +129,7 @@ Ext.define('MyApp.view.dktj.Loan',{
                 });
                 break;
             //机构时点
-            case 520:
+            case '520':
                 dataStore = viewModel.getStore('organizationLoanStore');
                 myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
                     textRowLabels: '日期/所属机构/所在机构',
@@ -184,7 +186,7 @@ Ext.define('MyApp.view.dktj.Loan',{
                 });
                 break;
             //机构日均
-            case 522:
+            case '522':
                 dataStore = viewModel.getStore('organizationAvgLoanStore');
                 myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
                     textRowLabels: '日期/所属机构/所在机构',
@@ -249,8 +251,8 @@ Ext.define('MyApp.view.dktj.Loan',{
                 title: me.title + '{selectionText}'
             },
             permissiveOpts: me.permissiveOpts,
-            moduleId: me.moduleId,
-            matrix: myMatrix
+            moduleId: moduleId,
+            // matrix: myMatrix
         });
 
         this.callParent(arguments);

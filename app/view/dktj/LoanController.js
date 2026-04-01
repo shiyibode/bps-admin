@@ -45,9 +45,15 @@ Ext.define('MyApp.view.dktj.LoanController', {
         var me = this,
             navigationtree = me.lookupReference('navigationtree');
 
-        if (records && records[0]) {
-            navigationtree.getSelectionModel().select(records[0]);
-        }
+        // if (records && records[0]) {
+        //     navigationtree.getSelectionModel().select(records[0]);
+        // }
+
+        // 展开菜单
+        Ext.defer(
+            function(){
+                navigationtree.expandAll();
+            },100);
     },
 
     onLoanStoreBeforeLoad: function(store , operation , eOpts) {
@@ -84,9 +90,7 @@ Ext.define('MyApp.view.dktj.LoanController', {
                 filter.startDate = filter.endDate;
             }
 
-            store.getProxy().extraParams = {
-                filter: filter
-            }
+            store.getProxy().extraParams = filter;
         }
     },
 
@@ -110,8 +114,9 @@ Ext.define('MyApp.view.dktj.LoanController', {
      */
     onNavigationTreeSelectionChange: function(treepanel, selected, eOpts) {
         var me = this,
-            loangrid = me.lookupReference('loangrid'),
-            store = loangrid.getStore(),
+            loangrid = me.lookupReference('loangrid');
+
+        var store = loangrid.getStore(),
             empLoanTypeStore = me.getViewModel().getStore('empLoanTypeStore'),
             orgLoanTypeStore = me.getViewModel().getStore('orgLoanTypeStore'),
             loanTypeCombo = me.lookupReference('loanTypeCombo');
