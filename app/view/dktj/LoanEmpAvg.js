@@ -26,7 +26,7 @@ Ext.define('MyApp.view.dktj.LoanEmpAvg',{
         //表格的数据存储器
         var dataStore = viewModel.getStore('employeeLoanStore');
         var myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
-            textRowLabels: '日均日期/存款人信息/存款机构',
+            textRowLabels: '日期/营销人员/机构',
             compactViewColumnWidth: 210,
             viewLayoutType: 'compact',
             type: 'local',
@@ -81,11 +81,11 @@ Ext.define('MyApp.view.dktj.LoanEmpAvg',{
             width: 220
         }, {
             region : 'center',
-            xtype : 'loangrid',
+            xtype : 'loangridemp',
             bind: {
-                store: '{employeeAvgLoanStore}',
-                title: '员工日均' + '{selectionText}'
+                store: '{employeeAvgLoanStore}'
             },
+            title: '员工日均',
             permissiveOpts: me.permissiveOpts,
             moduleId: 'loanempavg',
             matrix: myMatrix

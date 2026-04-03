@@ -22,6 +22,15 @@ Ext.define('MyApp.view.dktj.LoanEmp',{
         var me = this,
             viewModel = me.getViewModel();
         var moduleId = Ext.util.Cookies.get('currentMenuId');
+        var titleText;
+        switch(moduleId){
+            case '516': 
+                titleText = '员工时点';
+                break;
+            case '518':
+                titleText = '员工日均';
+                break;
+        }
 
         //表格的数据存储器
         var dataStore = viewModel.getStore('employeeLoanStore');
@@ -89,10 +98,11 @@ Ext.define('MyApp.view.dktj.LoanEmp',{
             width: 220
         }, {
             region : 'center',
-            xtype : 'loangrid',
+            xtype : 'loangridemp',
             bind: {
                 store: '{employeeLoanStore}',
-                title: '员工时点' + '{selectionText}'
+                title: titleText
+                // title: '员工时点' + '{selectionText}'
             },
             permissiveOpts: me.permissiveOpts,
             moduleId: 'loanemp',

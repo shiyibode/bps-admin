@@ -101,8 +101,8 @@ Ext.define('MyApp.view.dktj.EmployeeCustomerModel', {
             listeners: {
                 load: {
                     fn: 'onOrganizationStoreLoad',
-                    single: true,       //只执行一次
-                    delay:1
+                    // single: true,       //只执行一次
+                    // delay:1
                 }
             }
         },

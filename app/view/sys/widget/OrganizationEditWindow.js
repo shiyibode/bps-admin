@@ -28,7 +28,7 @@ Ext.define('MyApp.view.sys.widget.OrganizationEditWindow', {
 
     items: [{
         xtype: 'form',
-        reference: 'organizationForm',
+        reference: 'organizationEditForm',
         layout: {
             type: 'vbox',
             align: 'stretch'

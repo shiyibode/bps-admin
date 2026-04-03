@@ -12,24 +12,18 @@ Ext.define('MyApp.view.dktj.widget.LoanGridEmp', {
 
     reference: 'loangridemp',
 
-    tools: [{
-        type: 'refresh',
-        tooltip: '刷新数据',
-        handler: 'refreshBtnClick'
-    }],
+    // bbar: {
+    //     xtype: 'pagingtoolbar',
+    //     reference: 'loangridpagingtoolbar',
+    //     bind: {
+    //         store: '{employeeLoanStore}'
+    //     },
+    //     displayInfo: true,
+    //     emptyMsg: "没有需要显示的数据",
+    //     plugins: [ 'progressbarpager' ]
+    // },
 
-    bbar: {
-        xtype: 'pagingtoolbar',
-        reference: 'loangridpagingtoolbar',
-        bind: {
-            store: '{employeeLoanStore}'
-        },
-        displayInfo: true,
-        emptyMsg: "没有需要显示的数据",
-        plugins: [ 'progressbarpager' ]
-    },
-
-    collapsible: false,
+    // collapsible: false,
 
     // multiSelect: true,
 
@@ -43,7 +37,9 @@ Ext.define('MyApp.view.dktj.widget.LoanGridEmp', {
 
 
     initComponent: function () {
-        var me = this;
+        var me = this,
+            storeName;
+
         var searchItems = [{
                 xtype: 'datefield',
                 fieldLabel: '起始日期',
@@ -85,6 +81,7 @@ Ext.define('MyApp.view.dktj.widget.LoanGridEmp', {
         switch (me.moduleId) {
             //员工时点
             case 'loanemp':
+                storeName = '{employeeLoanStore}'
                 searchItems.push({
                     fieldLabel: '柜员号',
                     name: 'tellerCode'
@@ -93,7 +90,7 @@ Ext.define('MyApp.view.dktj.widget.LoanGridEmp', {
                     name: 'tellerName'
                 }, {
                     xtype: 'combo',
-                    reference: 'loanTypeCombo',
+                    reference: 'loanTypeComboEmp',
                     fieldLabel: '贷款类型',
                     displayField: 'text',
                     valueField: 'id',
@@ -112,6 +109,7 @@ Ext.define('MyApp.view.dktj.widget.LoanGridEmp', {
                 break;
             //员工日均
             case 'loanempavg':
+                storeName = '{employeeAvgLoanStore}'
                 searchItems.push({
                     fieldLabel: '柜员号',
                     name: 'tellerCode'
@@ -120,7 +118,7 @@ Ext.define('MyApp.view.dktj.widget.LoanGridEmp', {
                     name: 'tellerName'
                 }, {
                     xtype: 'combo',
-                    reference: 'loanTypeCombo',
+                    reference: 'loanTypeComboEmpAvg',
                     fieldLabel: '贷款类型',
                     displayField: 'text',
                     valueField: 'id',
@@ -138,47 +136,47 @@ Ext.define('MyApp.view.dktj.widget.LoanGridEmp', {
                 });
                 break;
             //机构时点
-            case '520':
-                searchItems.push({
-                    xtype: 'combo',
-                    reference: 'loanTypeCombo',
-                    fieldLabel: '贷款类型',
-                    displayField: 'text',
-                    valueField: 'id',
-                    editable: false,
-                    name: 'loanType',
-                    bind: {
-                        store: '{orgLoanTypeStore}'
-                    },
-                    value: 0,
-                    listConfig: {
-                        itemTpl: [
-                            '<div data-qtip="{text}: {tips}">{text}</div>'
-                        ]
-                    }
-                });
-                break;
+            // case '520':
+            //     searchItems.push({
+            //         xtype: 'combo',
+            //         reference: 'loanTypeCombo',
+            //         fieldLabel: '贷款类型',
+            //         displayField: 'text',
+            //         valueField: 'id',
+            //         editable: false,
+            //         name: 'loanType',
+            //         bind: {
+            //             store: '{orgLoanTypeStore}'
+            //         },
+            //         value: 0,
+            //         listConfig: {
+            //             itemTpl: [
+            //                 '<div data-qtip="{text}: {tips}">{text}</div>'
+            //             ]
+            //         }
+            //     });
+            //     break;
             //机构日均
-            case '522':
-                searchItems.push({
-                    xtype: 'combo',
-                    reference: 'loanTypeCombo',
-                    fieldLabel: '贷款类型',
-                    displayField: 'text',
-                    valueField: 'id',
-                    editable: false,
-                    name: 'loanType',
-                    bind: {
-                        store: '{orgLoanTypeStore}'
-                    },
-                    value: 0,
-                    listConfig: {
-                        itemTpl: [
-                            '<div data-qtip="{text}: {tips}">{text}</div>'
-                        ]
-                    }
-                });
-                break;
+            // case '522':
+            //     searchItems.push({
+            //         xtype: 'combo',
+            //         reference: 'loanTypeCombo',
+            //         fieldLabel: '贷款类型',
+            //         displayField: 'text',
+            //         valueField: 'id',
+            //         editable: false,
+            //         name: 'loanType',
+            //         bind: {
+            //             store: '{orgLoanTypeStore}'
+            //         },
+            //         value: 0,
+            //         listConfig: {
+            //             itemTpl: [
+            //                 '<div data-qtip="{text}: {tips}">{text}</div>'
+            //             ]
+            //         }
+            //     });
+            //     break;
         }
 
         //表格顶部工具栏
@@ -186,13 +184,25 @@ Ext.define('MyApp.view.dktj.widget.LoanGridEmp', {
         me.dockedItems.push({
             xtype: 'gridtoolbar',
             dock: 'top',
-            collapseExpandButton: true,
             searchBox: true,
             grid: this,
             searchItems: searchItems,
             searchAllBtnHidden: true,
+            collapseExpandButton: false,
             permissiveOpts: me.permissiveOpts
+        },{
+            xtype: 'pagingtoolbar',
+            dock: 'bottom',
+            reference: 'loangridpagingtoolbar',
+            bind: {
+                store: storeName
+            },
+            // store: me.getStore(),
+            displayInfo: true,
+            emptyMsg: "没有需要显示的数据",
+            plugins: [ 'progressbarpager' ]
         });
+
 
         me.callParent(arguments);
     },
@@ -218,7 +228,6 @@ Ext.define('MyApp.view.dktj.widget.LoanGridEmp', {
         }
 
         var bbar = me.down('pagingtoolbar');
-        console.log(bbar)
 
 
         Ext.Msg.wait(I18N.GetRoleInfo);

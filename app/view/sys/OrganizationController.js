@@ -185,8 +185,14 @@ Ext.define('MyApp.view.sys.OrganizationController', {
             organizationForm = me.lookupReference('organizationForm'),
             form = organizationForm.getForm(),
             parentId = viewModel.get('parentId');
+        
+        console.log(form)
+        console.log(form.getValues())
+        console.log(parentId)
 
+        console.log('开始保存机构')
         if (form.isValid() && parentId) {
+            console.log('form表单有效');
             var values = form.getValues();
 
             var data = {

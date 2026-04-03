@@ -35,7 +35,7 @@ Ext.define('MyApp.view.sys.widget.OrganizationWindow', {
         },
         border: false,
         bodyPadding: 10,
-        modelValidation: true,
+        // modelValidation: true,
 
         fieldDefaults: {
             msgTarget: 'side',

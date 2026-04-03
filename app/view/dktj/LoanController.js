@@ -29,7 +29,10 @@ Ext.define('MyApp.view.dktj.LoanController', {
     },
 
     refreshBtnClick : function() {
-        this.lookupReference('loangrid').getStore().reload();
+        let emploangrid = this.lookupReference('loangridemp');
+
+        let loangrid = emploangrid;
+        loangrid.getStore().reload();
     },
 
     // store 相关函数
@@ -50,10 +53,35 @@ Ext.define('MyApp.view.dktj.LoanController', {
         // }
 
         // 展开菜单
-        Ext.defer(
-            function(){
-                navigationtree.expandAll();
-            },100);
+        Ext.Ajax.request({
+            url: CFG.getGlobalPath() + '/sys/organization/getExpandOrganizationId',
+            method: 'POST',
+            defaultPostHeader: 'application/json;charset=UTF-8',
+            scope: this,
+            success: function(response, opts) {
+                var result = Ext.decode(response.responseText, true);
+                if (result.success) {
+                    let organizationId = result.data;
+                    let node = store.getNodeById(organizationId);
+                    // node.expand();
+                    navigationtree.expandAll();
+                    navigationtree.getSelectionModel().select(node);
+                } else {
+                    Ext.Msg.show({title: '打开机构树节点失败', message: result.msg, buttons: Ext.Msg.OK, icon: Ext.MessageBox.ERROR});
+                }
+            },
+            failure: MyApp.ux.data.FailureProcess.Ajax
+        });
+
+        // 展开菜单
+        // Ext.defer(
+        //     function(){
+        //         // navigationtree.expandAll();
+        //         var node = store.getNodeById('2001');
+        //         console.log(node);
+        //         node.expand();
+        //         navigationtree.getSelectionModel().select(node);
+        //     },100);
     },
 
     onLoanStoreBeforeLoad: function(store , operation , eOpts) {
@@ -114,12 +142,25 @@ Ext.define('MyApp.view.dktj.LoanController', {
      */
     onNavigationTreeSelectionChange: function(treepanel, selected, eOpts) {
         var me = this,
-            loangrid = me.lookupReference('loangrid');
+            loangrid ;
+
+        loangrid = me.lookupReference('loangridemp');
+        var currentMenuId = Ext.util.Cookies.get('currentMenuId');
+        
+        // var view = me.getView(),
+        //     loangrid = view.down('#loangridemp');
+        
 
         var store = loangrid.getStore(),
             empLoanTypeStore = me.getViewModel().getStore('empLoanTypeStore'),
             orgLoanTypeStore = me.getViewModel().getStore('orgLoanTypeStore'),
-            loanTypeCombo = me.lookupReference('loanTypeCombo');
+            loanTypeCombo;
+        if(currentMenuId == '516'){
+            loanTypeCombo = me.lookupReference('loanTypeComboEmp');
+        }
+        if(currentMenuId == '518'){
+            loanTypeCombo = me.lookupReference('loanTypeComboEmpAvg');
+        }
 
         var selectionModel = selected[0];
         if (selectionModel) {
@@ -129,24 +170,24 @@ Ext.define('MyApp.view.dktj.LoanController', {
             if (loanTypeCombo) {
                 loanTypeCombo.setValue(0);
             }
-            if (type === '000' || type === '100') {//对于“伊金霍洛农商行”、“营业网点”只显示核心贷款
-                empLoanTypeStore.filterBy(function(item) {
-                    return item.get('id') === 0;
-                });
-                orgLoanTypeStore.filterBy(function(item) {
-                    return item.get('id') === 0;
-                });
-            } else if (type === '200' || type === '201') { //对于“管理部门”和总行的部门，只显示汇总贷款
-                empLoanTypeStore.filterBy(function(item) {
-                    return item.get('id') === 1;
-                });
-                orgLoanTypeStore.filterBy(function(item) {
-                    return item.get('id') === 1 ;
-                });
-                if (loanTypeCombo) {
-                    loanTypeCombo.setValue(1);
-                }
-            }
+            // if (type === '000' || type === '100') {//对于“伊金霍洛农商行”、“营业网点”只显示核心贷款
+            //     empLoanTypeStore.filterBy(function(item) {
+            //         return item.get('id') === 0;
+            //     });
+            //     orgLoanTypeStore.filterBy(function(item) {
+            //         return item.get('id') === 0;
+            //     });
+            // } else if (type === '200' || type === '201') { //对于“管理部门”和总行的部门，只显示汇总贷款
+            //     empLoanTypeStore.filterBy(function(item) {
+            //         return item.get('id') === 1;
+            //     });
+            //     orgLoanTypeStore.filterBy(function(item) {
+            //         return item.get('id') === 1 ;
+            //     });
+            //     if (loanTypeCombo) {
+            //         loanTypeCombo.setValue(1);
+            //     }
+            // }
         }
         store.load();
     },
