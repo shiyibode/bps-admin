@@ -41,9 +41,32 @@ Ext.define('MyApp.view.dktj.CustomerPropertyController', {
         var me = this,
             navigationtree = me.lookupReference('navigationtree');
 
-        if (records && records[0]) {
-            navigationtree.getSelectionModel().select(records[0]);
-        }
+
+
+        // 展开菜单
+        Ext.Ajax.request({
+            url: CFG.getGlobalPath() + '/sys/organization/getExpandOrganizationId',
+            method: 'POST',
+            defaultPostHeader: 'application/json;charset=UTF-8',
+            scope: this,
+            success: function(response, opts) {
+                var result = Ext.decode(response.responseText, true);
+                if (result.success) {
+                    let organizationId = result.data;
+                    let node = store.getNodeById(organizationId);
+                    // node.expand();
+                    navigationtree.expandAll();
+                    navigationtree.getSelectionModel().select(node);
+                } else {
+                    Ext.Msg.show({title: '打开机构树节点失败', message: result.msg, buttons: Ext.Msg.OK, icon: Ext.MessageBox.ERROR});
+                }
+            },
+            failure: MyApp.ux.data.FailureProcess.Ajax
+        });
+
+        // if (records && records[0]) {
+        //     navigationtree.getSelectionModel().select(records[0]);
+        // }
     },
 
     onCustomerPropertyStoreBeforeLoad: function(store , operation , eOpts) {
@@ -78,9 +101,7 @@ Ext.define('MyApp.view.dktj.CustomerPropertyController', {
         }
 
         if (filter) {
-            store.getProxy().extraParams = {
-                filter: filter
-            }
+            store.getProxy().extraParams = filter
         }
     },
 
@@ -128,8 +149,8 @@ Ext.define('MyApp.view.dktj.CustomerPropertyController', {
      */
     onNavigationTreeSelectionChange: function(treepanel, selected, eOpts) {
         var me = this,
-            CustomerPropertyGrid = me.lookupReference('customerpropertygrid'),
-            store = CustomerPropertyGrid.getStore();
+            customerPropertyGrid = me.lookupReference('customerpropertygrid'),
+            store = customerPropertyGrid.getStore();
 
         store.load();
     },
@@ -208,9 +229,14 @@ Ext.define('MyApp.view.dktj.CustomerPropertyController', {
                             var result = Ext.decode(response.responseText, true);
                             if (result.success) {
                                 employeeCustomerStore.reload();
-                                Ext.toastInfo(result.msg);
+                                Ext.toast(result.msg);
                             } else {
-                                Ext.alertError('固定客户转流动状态出错', result.msg);
+                                Ext.Msg.show({
+                                    title: '固定客户转流动状态出错', 
+                                    message: result.msg,
+                                    icon: Ext.Msg.ERROR,   // 错误图标（红色叉号）
+                                    buttons: Ext.Msg.OK
+                                });
                             }
                         },
                         failure: MyApp.ux.data.FailureProcess.Ajax
@@ -270,23 +296,27 @@ Ext.define('MyApp.view.dktj.CustomerPropertyController', {
             icon: Ext.Msg.QUESTION,
             fn: function(btn) {
                 if (btn === 'yes') {
-                    var dataJson = {
-                        data: data
-                    };
+                    var dataJson = data;
 
                     Ext.Ajax.request({
                         url: CFG.getGlobalPath() + '/dktj/employeecustomer/changeStatusToFix',
                         method: 'POST',
                         defaultPostHeader: 'application/json;charset=UTF-8',
-                        params: Ext.JSON.encode(dataJson),
+                        // params: Ext.JSON.encode(dataJson),
+                        jsonData: data,
                         scope: this,
                         success: function(response, opts) {
                             var result = Ext.decode(response.responseText, true);
                             if (result.success) {
                                 customerPropertyStore.reload();
-                                Ext.toastInfo(result.msg);
+                                Ext.toast(result.msg);
                             } else {
-                                Ext.alertError('流动客户转固定状态出错', result.msg);
+                                Ext.Msg.show({
+                                    title: '流动客户转固定状态出错', 
+                                    message: result.msg,
+                                    icon: Ext.Msg.ERROR,   // 错误图标（红色叉号）
+                                    buttons: Ext.Msg.OK
+                                });
                             }
                         },
                         failure: MyApp.ux.data.FailureProcess.Ajax

@@ -19,9 +19,12 @@ Ext.define('MyApp.view.dktj.CustomerProperty',{
 
     // session: true,
 
-    frame : false,
-    border : false,
+    width: 500,
+    height: 700,
     layout : 'border',
+    // frame : false,
+    // border : false,
+    // layout : 'border',
 
     initComponent: function() {
         let me = this;
@@ -43,7 +46,7 @@ Ext.define('MyApp.view.dktj.CustomerProperty',{
             region : 'center',
             xtype : 'customerpropertygrid',
             bind: {
-                title: me.title + '{selectionText}'
+                title: '客户流动/固定状态' + '{selectionText}'
             },
             permissiveOpts: me.permissiveOpts,
             moduleId: me.moduleId,
