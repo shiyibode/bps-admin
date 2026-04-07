@@ -29,9 +29,13 @@ Ext.define('MyApp.view.dktj.LoanController', {
     },
 
     refreshBtnClick : function() {
-        let emploangrid = this.lookupReference('loangridemp');
+        let emploangrid = this.lookupReference('loangridemp'),
+            orgloangrid = this.lookupReference('loangridorg'),
+            loangrid;
 
-        let loangrid = emploangrid;
+        var moduleId = Ext.util.Cookies.get('currentMenuId');
+        if(moduleId == '516'||moduleId == '518') loangrid = emploangrid;
+        if(moduleId == '520'||moduleId == '522') loangrid = orgloangrid;
         loangrid.getStore().reload();
     },
 
@@ -142,10 +146,27 @@ Ext.define('MyApp.view.dktj.LoanController', {
      */
     onNavigationTreeSelectionChange: function(treepanel, selected, eOpts) {
         var me = this,
-            loangrid ;
-
-        loangrid = me.lookupReference('loangridemp');
+            loangrid,
+            loanTypeCombo ;
         var currentMenuId = Ext.util.Cookies.get('currentMenuId');
+        switch(currentMenuId){
+            case '516':
+                loangrid = me.lookupReference('loangridemp');
+                loanTypeCombo = me.lookupReference('loanTypeComboEmp');
+                break;
+            case '518':
+                loangrid = me.lookupReference('loangridemp');
+                loanTypeCombo = me.lookupReference('loanTypeComboEmpAvg');
+                break;
+            case '520':
+                loangrid = me.lookupReference('loangridorg');
+                loanTypeCombo = me.lookupReference('loanTypeComboOrg');
+                break;
+            case '522':
+                loangrid = me.lookupReference('loangridorg');
+                loanTypeCombo = me.lookupReference('loanTypeComboOrgAvg');
+                break;
+        }
         
         // var view = me.getView(),
         //     loangrid = view.down('#loangridemp');
@@ -153,14 +174,20 @@ Ext.define('MyApp.view.dktj.LoanController', {
 
         var store = loangrid.getStore(),
             empLoanTypeStore = me.getViewModel().getStore('empLoanTypeStore'),
-            orgLoanTypeStore = me.getViewModel().getStore('orgLoanTypeStore'),
-            loanTypeCombo;
-        if(currentMenuId == '516'){
-            loanTypeCombo = me.lookupReference('loanTypeComboEmp');
-        }
-        if(currentMenuId == '518'){
-            loanTypeCombo = me.lookupReference('loanTypeComboEmpAvg');
-        }
+            orgLoanTypeStore = me.getViewModel().getStore('orgLoanTypeStore');
+
+        // if(currentMenuId == '516'){
+        //     loanTypeCombo = me.lookupReference('loanTypeComboEmp');
+        // }
+        // if(currentMenuId == '518'){
+        //     loanTypeCombo = me.lookupReference('loanTypeComboEmpAvg');
+        // }
+        // if(currentMenuId == '520'){
+        //     loanTypeCombo = me.lookupReference('loanTypeComboOrg');
+        // }
+        // if(currentMenuId == '522'){
+        //     loanTypeCombo = me.lookupReference('loanTypeComboOrgAvg');
+        // }
 
         var selectionModel = selected[0];
         if (selectionModel) {

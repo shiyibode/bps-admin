@@ -12,24 +12,7 @@ Ext.define('MyApp.view.dktj.widget.LoanGridOrg', {
 
     reference: 'loangridorg',
 
-    tools: [{
-        type: 'refresh',
-        tooltip: '刷新数据',
-        handler: 'refreshBtnClick'
-    }],
-
-    collapsible: false,
-
-    // multiSelect: true,
-
-    // selModel: {
-    //     type: 'spreadsheet'
-    // },
-
-    // plugins: [{
-    //     ptype: 'pivotexporter'
-    // }],
-
+    // collapsible: false,
 
     initComponent: function () {
         var me = this;
@@ -72,65 +55,11 @@ Ext.define('MyApp.view.dktj.widget.LoanGridOrg', {
         ];
 
         switch (me.moduleId) {
-            //员工时点
-            case 'loanemp':
-                searchItems.push({
-                    fieldLabel: '柜员号',
-                    name: 'tellerCode'
-                }, {
-                    fieldLabel: '员工姓名',
-                    name: 'tellerName'
-                }, {
-                    xtype: 'combo',
-                    reference: 'loanTypeCombo',
-                    fieldLabel: '贷款类型',
-                    displayField: 'text',
-                    valueField: 'id',
-                    editable: false,
-                    name: 'loanType',
-                    bind: {
-                        store: '{empLoanTypeStore}'
-                    },
-                    value: 0,
-                    listConfig: {
-                        itemTpl: [
-                            '<div data-qtip="{text}: {tips}">{text}</div>'
-                        ]
-                    }
-                });
-                break;
-            //员工日均
-            case 'loanempavg':
-                searchItems.push({
-                    fieldLabel: '柜员号',
-                    name: 'tellerCode'
-                }, {
-                    fieldLabel: '员工姓名',
-                    name: 'tellerName'
-                }, {
-                    xtype: 'combo',
-                    reference: 'loanTypeCombo',
-                    fieldLabel: '贷款类型',
-                    displayField: 'text',
-                    valueField: 'id',
-                    editable: false,
-                    name: 'loanType',
-                    bind: {
-                        store: '{empLoanTypeStore}'
-                    },
-                    value: 0,
-                    listConfig: {
-                        itemTpl: [
-                            '<div data-qtip="{text}: {tips}">{text}</div>'
-                        ]
-                    }
-                });
-                break;
             //机构时点
-            case '520':
+            case 'loanorg':
                 searchItems.push({
                     xtype: 'combo',
-                    reference: 'loanTypeCombo',
+                    reference: 'loanTypeComboOrg',
                     fieldLabel: '贷款类型',
                     displayField: 'text',
                     valueField: 'id',
@@ -148,10 +77,10 @@ Ext.define('MyApp.view.dktj.widget.LoanGridOrg', {
                 });
                 break;
             //机构日均
-            case '522':
+            case 'loanorgavg':
                 searchItems.push({
                     xtype: 'combo',
-                    reference: 'loanTypeCombo',
+                    reference: 'loanTypeComboOrgAvg',
                     fieldLabel: '贷款类型',
                     displayField: 'text',
                     valueField: 'id',
@@ -175,7 +104,7 @@ Ext.define('MyApp.view.dktj.widget.LoanGridOrg', {
         me.dockedItems.push({
             xtype: 'gridtoolbar',
             dock: 'top',
-            collapseExpandButton: true,
+            collapseExpandButton: false,
             searchBox: true,
             grid: this,
             searchItems: searchItems,

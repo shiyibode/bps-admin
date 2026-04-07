@@ -1,7 +1,7 @@
 
-Ext.define('MyApp.view.dktj.LoanEmpAvg',{
+Ext.define('MyApp.view.dktj.LoanOrgAvg',{
     extend: 'Ext.panel.Panel',
-    xtype: 'dktjloanempavg',
+    xtype: 'dktjloanorgavg',
 
     requires: [
         'Ext.layout.container.Border',
@@ -22,11 +22,21 @@ Ext.define('MyApp.view.dktj.LoanEmpAvg',{
         var me = this,
             viewModel = me.getViewModel();
         var moduleId = Ext.util.Cookies.get('currentMenuId');
+        var titleText;
+        switch(moduleId){
+            case '520': 
+                titleText = '机构时点';
+                break;
+            case '522':
+                titleText = '机构日均';
+                break;
+        }
 
         //表格的数据存储器
-        var dataStore = viewModel.getStore('employeeLoanStore');
-        var myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
-            textRowLabels: '日期/营销人员/机构',
+        dataStore = viewModel.getStore('organizationAvgLoanStore');
+
+        myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
+            textRowLabels: '日期/所属机构/所在机构',
             compactViewColumnWidth: 210,
             viewLayoutType: 'compact',
             type: 'local',
@@ -58,12 +68,12 @@ Ext.define('MyApp.view.dktj.LoanEmpAvg',{
                 header: '日期',
                 sortable: false
             }, {
-                dataIndex: 'teller',
-                header: '营销人员信息',
+                dataIndex: 'lnOrg',
+                header: '贷款机构',
                 sortable: false
             }, {
-                dataIndex: 'lnOrg',
-                header: '贷款所在机构',
+                dataIndex: 'lnOrg2',
+                header: '贷款机构',
                 sortable: false
             }]
         });
@@ -81,13 +91,14 @@ Ext.define('MyApp.view.dktj.LoanEmpAvg',{
             width: 220
         }, {
             region : 'center',
-            xtype : 'loangridemp',
+            xtype : 'loangridorg',
             bind: {
-                store: '{employeeAvgLoanStore}'
+                store: '{organizationAvgLoanStore}',
+                title: titleText
+                // title: '员工时点' + '{selectionText}'
             },
-            title: '员工日均',
             permissiveOpts: me.permissiveOpts,
-            moduleId: 'loanempavg',
+            moduleId: 'loanorgavg',
             matrix: myMatrix
         });
 
