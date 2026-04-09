@@ -92,6 +92,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeInterestReaddGrid', {
         me.dockedItems.push({
             xtype: 'gridtoolbar',
             dock: 'top',
+            collapseExpandButton: false,
             searchBox: true,
             searchItems:searchItems,
             grid: this,
@@ -101,7 +102,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeInterestReaddGrid', {
         me.callParent(arguments);
     },
 
-afterRender: function(){
+    afterRender: function(){
         var me = this;
         var uri = 'readd';
         Ext.Msg.wait(I18N.GetRoleInfo);

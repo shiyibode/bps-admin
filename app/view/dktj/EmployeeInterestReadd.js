@@ -42,10 +42,9 @@ Ext.define('MyApp.view.dktj.EmployeeInterestReadd',{
                 region : 'center',
                 xtype : 'employeeinterestreaddgrid',
                 bind: {
-                    title: me.title + '{selectionText}'
+                    title: '补录分成规则' + '{selectionText}'
                 },
                 permissiveOpts: me.permissiveOpts,
-                moduleId: me.moduleId,
                 store: dataStore
             },{
                 //补登记分成规则窗口
@@ -54,5 +53,8 @@ Ext.define('MyApp.view.dktj.EmployeeInterestReadd',{
         );
 
         this.callParent(arguments);
-    }
+    },
+
+    
+
 });

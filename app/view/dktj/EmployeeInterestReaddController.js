@@ -41,9 +41,29 @@ Ext.define('MyApp.view.dktj.EmployeeInterestReaddController', {
         var me = this,
             navigationtree = me.lookupReference('navigationtree');
 
-        if (records && records[0]) {
-            navigationtree.getSelectionModel().select(records[0]);
-        }
+        // 展开菜单
+        Ext.Ajax.request({
+            url: CFG.getGlobalPath() + '/sys/organization/getExpandOrganizationId',
+            method: 'POST',
+            defaultPostHeader: 'application/json;charset=UTF-8',
+            scope: this,
+            success: function(response, opts) {
+                var result = Ext.decode(response.responseText, true);
+                if (result.success) {
+                    let organizationId = result.data;
+                    let node = store.getNodeById(organizationId);
+                    // node.expand();
+                    navigationtree.expandAll();
+                    navigationtree.getSelectionModel().select(node);
+                } else {
+                    Ext.Msg.show({title: '打开机构树节点失败', message: result.msg, buttons: Ext.Msg.OK, icon: Ext.MessageBox.ERROR});
+                }
+            },
+            failure: MyApp.ux.data.FailureProcess.Ajax
+        });
+        // if (records && records[0]) {
+        //     navigationtree.getSelectionModel().select(records[0]);
+        // }
     },
 
     onEmployeeInterestReaddStoreBeforeLoad: function(store , operation , eOpts) {
@@ -67,9 +87,7 @@ Ext.define('MyApp.view.dktj.EmployeeInterestReaddController', {
         }
 
         if (filter) {
-            store.getProxy().extraParams = {
-                filter: filter
-            }
+            store.getProxy().extraParams = filter
         }
     },
 
@@ -160,10 +178,8 @@ Ext.define('MyApp.view.dktj.EmployeeInterestReaddController', {
 
         let userCode = readdEmployeeUserCombobox.getValue() ;
         store.getProxy().extraParams = {
-            filter: {
-                userCodeOrName: userCode,
-                notUserType: 0
-            }
+            userCodeOrName: userCode,
+            notUserType: 0
         }
     },
 
@@ -181,10 +197,8 @@ Ext.define('MyApp.view.dktj.EmployeeInterestReaddController', {
         if (newValue !== undefined && newValue !== '' && newValue !== null){
             let record = gridSelectionRecords[0];
             store.getProxy().extraParams = {
-                filter:{
-                    templateId: newValue,
-                    accountNo: record.get('accountNo')
-                }
+                templateId: newValue,
+                accountNo: record.get('accountNo')
             };
             store.reload();
         }
@@ -213,7 +227,6 @@ Ext.define('MyApp.view.dktj.EmployeeInterestReaddController', {
 
         if (form.isValid()) {
             var values = form.getValues();
-            // var data = new Array();
             var data = {
                 accountNo: record.get('accountNo'),
                 orgCode: record.get('orgCode'),
@@ -222,25 +235,26 @@ Ext.define('MyApp.view.dktj.EmployeeInterestReaddController', {
                 accountShareInfoList: accountShareInfo,
                 templateId: values.templateId
             };
-            var dataJson = {
-                data: data
-            };
 
             Ext.Ajax.request({
                 url: CFG.getGlobalPath() +'/dktj/employeeinterest/readdaccount',
                 method: 'POST',
                 defaultPostHeader: 'application/json;charset=UTF-8',
-                // params: Ext.JSON.encode(dataJson),
                 jsonData: data,
                 scope: this,
                 success: function(response, opts) {
                     let result = Ext.decode(response.responseText, true);
                     if (result.success) {
-                        Ext.toastInfo(result.msg);
+                        Ext.toast(result.msg);
                         employeeInterestReaddStore.reload();
                         button.up('window').close();
                     } else {
-                        Ext.alertError('补登记营销人员出错', result.msg);
+                        Ext.Msg.show({
+                            title: '补登记营销人员出错', 
+                            message: result.msg,
+                            icon: Ext.Msg.ERROR,   // 错误图标（红色叉号）
+                            buttons: Ext.Msg.OK
+                        });
                     }
                 },
                 failure: MyApp.ux.data.FailureProcess.Ajax

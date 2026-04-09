@@ -152,7 +152,7 @@ Ext.define('MyApp.view.dktj.widget.RegEmployeeWindow', {
                             store: '{userStore}',
                         },
                         minChars: 2,
-                        queryParam: 'userCode', //自动请求时携带的参数名称
+                        queryParam: 'userCodeOrName', //自动请求时携带的参数名称
                         queryMode: 'remote',
                         listConfig: {
                             itemTpl: [
