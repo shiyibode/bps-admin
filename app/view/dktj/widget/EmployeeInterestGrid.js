@@ -12,28 +12,30 @@ Ext.define('MyApp.view.dktj.widget.EmployeeInterestGrid', {
 
     reference: 'employeeinterestgrid',
 
-    tools: [{
-        type: 'refresh',
-        tooltip: '刷新数据',
-        handler: 'refreshBtnClick'
-    }],
+    // tools: [{
+    //     type: 'refresh',
+    //     tooltip: '刷新数据',
+    //     handler: 'refreshBtnClick'
+    // }],
 
-    title: 'employeeinterestgrid',
-    collapsible: false,
+    // title: 'employeeinterestgrid',
+    // collapsible: false,
 
-    multiSelect: true,
+    // multiSelect: true,
 
-    selModel: {
-        type: 'spreadsheet'
-    },
+    // selModel: {
+    //     // type: 'spreadsheet',
+    //     mode: 'SINGLE'
+    // },
 
-    plugins: [{
-        ptype: 'pivotexporter'
-    }],
+    // plugins: [{
+    //     ptype: 'pivotexporter'
+    // }],
 
 
     initComponent: function () {
         var me = this;
+        var storeName;
         var searchItems = [{
             xtype: 'datefield',
             fieldLabel: '起始日期',
@@ -68,12 +70,12 @@ Ext.define('MyApp.view.dktj.widget.EmployeeInterestGrid', {
             maxValue: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
             format: 'Y-m-d',
             formatText: '年-月-日'
-        }
-        ];
+        }];
 
         switch (me.moduleId) {
             //员工时点
-            case 528:
+            case '528':
+                storeName = '{employeeInterestStore}'
                 searchItems.push({
                     fieldLabel: '柜员号',
                     name: 'tellerCode'
@@ -99,8 +101,9 @@ Ext.define('MyApp.view.dktj.widget.EmployeeInterestGrid', {
                     }
                 });
                 break;
-            //员工日均
-            case 529:
+            员工日均
+            case '529':
+                storeName = '{employeeAvgInterestStore}'
                 searchItems.push({
                     fieldLabel: '柜员号',
                     name: 'tellerCode'
@@ -127,7 +130,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeInterestGrid', {
                 });
                 break;
             //机构时点
-            case 530:
+            case '530':
                 searchItems.push({
                     xtype: 'combo',
                     reference: 'interestLoanTypeCombo',
@@ -148,7 +151,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeInterestGrid', {
                 });
                 break;
             //机构日均
-            case 531:
+            case '531':
                 searchItems.push({
                     xtype: 'combo',
                     reference: 'interestLoanTypeCombo',
@@ -175,13 +178,42 @@ Ext.define('MyApp.view.dktj.widget.EmployeeInterestGrid', {
         me.dockedItems.push({
             xtype: 'gridtoolbar',
             dock: 'top',
-            collapseExpandButton: true,
+            collapseExpandButton: false,
             searchBox: true,
             grid: this,
             searchItems: searchItems,
             searchAllBtnHidden: true,
             permissiveOpts: me.permissiveOpts
         });
+
+        switch (me.moduleId){
+            case '528':
+                me.dockedItems.push({
+                    xtype: 'pagingtoolbar',
+                    dock: 'bottom',
+                    reference: 'empinterestgridpagingtoolbar',
+                    bind: {
+                        store: storeName
+                    },
+                    displayInfo: true,
+                    emptyMsg: "没有需要显示的数据",
+                    plugins: [ 'progressbarpager' ]
+                });
+                break;
+            case '529':
+                me.dockedItems.push({
+                    xtype: 'pagingtoolbar',
+                    dock: 'bottom',
+                    reference: 'empavginterestgridpagingtoolbar',
+                    bind: {
+                        store: storeName
+                    },
+                    displayInfo: true,
+                    emptyMsg: "没有需要显示的数据",
+                    plugins: [ 'progressbarpager' ]
+                });
+                break;
+        }
 
         me.callParent(arguments);
     }

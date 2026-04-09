@@ -135,48 +135,6 @@ Ext.define('MyApp.view.dktj.widget.LoanGridEmp', {
                     }
                 });
                 break;
-            //机构时点
-            // case '520':
-            //     searchItems.push({
-            //         xtype: 'combo',
-            //         reference: 'loanTypeCombo',
-            //         fieldLabel: '贷款类型',
-            //         displayField: 'text',
-            //         valueField: 'id',
-            //         editable: false,
-            //         name: 'loanType',
-            //         bind: {
-            //             store: '{orgLoanTypeStore}'
-            //         },
-            //         value: 0,
-            //         listConfig: {
-            //             itemTpl: [
-            //                 '<div data-qtip="{text}: {tips}">{text}</div>'
-            //             ]
-            //         }
-            //     });
-            //     break;
-            //机构日均
-            // case '522':
-            //     searchItems.push({
-            //         xtype: 'combo',
-            //         reference: 'loanTypeCombo',
-            //         fieldLabel: '贷款类型',
-            //         displayField: 'text',
-            //         valueField: 'id',
-            //         editable: false,
-            //         name: 'loanType',
-            //         bind: {
-            //             store: '{orgLoanTypeStore}'
-            //         },
-            //         value: 0,
-            //         listConfig: {
-            //             itemTpl: [
-            //                 '<div data-qtip="{text}: {tips}">{text}</div>'
-            //             ]
-            //         }
-            //     });
-            //     break;
         }
 
         //表格顶部工具栏

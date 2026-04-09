@@ -19,13 +19,13 @@ Ext.define('MyApp.view.dktj.widget.EmployeeInterestDetailGrid', {
     columnLines: true,
     multiSelect: false,
 
-    tools: [
-        {
-            type: 'refresh',
-            tooltip: '刷新数据',
-            handler: 'refreshBtnClick'
-        }
-    ],
+    // tools: [
+    //     {
+    //         type: 'refresh',
+    //         tooltip: '刷新数据',
+    //         handler: 'refreshBtnClick'
+    //     }
+    // ],
 
     bbar:{
         xtype:'pagingtoolbar',
@@ -134,6 +134,7 @@ Ext.define('MyApp.view.dktj.widget.EmployeeInterestDetailGrid', {
             xtype: 'gridtoolbar',
             dock: 'top',
             searchBox: true,
+            collapseExpandButton: false,
             searchItems:searchItems,
             grid: this,
             permissiveOpts: me.permissiveOpts

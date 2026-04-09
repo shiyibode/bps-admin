@@ -65,8 +65,8 @@ Ext.define('MyApp.view.dktj.EmployeeInterestModel', {
             listeners: {
                 load: {
                     fn: 'onOrganizationStoreLoad',
-                    single: true,       //只执行一次
-                    delay:1
+                    // single: true,       //只执行一次
+                    // delay:1
                 }
             }
         },
@@ -101,7 +101,7 @@ Ext.define('MyApp.view.dktj.EmployeeInterestModel', {
             },
             autoLoad: false,
             listeners: {
-                beforeload: 'onInterestStoreBeforeLoad'
+                beforeload: 'onOrgInterestStoreBeforeLoad'
             }
         },
 
@@ -115,7 +115,7 @@ Ext.define('MyApp.view.dktj.EmployeeInterestModel', {
             },
             autoLoad: false,
             listeners: {
-                beforeload: 'onInterestStoreBeforeLoad'
+                beforeload: 'onOrgAvgInterestStoreBeforeLoad'
             }
         },
 
@@ -143,7 +143,7 @@ Ext.define('MyApp.view.dktj.EmployeeInterestModel', {
             },
             autoLoad: false,
             listeners: {
-                beforeload: 'onInterestStoreBeforeLoad'
+                beforeload: 'onInterestAvgStoreBeforeLoad'
             }
         }
 

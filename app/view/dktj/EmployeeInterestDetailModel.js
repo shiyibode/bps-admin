@@ -65,9 +65,7 @@ Ext.define('MyApp.view.dktj.EmployeeInterestDetailModel', {
             },
             listeners: {
                 load: {
-                    fn: 'onOrganizationStoreLoad',
-                    single: true,       //只执行一次
-                    delay:1
+                    fn: 'onOrganizationStoreLoad'
                 }
             }
         },

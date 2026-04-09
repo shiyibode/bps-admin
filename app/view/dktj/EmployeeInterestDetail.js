@@ -41,10 +41,9 @@ Ext.define('MyApp.view.dktj.EmployeeInterestDetail',{
             region : 'center',
             xtype : 'employeeinterestdetailgrid',
             bind: {
-                title: me.title + '{selectionText}'
+                title: '利息分成明细' + '{selectionText}'
             },
             permissiveOpts: me.permissiveOpts,
-            moduleId: me.moduleId,
             store: dataStore
         });
 

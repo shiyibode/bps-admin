@@ -41,9 +41,30 @@ Ext.define('MyApp.view.dktj.EmployeeInterestDetailController', {
         var me = this,
             navigationtree = me.lookupReference('navigationtree');
 
-        if (records && records[0]) {
-            navigationtree.getSelectionModel().select(records[0]);
-        }
+        // 展开菜单
+        Ext.Ajax.request({
+            url: CFG.getGlobalPath() + '/sys/organization/getExpandOrganizationId',
+            method: 'POST',
+            defaultPostHeader: 'application/json;charset=UTF-8',
+            scope: this,
+            success: function(response, opts) {
+                var result = Ext.decode(response.responseText, true);
+                if (result.success) {
+                    let organizationId = result.data;
+                    let node = store.getNodeById(organizationId);
+                    // node.expand();
+                    navigationtree.expandAll();
+                    navigationtree.getSelectionModel().select(node);
+                } else {
+                    Ext.Msg.show({title: '打开机构树节点失败', message: result.msg, buttons: Ext.Msg.OK, icon: Ext.MessageBox.ERROR});
+                }
+            },
+            failure: MyApp.ux.data.FailureProcess.Ajax
+        });
+
+        // if (records && records[0]) {
+        //     navigationtree.getSelectionModel().select(records[0]);
+        // }
     },
 
     onEmployeeInterestDetailStoreBeforeLoad: function(store , operation , eOpts) {
@@ -78,9 +99,7 @@ Ext.define('MyApp.view.dktj.EmployeeInterestDetailController', {
                 filter.startDate = filter.endDate;
             }
 
-            store.getProxy().extraParams = {
-                filter: filter
-            }
+            store.getProxy().extraParams = filter;
         }
     },
 

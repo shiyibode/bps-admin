@@ -41,9 +41,30 @@ Ext.define('MyApp.view.dktj.EmployeeInterestController', {
         var me = this,
             navigationtree = me.lookupReference('navigationtree');
 
-        if (records && records[0]) {
-            navigationtree.getSelectionModel().select(records[0]);
-        }
+        // 展开菜单
+        Ext.Ajax.request({
+            url: CFG.getGlobalPath() + '/sys/organization/getExpandOrganizationId',
+            method: 'POST',
+            defaultPostHeader: 'application/json;charset=UTF-8',
+            scope: this,
+            success: function(response, opts) {
+                var result = Ext.decode(response.responseText, true);
+                if (result.success) {
+                    let organizationId = result.data;
+                    let node = store.getNodeById(organizationId);
+                    // node.expand();
+                    navigationtree.expandAll();
+                    navigationtree.getSelectionModel().select(node);
+                } else {
+                    Ext.Msg.show({title: '打开机构树节点失败', message: result.msg, buttons: Ext.Msg.OK, icon: Ext.MessageBox.ERROR});
+                }
+            },
+            failure: MyApp.ux.data.FailureProcess.Ajax
+        });
+
+        // if (records && records[0]) {
+        //     navigationtree.getSelectionModel().select(records[0]);
+        // }
     },
 
     //OrganizationTree 相关函数
@@ -59,7 +80,7 @@ Ext.define('MyApp.view.dktj.EmployeeInterestController', {
     },
 
     /**
-     * 当机构树中选中的节点发生改变时,加载 unregisterAccountStore
+     * 当机构树中选中的节点发生改变时,加载 Store
      * @param treepanel
      * @param selected
      * @param eOpts
@@ -73,32 +94,36 @@ Ext.define('MyApp.view.dktj.EmployeeInterestController', {
             loanTypeCombo = me.lookupReference('interestLoanTypeCombo');
 
         var selectionModel = selected[0];
-        if (selectionModel) {
-            var type = selectionModel.get('type');
-            empLoanTypeStore.clearFilter();
-            orgLoanTypeStore.clearFilter();
-            if (loanTypeCombo) {
+        if (loanTypeCombo) {
                 loanTypeCombo.setValue(1);
             }
-            if (type === '000' || type === '100') {//对于“伊金霍洛农商行”、“营业网点”只显示核心贷款
-                empLoanTypeStore.filterBy(function(item) {
-                    return item.get('id') === 1;
-                });
-                orgLoanTypeStore.filterBy(function(item) {
-                    return item.get('id') === 1;
-                });
-            } else if (type === '200' || type === '201') { //对于“管理部门”和总行的部门，只显示汇总贷款
-                empLoanTypeStore.filterBy(function(item) {
-                    return item.get('id') === 2;
-                });
-                orgLoanTypeStore.filterBy(function(item) {
-                    return item.get('id') === 2 ;
-                });
-                if (loanTypeCombo) {
-                    loanTypeCombo.setValue(2);
-                }
-            }
-        }
+
+        // if (selectionModel) {
+        //     var type = selectionModel.get('type');
+        //     empLoanTypeStore.clearFilter();
+        //     orgLoanTypeStore.clearFilter();
+        //     if (loanTypeCombo) {
+        //         loanTypeCombo.setValue(1);
+        //     }
+        //     if (type === '000' || type === '100') {//对于“伊金霍洛农商行”、“营业网点”只显示核心贷款
+        //         empLoanTypeStore.filterBy(function(item) {
+        //             return item.get('id') === 1;
+        //         });
+        //         orgLoanTypeStore.filterBy(function(item) {
+        //             return item.get('id') === 1;
+        //         });
+        //     } else if (type === '200' || type === '201') { //对于“管理部门”和总行的部门，只显示汇总贷款
+        //         empLoanTypeStore.filterBy(function(item) {
+        //             return item.get('id') === 2;
+        //         });
+        //         orgLoanTypeStore.filterBy(function(item) {
+        //             return item.get('id') === 2 ;
+        //         });
+        //         if (loanTypeCombo) {
+        //             loanTypeCombo.setValue(2);
+        //         }
+        //     }
+        // }
 
         store.load();
     },
@@ -138,9 +163,121 @@ Ext.define('MyApp.view.dktj.EmployeeInterestController', {
                 filter.startDate = filter.endDate;
             }
 
-            store.getProxy().extraParams = {
-                filter: filter
+            store.getProxy().extraParams = filter
+        }
+    },
+
+    onInterestAvgStoreBeforeLoad: function(store , operation , eOpts) {
+        var me = this,
+            searchForm = me.lookupReference('searchForm'),
+            selectionOrganization = me.getSelectionOrganization();
+
+        var filter = null;
+
+        if (searchForm) {
+            filter = searchForm.getForm().getValues();
+        }
+
+        if (selectionOrganization) {
+            if (filter) {
+                filter.organizationId = selectionOrganization.getId();
+            } else {
+                filter= {
+                    organizationId: selectionOrganization.getId()
+                }
             }
+        }
+
+        if (filter) {
+            var f1 = filter.startDate == null || filter.startDate == undefined || filter.startDate == '';
+            var f2 = filter.endDate == null || filter.endDate == undefined || filter.endDate == '';
+            if (f1 && f2) { //startDate, endDate 都没有输入
+                var lnCurrDate = me.getViewModel().get('lnCurrDate');
+                filter.startDate = lnCurrDate;
+                filter.endDate = lnCurrDate;
+            } else if (!f1 && f2) { //startDate已输入, endDate没有输入
+                filter.endDate = filter.startDate;
+            } else if (f1 && !f2) { //startDate没有输入, endDate已输入
+                filter.startDate = filter.endDate;
+            }
+
+            store.getProxy().extraParams = filter
+        }
+    },
+
+    onOrgInterestStoreBeforeLoad: function(store , operation , eOpts) {
+        var me = this,
+            searchForm = me.lookupReference('searchForm'),
+            selectionOrganization = me.getSelectionOrganization();
+
+        var filter = null;
+
+        if (searchForm) {
+            filter = searchForm.getForm().getValues();
+        }
+
+        if (selectionOrganization) {
+            if (filter) {
+                filter.organizationId = selectionOrganization.getId();
+            } else {
+                filter= {
+                    organizationId: selectionOrganization.getId()
+                }
+            }
+        }
+
+        if (filter) {
+            var f1 = filter.startDate == null || filter.startDate == undefined || filter.startDate == '';
+            var f2 = filter.endDate == null || filter.endDate == undefined || filter.endDate == '';
+            if (f1 && f2) { //startDate, endDate 都没有输入
+                var lnCurrDate = me.getViewModel().get('lnCurrDate');
+                filter.startDate = lnCurrDate;
+                filter.endDate = lnCurrDate;
+            } else if (!f1 && f2) { //startDate已输入, endDate没有输入
+                filter.endDate = filter.startDate;
+            } else if (f1 && !f2) { //startDate没有输入, endDate已输入
+                filter.startDate = filter.endDate;
+            }
+
+            store.getProxy().extraParams = filter
+        }
+    },
+
+    onOrgAvgInterestStoreBeforeLoad: function(store , operation , eOpts) {
+        var me = this,
+            searchForm = me.lookupReference('searchForm'),
+            selectionOrganization = me.getSelectionOrganization();
+
+        var filter = null;
+
+        if (searchForm) {
+            filter = searchForm.getForm().getValues();
+        }
+
+        if (selectionOrganization) {
+            if (filter) {
+                filter.organizationId = selectionOrganization.getId();
+            } else {
+                filter= {
+                    organizationId: selectionOrganization.getId()
+                }
+            }
+        }
+
+        if (filter) {
+            var f1 = filter.startDate == null || filter.startDate == undefined || filter.startDate == '';
+            var f2 = filter.endDate == null || filter.endDate == undefined || filter.endDate == '';
+            if (f1 && f2) { //startDate, endDate 都没有输入
+                var lnCurrDate = me.getViewModel().get('lnCurrDate');
+                filter.startDate = lnCurrDate;
+                filter.endDate = lnCurrDate;
+            } else if (!f1 && f2) { //startDate已输入, endDate没有输入
+                filter.endDate = filter.startDate;
+            } else if (f1 && !f2) { //startDate没有输入, endDate已输入
+                filter.startDate = filter.endDate;
+            }
+
+            store.getProxy().extraParams = filter
         }
     }
 

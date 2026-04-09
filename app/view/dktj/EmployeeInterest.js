@@ -24,20 +24,21 @@ Ext.define('MyApp.view.dktj.EmployeeInterest',{
     initComponent: function() {
         var me = this,
             viewModel = me.getViewModel();
+        var moduleId = Ext.util.Cookies.get('currentMenuId');
 
         //表格的数据存储器
         var dataStore = null;
         var myMatrix = null;
-        switch (me.moduleId) {
+        switch (moduleId) {
             //员工时点
-            case 528:
+            case '528':
                 dataStore = viewModel.getStore('employeeInterestStore');
                 myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
                     textRowLabels: '日期/营销人员/机构',
                     compactViewColumnWidth: 210,
                     viewLayoutType: 'compact',
                     type: 'local',
-                    store: dataStore,
+                    // store: dataStore,
                     textTotalTpl: '小计 ({name})',
                     textGrandTotalTpl: '合计',
                     colGrandTotalsPosition: 'first',
@@ -76,7 +77,7 @@ Ext.define('MyApp.view.dktj.EmployeeInterest',{
                 });
                 break;
             //员工日均
-            case 529:
+            // case 529:
                 dataStore = viewModel.getStore('employeeAvgInterestStore');
                 myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
                     textRowLabels: '日均日期/营销人员/所属机构',
@@ -122,7 +123,7 @@ Ext.define('MyApp.view.dktj.EmployeeInterest',{
                 });
                 break;
             //机构时点
-            case 530:
+            // case 530:
                 dataStore = viewModel.getStore('organizationInterestStore');
                 myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
                     textRowLabels: '日期/所属机构/所在机构',
@@ -169,7 +170,7 @@ Ext.define('MyApp.view.dktj.EmployeeInterest',{
                 });
                 break;
             //机构日均
-            case 531:
+            // case 531:
                 dataStore = viewModel.getStore('organizationAvgInterestStore');
                 myMatrix =  Ext.create('Ext.pivot.matrix.Local', {
                     textRowLabels: '日期/所属机构/所在机构',
@@ -225,14 +226,15 @@ Ext.define('MyApp.view.dktj.EmployeeInterest',{
                 store: '{organizationStore}'
             },
             width: 220
-        }, {
+        }
+        , {
             region : 'center',
             xtype : 'employeeinterestgrid',
+            moduleId: moduleId,
             bind: {
-                title: me.title + '{selectionText}'
+                store: '{employeeInterestStore}',
+                title: '员工利息时点' + '{selectionText}'
             },
-            permissiveOpts: me.permissiveOpts,
-            moduleId: me.moduleId,
             matrix: myMatrix
         });
 
