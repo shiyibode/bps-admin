@@ -65,9 +65,7 @@ Ext.define('MyApp.view.dktj.AccountTemplateModel', {
             },
             listeners: {
                 load: {
-                    fn: 'onOrganizationStoreLoad',
-                    single: true,       //只执行一次
-                    delay:1
+                    fn: 'onOrganizationStoreLoad'
                 }
             }
         },
@@ -77,7 +75,7 @@ Ext.define('MyApp.view.dktj.AccountTemplateModel', {
         accountTemplateStore: {
             type: 'store',
             model: 'MyApp.model.dktj.AccountTemplate',
-            pageSize: 30,
+            pageSize: 20,
             autoLoad: false,
             remoteFilter: true,
             remoteSort: true,
@@ -94,7 +92,7 @@ Ext.define('MyApp.view.dktj.AccountTemplateModel', {
         userStore: {
             type: 'store',
             model: 'MyApp.model.sys.User',
-            pageSize: 30,
+            pageSize: 20,
             autoLoad: false,
             remoteFilter: true,
             remoteSort: true,
@@ -111,7 +109,7 @@ Ext.define('MyApp.view.dktj.AccountTemplateModel', {
         availableUserStore: {
             type: 'store',
             model: 'MyApp.model.sys.User',
-            pageSize: 30,
+            pageSize: 20,
             autoLoad: false,
             remoteFilter: true,
             remoteSort: true,
@@ -124,7 +122,7 @@ Ext.define('MyApp.view.dktj.AccountTemplateModel', {
         templateDetailStore: {
             type: 'store',
             model: 'MyApp.model.dktj.TemplateDetail',
-            pageSize: 30,
+            pageSize: 20,
             autoLoad: false,
             remoteFilter: true,
             remoteSort: true,
@@ -137,7 +135,7 @@ Ext.define('MyApp.view.dktj.AccountTemplateModel', {
         templateStore: {
             type: 'store',
             model: 'MyApp.model.dktj.Template',
-            pageSize: 30,
+            pageSize: 20,
             autoLoad: false,
             remoteFilter: true,
             remoteSort: true,

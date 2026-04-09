@@ -18,14 +18,13 @@ Ext.define('MyApp.view.dktj.AccountTemplate',{
         type: 'dktjaccounttemplate'
     },
 
-    // session: true,
-
-    frame : false,
-    border : false,
+    width: 500,
+    height: 700,
     layout : 'border',
 
     initComponent: function() {
         var me = this;
+        var moduleId = Ext.util.Cookies.get('currentMenuId');
 
         //表格的数据存储器
         var dataStore = me.getViewModel().getStore('accountTemplateStore');
@@ -44,10 +43,10 @@ Ext.define('MyApp.view.dktj.AccountTemplate',{
             region : 'center',
             xtype : 'accounttemplategrid',
             bind: {
-                title: me.title + '{selectionText}'
+                title: '账号模板' + '{selectionText}'
             },
             permissiveOpts: me.permissiveOpts,
-            moduleId: me.moduleId,
+            moduleId: moduleId,
             store: dataStore
         },{
             //变更模板窗口

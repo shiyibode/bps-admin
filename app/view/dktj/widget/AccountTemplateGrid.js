@@ -18,11 +18,11 @@ Ext.define('MyApp.view.dktj.widget.AccountTemplateGrid', {
 
     columnLines: true,
 
-    tools: [{
-        type: 'refresh',
-        tooltip: '刷新数据',
-        handler: 'refreshBtnClick'
-    }],
+    // tools: [{
+    //     type: 'refresh',
+    //     tooltip: '刷新数据',
+    //     handler: 'refreshBtnClick'
+    // }],
 
 
     initComponent: function () {
@@ -39,9 +39,7 @@ Ext.define('MyApp.view.dktj.widget.AccountTemplateGrid', {
         };
 
 
-        var searchItems = [
-
-        ];
+        var searchItems = [];
 
         me.columns = [{
             text: '核心机构号',
@@ -82,12 +80,55 @@ Ext.define('MyApp.view.dktj.widget.AccountTemplateGrid', {
         me.dockedItems.push({
             xtype: 'gridtoolbar',
             dock: 'top',
-            collapseExpandButton: true,
+            collapseExpandButton: false,
             searchBox: true,
             grid: this,
             searchItems: searchItems,
             searchAllBtnHidden: true,
             permissiveOpts: me.permissiveOpts
+        });
+
+        me.callParent(arguments);
+    },
+
+
+    afterRender: function(){
+        var me = this;
+
+        Ext.Msg.wait(I18N.GetRoleInfo);
+        Ext.Ajax.request({
+            url: CFG.getGlobalPath() + '/sys/menu/currentUser/currentMenuPermission',
+            method: 'POST',
+            params: {
+                uri: '/dktj/template/getaccounttemplatelist'
+            },
+            success: function(response, opts) {
+                Ext.Msg.hide();
+                var obj = Ext.decode(response.responseText, true);
+                
+                if(obj.success == false && obj.code ==='401'){
+                    window.location.href='/#lockscreen';
+                    return;
+                }
+                
+                if(obj.data){
+                    permissiveOpts = obj.data;
+                    
+                    for(var i=0;i<permissiveOpts.length;i++){
+                        var button = permissiveOpts[i];
+                        var btn = Ext.widget('buttontransparent',{
+                            text: button.text,
+                            iconCls: button.iconCls,
+                            handler: button.viewType,
+                            tooltip: button.description
+                        });
+                        me.down('gridtoolbar').add(btn);
+                    }
+                }
+                Ext.Msg.hide();
+            },
+            failure: FAILED.ajax,
+            scope: me
         });
 
         me.callParent(arguments);
