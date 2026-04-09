@@ -1,9 +1,9 @@
 /**
  * create by syb on 2021-05-21
  */
-Ext.define('MyApp.view.dktj.PositionTeller',{
+Ext.define('MyApp.view.dktj.PositionTellerAlterCheck',{
     extend: 'Ext.panel.Panel',
-    xtype: 'dktjpositionteller',
+    xtype: 'dktjpositiontelleraltercheck',
 
     requires: [
         'Ext.layout.container.Border',
@@ -28,6 +28,7 @@ Ext.define('MyApp.view.dktj.PositionTeller',{
         var me = this,
             moduleId = Ext.util.Cookies.get('currentMenuId');
 
+
         me.items = [];
         me.items.push({
             region : 'west',
@@ -41,16 +42,11 @@ Ext.define('MyApp.view.dktj.PositionTeller',{
             region : 'center',
             xtype : 'positiontellergrid',
             bind: {
-                store: '{positionTellerAlterStore}',
+                store: '{positionTellerUncheckStore}',
                 title: '岗位责任人' + '{selectionText}'
             },
             moduleId: moduleId
-        }
-        , {
-            //变更揽储人窗口
-            xtype: 'dktjmodifypositiontellerwindow'
-        }
-        );
+        });
 
         this.callParent(arguments);
     }

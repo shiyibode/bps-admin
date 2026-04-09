@@ -18,21 +18,30 @@ Ext.define('MyApp.view.dktj.widget.PositionTellerGrid', {
 
     columnLines: true,
 
-    tools: [{
-        type: 'refresh',
-        tooltip: '刷新数据',
-        handler: 'refreshBtnClick'
-    }],
-
 
     initComponent: function () {
-        var me = this;
+        var me = this,
+            storeName;
+
+        switch(me.moduleId){
+            case '536':
+                storeName = '{positionTellerAlterStore}'
+                break;
+            //变更复核
+            case '538':
+                storeName = '{positionTellerUncheckStore}'
+                break;
+        }
+        
 
         //底部分页工具栏
         me.bbar = {
             xtype:'pagingtoolbar',
             reference:'positiontellergridpagingtoolbar',
-            store : me.store,
+            bind: {
+                store: storeName
+            },
+            // store : me.store,
             displayInfo: true,
             emptyMsg: "没有需要显示的数据",
             plugins: [ 'progressbarpager' ]
@@ -102,10 +111,10 @@ Ext.define('MyApp.view.dktj.widget.PositionTellerGrid', {
 
         switch (me.moduleId) {
             //变更申请
-            case 536:
-                break;
+            // case '536':
+            //     break;
             //变更复核
-            case 538:
+            case '538':
                 me.columns.push({
                     text: '原柜员号',
                     dataIndex: 'oldTellerCode',
@@ -115,8 +124,8 @@ Ext.define('MyApp.view.dktj.widget.PositionTellerGrid', {
                     dataIndex: 'oldTellerName',
                     flex: 1
                 });
-                me.selModel = { mode: 'MULTI' };
-                me.selType = 'checkboxmodel';
+                // me.selModel = { mode: 'MULTI' };
+                // me.selType = 'checkboxmodel';
                 break;
         }
 
@@ -125,12 +134,64 @@ Ext.define('MyApp.view.dktj.widget.PositionTellerGrid', {
         me.dockedItems.push({
             xtype: 'gridtoolbar',
             dock: 'top',
-            collapseExpandButton: true,
+            collapseExpandButton: false,
             searchBox: true,
             grid: this,
             searchItems: searchItems,
             searchAllBtnHidden: true,
             permissiveOpts: me.permissiveOpts
+        });
+
+        me.callParent(arguments);
+    },
+
+    afterRender: function(){
+        var me = this;
+        var uri = '';
+
+        switch(me.moduleId){
+            case '536':
+                uri = 'positiontelleralterlist';
+                break;
+            case '538':
+                uri = 'positiontellerchecklist';
+                break;
+        }
+
+        Ext.Msg.wait(I18N.GetRoleInfo);
+        Ext.Ajax.request({
+            url: CFG.getGlobalPath() + '/sys/menu/currentUser/currentMenuPermission',
+            method: 'POST',
+            params: {
+                uri: '/dktj/employeeinterest/' + uri
+            },
+            success: function(response, opts) {
+                Ext.Msg.hide();
+                var obj = Ext.decode(response.responseText, true);
+                
+                if(obj.success == false && obj.code ==='401'){
+                    window.location.href='/#lockscreen';
+                    return;
+                }
+                
+                if(obj.data){
+                    permissiveOpts = obj.data;
+                    
+                    for(var i=0;i<permissiveOpts.length;i++){
+                        var button = permissiveOpts[i];
+                        var btn = Ext.widget('buttontransparent',{
+                            text: button.text,
+                            iconCls: button.iconCls,
+                            handler: button.viewType,
+                            tooltip: button.description
+                        });
+                        me.down('gridtoolbar').add(btn);
+                    }
+                }
+                Ext.Msg.hide();
+            },
+            failure: FAILED.ajax,
+            scope: me
         });
 
         me.callParent(arguments);

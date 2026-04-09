@@ -14,13 +14,13 @@ Ext.define('MyApp.view.dktj.widget.EmployeeCustomerGrid', {
 
     columnLines: true,
 
-    tools: [
-        {
-            type: 'refresh',
-            tooltip: '刷新数据',
-            handler: 'refreshBtnClick'
-        }
-    ],
+    // tools: [
+    //     {
+    //         type: 'refresh',
+    //         tooltip: '刷新数据',
+    //         handler: 'refreshBtnClick'
+    //     }
+    // ],
 
     listeners: {
         selectionchange: 'onCustomerGridSelectionChange'

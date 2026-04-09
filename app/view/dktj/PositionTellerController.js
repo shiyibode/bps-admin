@@ -42,9 +42,29 @@ Ext.define('MyApp.view.dktj.PositionTellerController', {
         var me = this,
             navigationtree = me.lookupReference('navigationtree');
 
-        if (records && records[0]) {
-            navigationtree.getSelectionModel().select(records[0]);
-        }
+        // 展开菜单
+        Ext.Ajax.request({
+            url: CFG.getGlobalPath() + '/sys/organization/getExpandOrganizationId',
+            method: 'POST',
+            defaultPostHeader: 'application/json;charset=UTF-8',
+            scope: this,
+            success: function(response, opts) {
+                var result = Ext.decode(response.responseText, true);
+                if (result.success) {
+                    let organizationId = result.data;
+                    let node = store.getNodeById(organizationId);
+                    // node.expand();
+                    navigationtree.expandAll();
+                    navigationtree.getSelectionModel().select(node);
+                } else {
+                    Ext.Msg.show({title: '打开机构树节点失败', message: result.msg, buttons: Ext.Msg.OK, icon: Ext.MessageBox.ERROR});
+                }
+            },
+            failure: MyApp.ux.data.FailureProcess.Ajax
+        });
+        // if (records && records[0]) {
+        //     navigationtree.getSelectionModel().select(records[0]);
+        // }
     },
 
     onPositionTellerAlterStoreBeforeLoad: function(store , operation , eOpts) {
@@ -68,9 +88,7 @@ Ext.define('MyApp.view.dktj.PositionTellerController', {
         }
 
         if (filter) {
-            store.getProxy().extraParams = {
-                filter: filter
-            }
+            store.getProxy().extraParams = filter
         }
     },
 
@@ -118,9 +136,7 @@ Ext.define('MyApp.view.dktj.PositionTellerController', {
         }
 
         if (filter) {
-            store.getProxy().extraParams = {
-                filter: filter
-            }
+            store.getProxy().extraParams = filter
         }
     },
 
@@ -180,10 +196,8 @@ Ext.define('MyApp.view.dktj.PositionTellerController', {
 
         var userCode = modifyPositionTellerUserCombobox.getValue() ;
         store.getProxy().extraParams = {
-            filter: {
-                userCodeOrName: userCode,
-                notUserType: 0
-            }
+            userCodeOrName: userCode,
+            notUserType: 0
         }
     },
 
@@ -285,25 +299,21 @@ Ext.define('MyApp.view.dktj.PositionTellerController', {
                     remarks: values.remarks
                 });
             });
-            // var dataJson = {
-            //     data: data
-            // };
 
             Ext.Ajax.request({
                 url: CFG.getGlobalPath() + '/dktj/employeeinterest/positiontelleralter',
                 method: 'POST',
                 defaultPostHeader: 'application/json;charset=UTF-8',
-                // params: Ext.JSON.encode(dataJson),
                 jsonData: data,
                 scope: this,
                 success: function(response, opts) {
                     var result = Ext.decode(response.responseText, true);
                     if (result.success) {
-                        Ext.toastInfo(result.msg);
+                        Ext.toast(result.msg);
                         positionTellerAlterStore.reload();
                         button.up('window').close();
                     } else {
-                        Ext.alertError('变更贷款岗位责任人出错', result.msg);
+                        Ext.Msg.show({title: '变更贷款岗位责任人出错', message: result.msg, buttons: Ext.Msg.OK, icon: Ext.MessageBox.ERROR});
                     }
                 },
                 failure: MyApp.ux.data.FailureProcess.Ajax
@@ -338,10 +348,6 @@ Ext.define('MyApp.view.dktj.PositionTellerController', {
                         data.push({lnOrgCode: record.get('lnOrgCode'), accountNo: record.get('accountNo'), id: record.get('id')});
                     });
 
-                    // var dataJson = {
-                    //     data: data
-                    // };
-
                     Ext.Ajax.request({
                         url: CFG.getGlobalPath() + '/dktj/employeeinterest/positiontellercheck',
                         method: 'POST',
@@ -351,10 +357,10 @@ Ext.define('MyApp.view.dktj.PositionTellerController', {
                         success: function(response, opts) {
                             var result = Ext.decode(response.responseText, true);
                             if (result.success) {
-                                Ext.toastInfo(result.msg);
+                                Ext.toast(result.msg);
                                 positionTellerUncheckStore.reload();
                             } else {
-                                Ext.alertError('复核变更申请出错', result.msg);
+                                Ext.Msg.show({title: '复核变更申请出错', message: result.msg, buttons: Ext.Msg.OK, icon: Ext.MessageBox.ERROR});
                             }
                         },
                         failure: MyApp.ux.data.FailureProcess.Ajax
@@ -390,24 +396,19 @@ Ext.define('MyApp.view.dktj.PositionTellerController', {
                         data.push({lnOrgCode: record.get('lnOrgCode'), accountNo: record.get('accountNo'), id: record.get('id')});
                     });
 
-                    // var dataJson = {
-                    //     data: data
-                    // };
-
                     Ext.Ajax.request({
                         url: CFG.getGlobalPath() + '/dktj/employeeinterest/positiontelleruncheck',
                         method: 'POST',
                         defaultPostHeader: 'application/json;charset=UTF-8',
-                        // params: Ext.JSON.encode(dataJson),
                         jsonData: data,
                         scope: this,
                         success: function(response, opts) {
                             var result = Ext.decode(response.responseText, true);
                             if (result.success) {
-                                Ext.toastInfo(result.msg);
+                                Ext.toast(result.msg);
                                 positionTellerUncheckStore.reload();
                             } else {
-                                Ext.alertError('撤销变更申请出错', result.msg);
+                                Ext.Msg.show({title: '撤销变更申请出错', message: result.msg, buttons: Ext.Msg.OK, icon: Ext.MessageBox.ERROR});
                             }
                         },
                         failure: MyApp.ux.data.FailureProcess.Ajax

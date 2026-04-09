@@ -64,19 +64,17 @@ Ext.define('MyApp.view.dktj.PositionTellerModel', {
             },
             listeners: {
                 load: {
-                    fn: 'onOrganizationStoreLoad',
-                    single: true,       //只执行一次
-                    delay:1
+                    fn: 'onOrganizationStoreLoad'
                 }
             }
         },
 
 
-        //可登记揽储人账户Store
+        //当前岗位责任人列表store
         positionTellerAlterStore: {
             type: 'store',
             model: 'MyApp.model.dktj.EmployeeInterest',
-            pageSize: 30,
+            pageSize: 20,
             autoLoad: false,
             remoteFilter: true,
             remoteSort: true,
@@ -94,7 +92,7 @@ Ext.define('MyApp.view.dktj.PositionTellerModel', {
         positionTellerUncheckStore: {
             type: 'store',
             model: 'MyApp.model.dktj.EmployeeInterest',
-            pageSize: 30,
+            pageSize: 20,
             autoLoad: false,
             remoteFilter: true,
             remoteSort: true,
@@ -111,7 +109,7 @@ Ext.define('MyApp.view.dktj.PositionTellerModel', {
         userStore: {
             type: 'store',
             model: 'MyApp.model.sys.User',
-            pageSize: 30,
+            pageSize: 20,
             autoLoad: false,
             remoteFilter: true,
             remoteSort: true,
